@@ -1,4 +1,4 @@
-package api.backend.model;
+package api.backend.model.user;
 
 import jakarta.persistence.*;
 import lombok.Data;
