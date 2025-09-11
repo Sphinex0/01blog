@@ -9,6 +9,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 import api.backend.model.user.User;
 import api.backend.repository.UserRepository;
@@ -16,10 +17,10 @@ import api.backend.repository.UserRepository;
 
 
 @Service
-public class UserService  {
+public class UserServiceImpl implements UserDetailsService  {
     private final UserRepository userRepository;
 
-    public UserService(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
