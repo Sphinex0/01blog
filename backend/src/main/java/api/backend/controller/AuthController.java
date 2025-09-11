@@ -13,18 +13,16 @@ import api.backend.model.user.LoginRequest;
 import api.backend.model.user.RegisterRequest;
 import api.backend.model.user.User;
 import api.backend.service.AuthService;
-import api.backend.service.UserServiceImpl;
+import api.backend.service.UserService;
 
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
 
     private final AuthService authService;
-    private final UserServiceImpl userServiceImpl;
 
-    public AuthController(AuthService authService, UserServiceImpl userServiceImpl) {
+    public AuthController(AuthService authService) {
         this.authService = authService;
-        this.userServiceImpl = userServiceImpl;
     }
 
     @PostMapping("/register")
@@ -47,11 +45,6 @@ public class AuthController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + e.getMessage());
         }
-    }
-
-    @GetMapping
-    public List<User> getAllUsers(@RequestBody User user) {
-        return userServiceImpl.getAllUsers();
     }
 
 }
