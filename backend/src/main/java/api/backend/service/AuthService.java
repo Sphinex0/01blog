@@ -1,10 +1,9 @@
 package api.backend.service;
 
 import api.backend.config.JwtUtil;
-import api.backend.model.user.LoginRequest;
-import api.backend.model.user.RegisterRequest;
-import api.backend.model.user.User;
+import api.backend.model.user.*;
 import api.backend.repository.UserRepository;
+import jakarta.validation.Valid;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,16 +22,19 @@ public class AuthService {
     private final JwtUtil jwtUtil;
 
     public AuthService(UserRepository userRepository, AuthenticationManager authenticationManager,
-                       PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
+            PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
         this.userRepository = userRepository;
         this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
     }
 
-    public String register(RegisterRequest request) {
+    public String register(@Valid RegisterRequest request) {
         if (userRepository.findByUsername(request.getUsername()).isPresent()) {
             throw new IllegalStateException("Username already exists");
+        }
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new IllegalStateException("Email already exists");
         }
         User user = new User();
         user.setFullName(request.getFullName());
@@ -53,7 +55,8 @@ public class AuthService {
         } catch (BadCredentialsException e) {
             throw new BadCredentialsException("Invalid username or password");
         } catch (AuthenticationException e) {
-            throw new AuthenticationException("Authentication failed: " + e.getMessage()) {};
+            throw new AuthenticationException("Authentication failed: " + e.getMessage()) {
+            };
         }
     }
 }

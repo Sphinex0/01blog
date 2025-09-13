@@ -26,6 +26,7 @@ public class JwtUtil {
     }
 
     public String generateToken(String username) {
+
         return Jwts.builder()
                 .subject(username)
                 .issuedAt(new Date())
@@ -57,7 +58,7 @@ public class JwtUtil {
             getAllClaimsFromToken(token);
             return true;
         } catch (Exception e) {
-            // Log exception if needed
+            // Log exception if needed 
             return false;
         }
     }
