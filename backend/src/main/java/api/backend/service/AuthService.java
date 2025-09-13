@@ -22,7 +22,7 @@ public class AuthService {
     private final JwtUtil jwtUtil;
 
     public AuthService(UserRepository userRepository, AuthenticationManager authenticationManager,
-            PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
+                       PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
         this.userRepository = userRepository;
         this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
@@ -30,19 +30,20 @@ public class AuthService {
     }
 
     public String register(@Valid RegisterRequest request) {
-        if (userRepository.findByUsername(request.getUsername()).isPresent()) {
+        if (userRepository.findByUsername(request.username()).isPresent()) {
             throw new IllegalStateException("Username already exists");
         }
-        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+        if (userRepository.findByEmail(request.email()).isPresent()) {
             throw new IllegalStateException("Email already exists");
         }
-        User user = new User();
-        user.setFullName(request.getFullName());
-        user.setUsername(request.getUsername());
-        user.setEmail(request.getEmail());
-        user.setPasswordHash(passwordEncoder.encode(request.getPasswordHash()));
-        user.setRole("USER");
-        user.setCreatedAt(LocalDateTime.now());
+        User user = new User(
+            request.fullName(),
+            request.username(),
+            request.email(),
+            passwordEncoder.encode(request.passwordHash()),
+            "USER",
+            LocalDateTime.now()
+        );
         userRepository.save(user);
         return "User registered successfully";
     }
@@ -50,13 +51,12 @@ public class AuthService {
     public String login(LoginRequest request) {
         try {
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPasswordHash()));
-            return jwtUtil.generateToken(request.getUsername());
+                new UsernamePasswordAuthenticationToken(request.username(), request.passwordHash()));
+            return jwtUtil.generateToken(request.username());
         } catch (BadCredentialsException e) {
             throw new BadCredentialsException("Invalid username or password");
         } catch (AuthenticationException e) {
-            throw new AuthenticationException("Authentication failed: " + e.getMessage()) {
-            };
+            throw new AuthenticationException("Authentication failed: " + e.getMessage()) {};
         }
     }
 }

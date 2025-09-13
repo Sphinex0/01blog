@@ -1,9 +1,12 @@
 package api.backend.model.user;
 
-import lombok.Data;
+import jakarta.validation.constraints.*;
 
-@Data
-public class LoginRequest {
-    private String username;
-    private String passwordHash;  // Plain password
-}
+public record LoginRequest(
+        @NotBlank(message = "Username is required")
+        String username,
+
+        @NotBlank(message = "Password is required")
+        @Size(min = 6, message = "Password must be at least 6 characters")
+        String passwordHash
+) {}

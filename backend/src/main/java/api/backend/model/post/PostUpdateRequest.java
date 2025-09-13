@@ -1,10 +1,8 @@
 package api.backend.model.post;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-public record PostRequest(
-    @NotBlank(message = "Content is required")
+public record PostUpdateRequest(
     @Size(max = 10000, message = "Content cannot exceed 10000 characters")
     String content,
 
