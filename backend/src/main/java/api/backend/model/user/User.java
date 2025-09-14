@@ -76,7 +76,7 @@ public class User implements UserDetails {
     private List<Post> posts;
 
     @ManyToMany
-    @JoinTable(name = "subscription", joinColumns = @JoinColumn(name = "subscriber_id"), inverseJoinColumns = @JoinColumn(name = "subscribed_to"), uniqueConstraints = {
+    @JoinTable(name = "subscription", joinColumns = @JoinColumn(name = "subscribed_to"), inverseJoinColumns = @JoinColumn(name = "subscriber_id"), uniqueConstraints = {
             @UniqueConstraint(columnNames = { "subscriber_id", "subscribed_to" })
     })
     @JsonIgnore
