@@ -5,9 +5,9 @@ services:
     ports:
       - "5433:5432"
     environment:
-      POSTGRES_DB: mydb
+      POSTGRES_DB: 01DB
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: yourpassword
+      POSTGRES_PASSWORD: postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
     restart: always
