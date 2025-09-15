@@ -5,7 +5,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import api.backend.model.subscription.SubscribeRequest;
-import api.backend.model.user.RegisterRequest;
 import api.backend.model.user.User;
 import api.backend.service.UserService;
 import jakarta.validation.Valid;
