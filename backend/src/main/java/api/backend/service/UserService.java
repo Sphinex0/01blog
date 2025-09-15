@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -12,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 
 import api.backend.model.subscription.SubscribeRequest;
 import api.backend.model.user.User;
+import api.backend.model.user.UserResponse;
 import api.backend.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -65,8 +69,9 @@ public class UserService implements UserDetailsService {
         return currentUser.getSubscribed_to();
     }
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<UserResponse> getAllUsers(int pageNumber) {
+        Pageable pageable = PageRequest.of(pageNumber, 10, Direction.DESC,"id");
+        return userRepository.findAll(pageable).stream().map(UserService::toUserResponse).toList();
     }
 
     public Optional<User> getUserById(Long id) {
@@ -89,6 +94,18 @@ public class UserService implements UserDetailsService {
         // Collections.singletonList(new SimpleGrantedAuthority("ROLE_" +
         // user.getRole())));
         return user;
+    }
+
+    public static UserResponse toUserResponse(User user) {
+        return new UserResponse(
+            user.getId(),
+            user.getFullName(),
+            user.getUsername(),
+            user.getEmail(),
+            user.getRole(),
+            user.getAvatar(),
+            user.getCreatedAt()
+        );
     }
 
 }

@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 import api.backend.model.subscription.SubscribeRequest;
 import api.backend.model.user.User;
+import api.backend.model.user.UserResponse;
 import api.backend.service.UserService;
 import jakarta.validation.Valid;
 
@@ -24,8 +25,8 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = userService.getAllUsers();
+    public ResponseEntity<List<UserResponse>> getAllUsers(@RequestParam(defaultValue = "0") int page) {
+        List<UserResponse> users = userService.getAllUsers(page);
         return ResponseEntity.ok(users);
     }
 
