@@ -30,14 +30,14 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    @GetMapping("/subscribers")
-    public ResponseEntity<Set<User>> getAllsubscribers() {
-        return ResponseEntity.ok(userService.getSubscribers());
+    @GetMapping("/{userId}/subscribers")
+    public ResponseEntity<List<UserResponse>> getAllsubscribers(@PathVariable long userId,@RequestParam(defaultValue = "0") int page) {
+        return ResponseEntity.ok(userService.getSubscribers(userId, page));
     }
 
-    @GetMapping("/subscribtions")
-    public ResponseEntity<Set<User>> getAllsubscribedTo() {
-        return ResponseEntity.ok(userService.getSubscribtions());
+    @GetMapping("/{userId}/subscribtions")
+    public ResponseEntity<List<UserResponse>> getAllsubscribedTo(@PathVariable long userId,@RequestParam(defaultValue = "0") int page) {
+        return ResponseEntity.ok(userService.getSubscribtions(userId, page));
     }
 
     @PostMapping("/subscribe")

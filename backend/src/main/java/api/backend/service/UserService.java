@@ -2,7 +2,6 @@ package api.backend.service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import api.backend.model.subscription.SubscribeRequest;
+import api.backend.model.user.BanRequest;
+import api.backend.model.user.DeleteRequest;
 import api.backend.model.user.User;
 import api.backend.model.user.UserResponse;
 import api.backend.repository.UserRepository;
@@ -57,20 +58,19 @@ public class UserService implements UserDetailsService {
         userRepository.save(currentUser);
     }
 
-    public Set<User> getSubscribers() {
-        long id = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
-        User currentUser = userRepository.findById(id).get();
-        return currentUser.getSubscribers();
+    public List<UserResponse> getSubscribers(long userId, int page) {
+        Pageable pageable = PageRequest.of(page, 10);// , Direction.DESC,"id"
+        return userRepository.findSubscribersById(userId, pageable).stream().map(UserService::toUserResponse).toList();
     }
 
-    public Set<User> getSubscribtions() {
-        long id = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
-        User currentUser = userRepository.findById(id).get();
-        return currentUser.getSubscribed_to();
+    public List<UserResponse> getSubscribtions(long userId, int page) {
+        Pageable pageable = PageRequest.of(page, 10);// , Direction.DESC,"id"
+        return userRepository.findSubscribtionsById(userId, pageable).stream().map(UserService::toUserResponse)
+                .toList();
     }
 
-    public List<UserResponse> getAllUsers(int pageNumber) {
-        Pageable pageable = PageRequest.of(pageNumber, 10, Direction.DESC,"id");
+    public List<UserResponse> getAllUsers(int page) {
+        Pageable pageable = PageRequest.of(page, 10, Direction.DESC, "id");
         return userRepository.findAll(pageable).stream().map(UserService::toUserResponse).toList();
     }
 
@@ -82,8 +82,17 @@ public class UserService implements UserDetailsService {
         return userRepository.save(user);
     }
 
-    public void deleteUser(Long id) {
-        userRepository.deleteById(id);
+    public String deleteUser(DeleteRequest request) {
+        userRepository.findById(request.id()).get();
+        userRepository.deleteById(request.id());
+        return "user deleted";
+    }
+
+    public String banUser(BanRequest request) {
+        User user = userRepository.findById(request.id()).get();
+        user.setBannedUntil(request.until());
+        userRepository.save(user);
+        return "user banned until"+request.until();
     }
 
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -98,14 +107,13 @@ public class UserService implements UserDetailsService {
 
     public static UserResponse toUserResponse(User user) {
         return new UserResponse(
-            user.getId(),
-            user.getFullName(),
-            user.getUsername(),
-            user.getEmail(),
-            user.getRole(),
-            user.getAvatar(),
-            user.getCreatedAt()
-        );
+                user.getId(),
+                user.getFullName(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getRole(),
+                user.getAvatar(),
+                user.getCreatedAt());
     }
 
 }
