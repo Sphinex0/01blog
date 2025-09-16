@@ -1,11 +1,13 @@
 package api.backend.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -32,6 +34,9 @@ public class UserService implements UserDetailsService {
     @Transactional
     public String subscribe(@Valid SubscribeRequest subscribeRequest) {
         long id = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+        if (id == subscribeRequest.subscribedTo()) {
+            throw new IllegalArgumentException("You can't subscribe to yourself");
+        }
         User currentUser = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("No authenticated user found"));
 
@@ -92,16 +97,39 @@ public class UserService implements UserDetailsService {
         User user = userRepository.findById(request.id()).get();
         user.setBannedUntil(request.until());
         userRepository.save(user);
-        return "user banned until"+request.until();
+        return "user banned until " + request.until();
+    }
+
+    public String unbanUser(DeleteRequest request) {
+        User user = userRepository.findById(request.id()).get();
+        user.setBannedUntil(null);
+        userRepository.save(user);
+        return "user unbanned";
+    }
+
+    public String promoteUser(DeleteRequest request) {
+        User user = userRepository.findById(request.id()).get();
+        user.setRole("ADMIN");
+        userRepository.save(user);
+        return "user "+ user.getUsername() +" promoted";
+    }
+
+    public String demoteUser(DeleteRequest request) {
+        User user = userRepository.findById(request.id()).get();
+        user.setRole("USER");
+        userRepository.save(user);
+        return "user "+ user.getUsername() +" demoted";
     }
 
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username)
+        User user = userRepository.findByUsernameOrEmail(username, username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
-        // return new org.springframework.security.core.userdetails.User(
-        // user.getUsername(), user.getPasswordHash(),
-        // Collections.singletonList(new SimpleGrantedAuthority("ROLE_" +
-        // user.getRole())));
+
+        // Check if the user is banned
+        if (user.getBannedUntil() != null && user.getBannedUntil().isAfter(LocalDateTime.now())) {
+            throw new DisabledException("Account is banned until " + user.getBannedUntil());
+        }
+
         return user;
     }
 

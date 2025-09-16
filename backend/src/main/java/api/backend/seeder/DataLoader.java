@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 
 import api.backend.model.user.User;
 import api.backend.repository.UserRepository;
-import api.backend.service.UserService;
 
 import java.time.LocalDateTime;
 import java.util.stream.IntStream;
@@ -25,9 +24,14 @@ public class DataLoader implements CommandLineRunner {
         if (userRepository.count() >= 100)
             return;
 
+        // password: admin123
+        User adminUser = new User("admin", "admin", "admin@gmail.com",
+                "$2a$10$gLOE1XiudLgmuyvhiWl9WOXXEEvqOofpkN9wbXkUynZzAahmq6oV2", "ADMIN", LocalDateTime.now());
+        userRepository.save(adminUser);
+
         // password: test123
         User testUser = new User("test", "test", "test@gmail.com",
-                "$2a$10$IvKCIPnAi/CoDpyxRBZZ4.1R.AQymWUca8sqS0rL4ZuuWSrvGgZES", "ADMIN", LocalDateTime.now());
+                "$2a$10$IvKCIPnAi/CoDpyxRBZZ4.1R.AQymWUca8sqS0rL4ZuuWSrvGgZES", "USER", LocalDateTime.now());
         userRepository.save(testUser);
 
         Faker faker = new Faker();
@@ -43,15 +47,15 @@ public class DataLoader implements CommandLineRunner {
             String role = "USER";
             User user = new User(fullName, username, email, password, role, LocalDateTime.now());
 
-            testUser.getSubscribers().add(user);
-            user.getSubscribed_to().add(testUser);
-            if (i%2==0){
-                user.getSubscribers().add(testUser);
+            adminUser.getSubscribers().add(user);
+            user.getSubscribed_to().add(adminUser);
+            if (i % 2 == 0) {
+                user.getSubscribers().add(adminUser);
             }
             userRepository.save(user);
         });
-        userRepository.save(testUser);
-        
+        userRepository.save(adminUser);
+
         System.out.println("Generated 100 random users and saved to the database.");
     }
 }

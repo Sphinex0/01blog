@@ -5,13 +5,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import api.backend.model.subscription.SubscribeRequest;
-import api.backend.model.user.User;
 import api.backend.model.user.UserResponse;
 import api.backend.service.UserService;
 import jakarta.validation.Valid;
 
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/api/users") // Define a specific path

@@ -14,6 +14,8 @@ import api.backend.model.user.User;
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByUsername(String username);
     Optional<User> findByEmail(String email);
+    Optional<User> findByUsernameOrEmail(String username, String Email);
+
 
     //@Query("SELECT u FROM User u JOIN subscription s ON s.subscribed_to = u.id WHERE s.subscriber_id = :userId")
     @Query("SELECT u FROM User u JOIN u.subscribed_to sub WHERE sub.id = :userId")
