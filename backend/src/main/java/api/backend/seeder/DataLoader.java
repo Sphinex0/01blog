@@ -4,7 +4,9 @@ import net.datafaker.Faker;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import api.backend.model.post.Post;
 import api.backend.model.user.User;
+import api.backend.repository.PostRepository;
 import api.backend.repository.UserRepository;
 
 import java.time.LocalDateTime;
@@ -14,9 +16,11 @@ import java.util.stream.IntStream;
 public class DataLoader implements CommandLineRunner {
 
     private final UserRepository userRepository;
+    private final PostRepository postRepository;
 
-    public DataLoader(UserRepository userRepository) {
+    public DataLoader(UserRepository userRepository, PostRepository postRepository) {
         this.userRepository = userRepository;
+        this.postRepository = postRepository;
     }
 
     @Override
@@ -39,10 +43,9 @@ public class DataLoader implements CommandLineRunner {
         // Generate 100 fake users
 
         IntStream.range(0, 100).forEach(i -> {
-            String fullName = faker.name().fullName();
+            String fullName = faker.leagueOfLegends().champion();
             String username = faker.internet().username().replaceAll("[^a-zA-Z0-9_]", "");
             String email = faker.internet().emailAddress(username);
-            System.out.println(email);
             String password = faker.internet().password(60, 255);
             String role = "USER";
             User user = new User(fullName, username, email, password, role, LocalDateTime.now());
@@ -53,6 +56,13 @@ public class DataLoader implements CommandLineRunner {
                 user.getSubscribers().add(adminUser);
             }
             userRepository.save(user);
+
+            //posts
+            String content = faker.leagueOfLegends().summonerSpell();
+            Post post = new Post(user, content, LocalDateTime.now());
+            postRepository.save(post);
+
+
         });
         userRepository.save(adminUser);
 

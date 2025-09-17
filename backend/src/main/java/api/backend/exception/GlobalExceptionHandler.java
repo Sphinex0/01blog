@@ -5,11 +5,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
-import org.springframework.security.authentication.LockedException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import io.jsonwebtoken.ExpiredJwtException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,11 +34,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
     }
 
-    @ExceptionHandler(DisabledException.class)
-    public ResponseEntity<String> handleDisabledException(DisabledException ex) {
-        System.out.println("##############################€€€€€€€€€€€€€€€€€€€€€€€€");
+    @ExceptionHandler({DisabledException.class, AuthorizationDeniedException.class})
+    public ResponseEntity<String> handleDisabledException(Exception ex) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
     }
+
+
 
     @ExceptionHandler(InternalAuthenticationServiceException.class)
     public ResponseEntity<String> handleInternalAuthenticationServiceException(
@@ -52,9 +55,15 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(ex.getMessage());
     }
 
+    // @ExceptionHandler(ExpiredJwtException.class)
+    // public ResponseEntity<String> handleExpiredJwt(ExpiredJwtException ex) {
+    //     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww: " + ex.getMessage());
+    // }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleGenericException(Exception ex) {
-        // System.out.println("Authentication failed: " + ex.getClass().getName() + ": " + ex.getMessage());
+        // System.out.println("Authentication ##### failed: " + ex.getClass().getName() + ": " + ex.getMessage());
+
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + ex.getMessage());
     }
 }

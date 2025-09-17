@@ -1,5 +1,7 @@
 package api.backend.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import api.backend.model.post.Post;
@@ -22,7 +24,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findByLikesCountGreaterThanEqual(Integer likesCount);
 
     List<Post> findByCommentsCountGreaterThanEqual(Integer commentsCount);
-
+    
     // Optional: Find visible posts (not hidden)
     List<Post> findByHiddenAtIsNull();
 }

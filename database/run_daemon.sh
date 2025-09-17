@@ -1,0 +1,1 @@
+nohup ~/bin/dockerd-rootless.sh > ~/docker-rootless.log 2>&1 &
