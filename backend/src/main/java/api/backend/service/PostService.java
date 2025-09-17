@@ -38,6 +38,15 @@ public class PostService {
     }
 
 
+    public Post updatePost(Long id, PostRequest request) {
+        return postRepository.findById(id).map(existingPost -> {
+            // existingPost.setTitle(post.getTitle());
+            existingPost.setContent(request.content());
+            return postRepository.save(existingPost);
+        }).get();
+    }
+
+
     public PostResponse toPostResponse(Post post) {
         return new PostResponse(
                 post.getId(),

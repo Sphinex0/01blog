@@ -48,13 +48,13 @@ public class PostController {
     //             .orElseGet(() -> ResponseEntity.notFound().build());
     // }
 
-    // // Update a post (only the author or admin)
-    // @PutMapping("/{id}")
-    // @PreAuthorize("hasRole('ADMIN') or #post.author == authentication.principal")
-    // public ResponseEntity<Post> updatePost(@PathVariable Long id, @RequestBody Post post) {
-    //     Post updatedPost = postService.updatePost(id, post);
-    //     return updatedPost != null ? ResponseEntity.ok(updatedPost) : ResponseEntity.notFound().build();
-    // }
+    // Update a post (only the author or admin)
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') or #post.user == authentication.principal")
+    public ResponseEntity<Post> updatePost(@PathVariable Long id, @Valid @RequestBody PostRequest post) {
+        Post updatedPost = postService.updatePost(id, post);
+        return ResponseEntity.ok(updatedPost);
+    }
 
     // // Delete a post (only the author or admin)
     // @DeleteMapping("/{id}")
