@@ -34,6 +34,15 @@ public class PostService {
         return postRepository.findAll(pageable).stream().map(this::toPostResponse).toList();
     }
 
+    public List<PostResponse> getSubscribedToPosts(int page, long user_id) {
+        Pageable pageable = PageRequest.of(page, 10, Direction.DESC, "id");// , Direction.DESC,"id"
+        User user = userRepository.findById(user_id)
+                .orElseThrow(() -> new IllegalArgumentException("No authenticated user found"));
+
+        return postRepository.findPostsBySubscribedTo(user.getSubscribed_to(), pageable).stream()
+                .map(this::toPostResponse).toList();
+    }
+
     public PostResponse getPostById(long id) {
         return toPostResponse(postRepository.findById(id).get());
     }
@@ -51,7 +60,6 @@ public class PostService {
     }
 
     public String hidePost(long id) {
-
         postRepository.findById(id).map(existingPost -> {
             existingPost.setHidden(!existingPost.isHidden());
             return postRepository.save(existingPost);
@@ -69,7 +77,8 @@ public class PostService {
 
     // likes
     public int likePost(long post_id, long user_id) {
-        // long id = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+        // long id = ((User)
+        // SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
 
         User user = userRepository.findById(user_id)
                 .orElseThrow(() -> new IllegalArgumentException("No authenticated user found"));
@@ -77,18 +86,20 @@ public class PostService {
         Post target = postRepository.findById(post_id)
                 .orElseThrow(() -> new IllegalArgumentException("Target post not found"));
 
-                System.out.println(user.getPosts().contains(target));
-                System.out.println();
+        System.out.println(user.getPosts().contains(target));
+        System.out.println();
         if (target.getLikedBy().contains(user)) {
             user.getLikedPosts().remove(target);
             target.getLikedBy().remove(user);
+            target.setLikesCount(target.getLikesCount() - 1);
             postRepository.save(target);
-            
+
             return -1;
         }
 
         user.getLikedPosts().add(target);
         target.getLikedBy().add(user);
+        target.setLikesCount(target.getLikesCount() + 1);
 
         postRepository.save(target);
         return 1;

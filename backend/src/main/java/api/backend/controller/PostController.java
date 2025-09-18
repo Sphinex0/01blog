@@ -36,8 +36,17 @@ public class PostController {
 
     // Get all posts (public access)
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<PostResponse>> getAllPosts(@RequestParam(defaultValue = "0") int page) {
         List<PostResponse> posts = postService.getAllPosts(page);
+        return ResponseEntity.ok(posts);
+    }
+
+    // Get all posts (public access)
+    @GetMapping("/feed")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<PostResponse>> getSubscribedToPosts(@RequestParam(defaultValue = "0") int page, @AuthenticationPrincipal User user) {
+        List<PostResponse> posts = postService.getSubscribedToPosts(page, user.getId());
         return ResponseEntity.ok(posts);
     }
 
@@ -70,9 +79,8 @@ public class PostController {
 
     // hide a post (only the author or admin)
     @PatchMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or @postService.getPostById(#id).user.id == authentication.principal.id")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> hidePost(@PathVariable Long id) {
-        // postService.hidePost(id);
         return ResponseEntity.ok(postService.hidePost(id));
     }
 }
