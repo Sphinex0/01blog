@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -27,7 +28,7 @@ import api.backend.model.post.Post;
         @UniqueConstraint(columnNames = "username"),
         @UniqueConstraint(columnNames = "email")
 })
-@EqualsAndHashCode(exclude =  {"subscribers", "subscribed_to"})
+@EqualsAndHashCode(exclude = { "subscribers", "subscribed_to" })
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -73,7 +74,7 @@ public class User implements UserDetails {
 
     private LocalDateTime deletedAt;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     // @JsonIgnore
     private List<Post> posts;
 
@@ -88,6 +89,12 @@ public class User implements UserDetails {
     @ManyToMany(mappedBy = "subscribers")
     @JsonIgnore
     private Set<User> subscribed_to = new HashSet<>();
+    
+    //posts
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @ManyToMany(mappedBy = "likedBy")
+    @JsonIgnore
+    private List<Post> likedPosts = new ArrayList<>();
 
     // Constructor for record mapping
     public User(String fullName, String username, String email, String password, String role,

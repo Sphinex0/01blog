@@ -25,7 +25,7 @@ public class DataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        if (userRepository.count() >= 100)
+        if (userRepository.count() >= 10)
             return;
 
         // password: admin123
@@ -61,6 +61,9 @@ public class DataLoader implements CommandLineRunner {
             String content = faker.leagueOfLegends().summonerSpell();
             Post post = new Post(user, content, LocalDateTime.now());
             postRepository.save(post);
+            Post post2 = new Post(testUser, content, LocalDateTime.now());
+            postRepository.save(post2);
+
 
 
         });

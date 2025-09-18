@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Service;
 
@@ -13,16 +14,18 @@ import api.backend.model.post.Post;
 import api.backend.model.post.PostRequest;
 import api.backend.model.post.PostResponse;
 import api.backend.model.user.User;
-import api.backend.model.user.UserResponse;
 import api.backend.repository.PostRepository;
+import api.backend.repository.UserRepository;
 
 @Service
 public class PostService {
 
     private PostRepository postRepository;
+    private UserRepository userRepository;
 
-    PostService(PostRepository postRepository) {
+    PostService(PostRepository postRepository, UserRepository userRepository) {
         this.postRepository = postRepository;
+        this.userRepository = userRepository;
     }
 
     public List<PostResponse> getAllPosts(int page) {
@@ -31,26 +34,70 @@ public class PostService {
         return postRepository.findAll(pageable).stream().map(this::toPostResponse).toList();
     }
 
+    public PostResponse getPostById(long id) {
+        return toPostResponse(postRepository.findById(id).get());
+    }
+
     public PostResponse createPost(PostRequest request, User user) {
         Post post = new Post(user, request.content(), LocalDateTime.now());
         post.setMediaUrl(request.mediaUrl());
         return toPostResponse(postRepository.save(post));
     }
 
+    public String deletePost(long id) {
+        postRepository.findById(id).get();
+        postRepository.deleteById(id);
+        return "Post deleted";
+    }
+
+    public String hidePost(long id) {
+
+        postRepository.findById(id).map(existingPost -> {
+            existingPost.setHidden(!existingPost.isHidden());
+            return postRepository.save(existingPost);
+        }).get();
+
+        return "Post hidden";
+    }
 
     public Post updatePost(Long id, PostRequest request) {
         return postRepository.findById(id).map(existingPost -> {
-            // existingPost.setTitle(post.getTitle());
             existingPost.setContent(request.content());
             return postRepository.save(existingPost);
         }).get();
     }
 
+    // likes
+    public int likePost(long post_id, long user_id) {
+        // long id = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+
+        User user = userRepository.findById(user_id)
+                .orElseThrow(() -> new IllegalArgumentException("No authenticated user found"));
+
+        Post target = postRepository.findById(post_id)
+                .orElseThrow(() -> new IllegalArgumentException("Target post not found"));
+
+                System.out.println(user.getPosts().contains(target));
+                System.out.println();
+        if (target.getLikedBy().contains(user)) {
+            user.getLikedPosts().remove(target);
+            target.getLikedBy().remove(user);
+            postRepository.save(target);
+            
+            return -1;
+        }
+
+        user.getLikedPosts().add(target);
+        target.getLikedBy().add(user);
+
+        postRepository.save(target);
+        return 1;
+    }
 
     public PostResponse toPostResponse(Post post) {
         return new PostResponse(
                 post.getId(),
-                post.getUser().getUsername(), // Assuming User has getUsername()
+                (UserService.toUserResponse(post.getUser())),
                 post.getContent(),
                 post.getMediaUrl(),
                 post.getCreatedAt(),

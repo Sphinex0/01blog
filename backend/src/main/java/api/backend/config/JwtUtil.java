@@ -63,7 +63,6 @@ public class JwtUtil {
             getAllClaimsFromToken(token);
             return true;
         } catch (Exception e) {
-            // Log exception if needed 
             return false;
         }
     }

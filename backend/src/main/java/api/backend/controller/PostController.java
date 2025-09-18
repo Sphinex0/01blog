@@ -28,8 +28,9 @@ public class PostController {
     }
 
     @PostMapping
-    public ResponseEntity<PostResponse> createPost(@Valid @RequestBody PostRequest post, @AuthenticationPrincipal User currentUser) {
-        PostResponse savedPost = postService.createPost(post,currentUser);
+    public ResponseEntity<PostResponse> createPost(@Valid @RequestBody PostRequest post,
+            @AuthenticationPrincipal User currentUser) {
+        PostResponse savedPost = postService.createPost(post, currentUser);
         return ResponseEntity.ok(savedPost);
     }
 
@@ -40,27 +41,38 @@ public class PostController {
         return ResponseEntity.ok(posts);
     }
 
-    // // Get a specific post by ID (public access)
-    // @GetMapping("/{id}")
-    // public ResponseEntity<Post> getPostById(@PathVariable Long id) {
-    //     return postService.getPostById(id)
-    //             .map(ResponseEntity::ok)
-    //             .orElseGet(() -> ResponseEntity.notFound().build());
-    // }
+    // Get a specific post by ID (public access)
+    @GetMapping("/{id}")
+    public ResponseEntity<PostResponse> getPostById(@PathVariable Long id) {
+        return ResponseEntity.ok(postService.getPostById(id));
+    }
 
     // Update a post (only the author or admin)
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or #post.user == authentication.principal")
+    @PreAuthorize("hasRole('ADMIN') or  @postService.getPostById(#id).user.id == authentication.principal.id")
     public ResponseEntity<Post> updatePost(@PathVariable Long id, @Valid @RequestBody PostRequest post) {
         Post updatedPost = postService.updatePost(id, post);
         return ResponseEntity.ok(updatedPost);
     }
 
-    // // Delete a post (only the author or admin)
-    // @DeleteMapping("/{id}")
-    // @PreAuthorize("hasRole('ADMIN') or #post.author == authentication.principal")
-    // public ResponseEntity<Void> deletePost(@PathVariable Long id, @AuthenticationPrincipal User currentUser) {
-    //     boolean deleted = postService.deletePost(id, currentUser);
-    //     return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
-    // }
+    // Delete a post (only the author or admin)
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') or @postService.getPostById(#id).user.id == authentication.principal.id")
+    public ResponseEntity<String> deletePost(@PathVariable Long id) {
+        return ResponseEntity.ok(postService.deletePost(id));
+    }
+
+    // like post
+    @PostMapping("/{id}/like")
+    public ResponseEntity<Integer> likePost(@PathVariable Long id, @AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(postService.likePost(id, user.getId()));
+    }
+
+    // hide a post (only the author or admin)
+    @PatchMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') or @postService.getPostById(#id).user.id == authentication.principal.id")
+    public ResponseEntity<String> hidePost(@PathVariable Long id) {
+        // postService.hidePost(id);
+        return ResponseEntity.ok(postService.hidePost(id));
+    }
 }

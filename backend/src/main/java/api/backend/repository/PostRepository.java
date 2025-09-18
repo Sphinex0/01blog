@@ -26,5 +26,5 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findByCommentsCountGreaterThanEqual(Integer commentsCount);
     
     // Optional: Find visible posts (not hidden)
-    List<Post> findByHiddenAtIsNull();
+    // List<Post> findByHiddenAtIsNull();
 }

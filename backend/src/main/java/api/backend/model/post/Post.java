@@ -1,11 +1,34 @@
 package api.backend.model.post;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
-import lombok.Data;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import api.backend.model.user.User;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.Data;
 
 @Entity
 @Data
@@ -34,7 +57,7 @@ public class Post {
 
     private LocalDateTime modifiedAt;
 
-    private LocalDateTime hiddenAt;
+    private boolean isHidden;
 
     @NotNull(message = "Likes count is required")
     @Min(value = 0, message = "Likes count cannot be negative")
@@ -45,6 +68,15 @@ public class Post {
     @Min(value = 0, message = "Comments count cannot be negative")
     @Column(nullable = false)
     private Integer commentsCount = 0;
+
+
+
+    @ManyToMany
+    @JoinTable(name = "likes", joinColumns = @JoinColumn(name = "post_id"), inverseJoinColumns = @JoinColumn(name = "user_id"), uniqueConstraints = {
+            @UniqueConstraint(columnNames = { "post_id", "user_id" })
+    })
+    @JsonIgnore
+    private List<User> likedBy = new ArrayList<>();
 
     // Default constructor for JPA
     public Post() {
