@@ -34,6 +34,12 @@ public class PostService {
         return postRepository.findAll(pageable).stream().map(this::toPostResponse).toList();
     }
 
+    public List<PostResponse> getPostsByUserId(int page, long userId) {
+        Pageable pageable = PageRequest.of(page, 10, Direction.DESC, "id");// , Direction.DESC,"id"
+
+        return postRepository.findByUserId(userId,pageable).stream().map(this::toPostResponse).toList();
+    }
+
     public List<PostResponse> getSubscribedToPosts(int page, long user_id) {
         Pageable pageable = PageRequest.of(page, 10, Direction.DESC, "id");// , Direction.DESC,"id"
         User user = userRepository.findById(user_id)

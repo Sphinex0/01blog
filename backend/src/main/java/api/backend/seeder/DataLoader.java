@@ -58,7 +58,7 @@ public class DataLoader implements CommandLineRunner {
             userRepository.save(user);
 
             //posts
-            String content = faker.leagueOfLegends().summonerSpell();
+            String content = faker.leagueOfLegends().quote();
             Post post = new Post(user, content, LocalDateTime.now());
             postRepository.save(post);
             Post post2 = new Post(testUser, content, LocalDateTime.now());
