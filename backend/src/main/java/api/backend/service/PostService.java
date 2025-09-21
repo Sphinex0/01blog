@@ -6,8 +6,6 @@ import java.util.List;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Service;
 
 import api.backend.model.notification.Notification;
@@ -103,8 +101,6 @@ public class PostService {
 
     // likes
     public int likePost(long post_id, long user_id) {
-        // long id = ((User)
-        // SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
 
         User user = userRepository.findById(user_id)
                 .orElseThrow(() -> new IllegalArgumentException("No authenticated user found"));

@@ -2,10 +2,13 @@ package api.backend.model.notification;
 
 import java.time.LocalDateTime;
 
+import api.backend.model.user.UserResponse;
+
 public record NotificationResponse(
         Long id,
-        Long recipientId,
+        // UserResponse recipient,
+        UserResponse sender,
         Long postId,
-        String status,
+        boolean read,
         LocalDateTime createdAt
 ) {}

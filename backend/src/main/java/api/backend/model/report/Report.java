@@ -2,7 +2,6 @@ package api.backend.model.report;
 
 import api.backend.model.post.Post;
 import api.backend.model.user.User;
-import api.backend.model.user.UserResponse;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

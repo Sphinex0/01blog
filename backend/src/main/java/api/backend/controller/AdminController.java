@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import api.backend.model.report.ReportResponse;
 import api.backend.model.report.ReviewRequest;
-import api.backend.model.report.Report.Status;
 import api.backend.model.user.BanRequest;
 import api.backend.model.user.DeleteRequest;
 import api.backend.model.user.User;

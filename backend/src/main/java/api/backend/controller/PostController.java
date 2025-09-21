@@ -7,8 +7,6 @@ import api.backend.model.comment.CommentResponse;
 import api.backend.model.post.Post;
 import api.backend.model.post.PostRequest;
 import api.backend.model.post.PostResponse;
-import api.backend.model.report.ReportRequest;
-import api.backend.model.report.ReportResponse;
 import api.backend.service.CommentService;
 import api.backend.service.PostService;
 import jakarta.validation.Valid;

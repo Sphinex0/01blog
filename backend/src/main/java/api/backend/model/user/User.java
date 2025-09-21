@@ -80,7 +80,7 @@ public class User implements UserDetails {
     private List<Post> posts;
     
 
-    @OneToMany(mappedBy = "recipient", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "receiver", cascade = CascadeType.REMOVE)
     // @JsonIgnore
     private List<Notification> notifications;
 

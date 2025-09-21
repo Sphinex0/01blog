@@ -22,7 +22,6 @@ public class ReportService {
 
     private final ReportRepository reportRepository;
     private final PostRepository postRepository;
-    
 
     @Autowired
     public ReportService(ReportRepository reportRepository, PostRepository postRepository) {
@@ -92,7 +91,7 @@ public class ReportService {
                 (report.getPost() != null ? report.getPost().getId() : null));
     }
 
-        public static UserResponse toUserResponse(User user) {
+    public static UserResponse toUserResponse(User user) {
         return new UserResponse(
                 user.getId(),
                 user.getFullName(),
