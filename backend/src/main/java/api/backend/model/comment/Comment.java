@@ -15,6 +15,7 @@ import java.util.List;
 @Entity
 @Data
 @Table(name = "comments")
+
 public class Comment {
 
     @Id

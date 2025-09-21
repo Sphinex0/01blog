@@ -20,6 +20,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import api.backend.model.notification.Notification;
 import api.backend.model.post.Post;
 
 @Entity
@@ -77,6 +78,11 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     // @JsonIgnore
     private List<Post> posts;
+    
+
+    @OneToMany(mappedBy = "recipient", cascade = CascadeType.REMOVE)
+    // @JsonIgnore
+    private List<Notification> notifications;
 
     @ManyToMany
     @JoinTable(name = "subscription", joinColumns = @JoinColumn(name = "subscribed_to"), inverseJoinColumns = @JoinColumn(name = "subscriber_id"), uniqueConstraints = {

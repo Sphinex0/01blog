@@ -10,10 +10,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Service;
 
+import api.backend.model.notification.Notification;
 import api.backend.model.post.Post;
 import api.backend.model.post.PostRequest;
 import api.backend.model.post.PostResponse;
 import api.backend.model.user.User;
+import api.backend.repository.NotificationRepository;
 import api.backend.repository.PostRepository;
 import api.backend.repository.UserRepository;
 
@@ -22,10 +24,12 @@ public class PostService {
 
     private PostRepository postRepository;
     private UserRepository userRepository;
+    private NotificationRepository notificationRepository;
 
-    PostService(PostRepository postRepository, UserRepository userRepository) {
+    PostService(PostRepository postRepository, UserRepository userRepository, NotificationRepository notificationRepository) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
+        this.notificationRepository = notificationRepository;
     }
 
     public List<PostResponse> getAllPosts(int page) {
@@ -53,10 +57,26 @@ public class PostService {
         return toPostResponse(postRepository.findById(id).get());
     }
 
-    public PostResponse createPost(PostRequest request, User user) {
+    public Post getPostEntityById(long id) {
+        return postRepository.findById(id).get();
+    }
+
+    public PostResponse createPost(PostRequest request, long userId) {
+        User user = userRepository.findById(userId).get();
         Post post = new Post(user, request.content(), LocalDateTime.now());
         post.setMediaUrl(request.mediaUrl());
-        return toPostResponse(postRepository.save(post));
+        post = postRepository.save(post);
+         sendNotifications(post);
+        return toPostResponse(post);
+    }
+
+    public void sendNotifications(Post post) {
+        User currentUser = post.getUser();
+        for (User user: currentUser.getSubscribers()){
+            Notification notification = new Notification(user, post);
+            // user.getNotifications().add(notification);
+            notificationRepository.save(notification);
+        }
     }
 
     public String deletePost(long id) {

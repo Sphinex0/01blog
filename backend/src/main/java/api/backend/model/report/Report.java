@@ -1,6 +1,8 @@
 package api.backend.model.report;
 
+import api.backend.model.post.Post;
 import api.backend.model.user.User;
+import api.backend.model.user.UserResponse;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -12,7 +14,7 @@ import java.time.LocalDateTime;
 @Entity
 @Data
 @Table(name = "reports", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"reporter_id", "reported_id"}) // Prevent duplicate reports from the same user
+    @UniqueConstraint(columnNames = {"reporter_id", "reported_id", "post_id"}) // Prevent duplicate reports for the same user and post
 })
 public class Report {
 
@@ -23,12 +25,16 @@ public class Report {
     @NotNull(message = "Reporter is required")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reporter_id", nullable = false)
-    private User reporter; // The user submitting the report
+    private User reporter; 
 
     @NotNull(message = "Reported user is required")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reported_id", nullable = false)
-    private User reported; // The user being reported
+    private User reported;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id")
+    private Post post; // Optional post related to the report
 
     @NotBlank(message = "Reason is required")
     @Size(max = 500, message = "Reason cannot exceed 500 characters")
@@ -56,9 +62,10 @@ public class Report {
     }
 
     // Constructor for creating a report
-    public Report(User reporter, User reported, String reason) {
+    public Report(User reporter, User reported, Post post, String reason) {
         this.reporter = reporter;
         this.reported = reported;
+        this.post = post;
         this.reason = reason;
         this.createdAt = LocalDateTime.now();
         this.status = Status.PENDING;

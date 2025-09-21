@@ -7,6 +7,8 @@ import api.backend.model.comment.CommentResponse;
 import api.backend.model.post.Post;
 import api.backend.model.post.PostRequest;
 import api.backend.model.post.PostResponse;
+import api.backend.model.report.ReportRequest;
+import api.backend.model.report.ReportResponse;
 import api.backend.service.CommentService;
 import api.backend.service.PostService;
 import jakarta.validation.Valid;
@@ -38,7 +40,7 @@ public class PostController {
     @PostMapping
     public ResponseEntity<PostResponse> createPost(@Valid @RequestBody PostRequest post,
             @AuthenticationPrincipal User currentUser) {
-        PostResponse savedPost = postService.createPost(post, currentUser);
+        PostResponse savedPost = postService.createPost(post, currentUser.getId());
         return ResponseEntity.ok(savedPost);
     }
 
@@ -55,7 +57,6 @@ public class PostController {
 
     // Get all posts (public access)
     @GetMapping("/feed")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<PostResponse>> getSubscribedToPosts(@RequestParam(defaultValue = "0") int page,
             @AuthenticationPrincipal User user) {
         List<PostResponse> posts = postService.getSubscribedToPosts(page, user.getId());
@@ -131,4 +132,7 @@ public class PostController {
             return ResponseEntity.notFound().build();
         }
     }
+
+
+    
 }

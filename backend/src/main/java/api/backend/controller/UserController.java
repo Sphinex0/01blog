@@ -2,12 +2,19 @@ package api.backend.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import api.backend.model.post.Post;
 import api.backend.model.post.PostResponse;
+import api.backend.model.report.ReportRequest;
+import api.backend.model.report.ReportResponse;
 import api.backend.model.subscription.SubscribeRequest;
+import api.backend.model.user.User;
 import api.backend.model.user.UserResponse;
 import api.backend.service.PostService;
+import api.backend.service.ReportService;
 import api.backend.service.UserService;
 import jakarta.validation.Valid;
 
@@ -19,11 +26,13 @@ public class UserController {
 
     private final UserService userService;
     private final PostService postService;
+    private final ReportService reportService;
 
     @Autowired
-    public UserController(UserService userService, PostService postService) {
+    public UserController(UserService userService, PostService postService, ReportService reportService) {
         this.userService = userService;
         this.postService = postService;
+        this.reportService = reportService;
     }
 
     @GetMapping
@@ -54,6 +63,26 @@ public class UserController {
     @PostMapping("/subscribe")
     public ResponseEntity<String> subscribe(@Valid @RequestBody SubscribeRequest request) {
         return ResponseEntity.ok(userService.subscribe(request));
+    }
+
+
+    // Updated endpoint to submit a report
+    @PostMapping("/{reportedId}/report")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<ReportResponse> submitReport(@RequestParam Long postId, @PathVariable Long reportedId, @RequestBody ReportRequest request, @AuthenticationPrincipal User currentUser) {
+        try {
+            // Fetch the reported user (assuming report targets the post author for now)
+            Post post = postService.getPostEntityById(postId);
+
+            User reported = post.getUser();
+            if (!reported.getId().equals(reportedId)) {
+                throw new IllegalStateException("Reported user does not match post author");
+            }
+            ReportResponse report = reportService.submitReport(currentUser, reported, request);
+            return ResponseEntity.ok(report);
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
     }
 
 }
