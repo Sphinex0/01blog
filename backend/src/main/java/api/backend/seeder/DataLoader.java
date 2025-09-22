@@ -61,7 +61,7 @@ public class DataLoader implements CommandLineRunner {
                     User user = new User(fullName, username, email, password, role, LocalDateTime.now());
 
                     adminUser.getSubscribers().add(user);
-                    user.getSubscribed_to().add(adminUser);
+                    user.getSubscribedTo().add(adminUser);
                     if (i % 2 == 0) {
                         user.getSubscribers().add(adminUser);
                     }

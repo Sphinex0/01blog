@@ -42,7 +42,6 @@ public class PostController {
         return ResponseEntity.ok(savedPost);
     }
 
-    // Get all posts (public access)
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<PostResponse>> getAllPosts(@RequestParam(defaultValue = "0") int page) {
@@ -50,10 +49,6 @@ public class PostController {
         return ResponseEntity.ok(posts);
     }
 
-    // Get all posts (public access)
-
-
-    // Get all posts (public access)
     @GetMapping("/feed")
     public ResponseEntity<List<PostResponse>> getSubscribedToPosts(@RequestParam(defaultValue = "0") int page,
             @AuthenticationPrincipal User user) {
@@ -61,13 +56,11 @@ public class PostController {
         return ResponseEntity.ok(posts);
     }
 
-    // Get a specific post by ID (public access)
     @GetMapping("/{id}")
     public ResponseEntity<PostResponse> getPostById(@PathVariable Long id) {
         return ResponseEntity.ok(postService.getPostById(id));
     }
 
-    // Update a post (only the author or admin)
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') or  @postService.getPostById(#id).user.id == authentication.principal.id")
     public ResponseEntity<Post> updatePost(@PathVariable Long id, @Valid @RequestBody PostRequest post) {
@@ -75,27 +68,23 @@ public class PostController {
         return ResponseEntity.ok(updatedPost);
     }
 
-    // Delete a post (only the author or admin)
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') or @postService.getPostById(#id).user.id == authentication.principal.id")
     public ResponseEntity<String> deletePost(@PathVariable Long id) {
         return ResponseEntity.ok(postService.deletePost(id));
     }
 
-    // like post
     @PostMapping("/{id}/like")
     public ResponseEntity<Integer> likePost(@PathVariable Long id, @AuthenticationPrincipal User user) {
         return ResponseEntity.ok(postService.likePost(id, user.getId()));
     }
 
-    // hide a post (only the author or admin)
     @PatchMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> hidePost(@PathVariable Long id) {
         return ResponseEntity.ok(postService.hidePost(id));
     }
 
-    // Comment
 
     @GetMapping("/{id}/comments")
     public ResponseEntity<List<CommentResponse>> getTopLevelComments(@PathVariable Long id, Pageable pageable) {
@@ -122,15 +111,9 @@ public class PostController {
     }
 
     @GetMapping("/comments/{commentId}/replies")
-    public ResponseEntity<Page<CommentResponse>> getReplies(@PathVariable Long commentId, Pageable pageable) {
-        try {
-            Page<CommentResponse> replies = commentService.getReplies(commentId, pageable);
+    public ResponseEntity<List<CommentResponse>> getReplies(@PathVariable Long commentId, Pageable pageable) {
+            List<CommentResponse> replies = commentService.getReplies(commentId, pageable);
             return ResponseEntity.ok(replies);
-        } catch (IllegalStateException e) {
-            return ResponseEntity.notFound().build();
-        }
     }
-
-
-    
+  
 }

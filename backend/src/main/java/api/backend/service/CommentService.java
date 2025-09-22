@@ -81,7 +81,7 @@ public class CommentService {
         return commentRepository.findById(commentId).get();
     }
 
-    public Page<CommentResponse> getReplies(Long commentId, Pageable pageable) {
+    public List<CommentResponse> getReplies(Long commentId, Pageable pageable) {
         return commentRepository.findByParentId(commentId, pageable).map(comment -> {
             int replyCount = commentRepository.findByParentId(comment.getId(), Pageable.unpaged()).getNumberOfElements();
             return new CommentResponse(
@@ -93,7 +93,7 @@ public class CommentService {
                     comment.getParent() != null ? comment.getParent().getId() : null,
                     replyCount
             );
-        });
+        }).toList();
     }
 
     public List<CommentResponse> getTopLevelComments(Long postId, Pageable pageable) {

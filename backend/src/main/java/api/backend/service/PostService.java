@@ -47,7 +47,7 @@ public class PostService {
         User user = userRepository.findById(user_id)
                 .orElseThrow(() -> new IllegalArgumentException("No authenticated user found"));
 
-        return postRepository.findPostsBySubscribedTo(user.getSubscribed_to(), pageable).stream()
+        return postRepository.findPostsBySubscribedTo(user.getSubscribedTo(), pageable).stream()
                 .map(this::toPostResponse).toList();
     }
 

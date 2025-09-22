@@ -32,7 +32,8 @@ public class UserController {
     private final NotificationService notificationService;
 
     @Autowired
-    public UserController(UserService userService, PostService postService, ReportService reportService, NotificationService notificationService) {
+    public UserController(UserService userService, PostService postService, ReportService reportService,
+            NotificationService notificationService) {
         this.userService = userService;
         this.postService = postService;
         this.reportService = reportService;
@@ -46,7 +47,8 @@ public class UserController {
     }
 
     @GetMapping("/notifications")
-    public ResponseEntity<List<NotificationResponse>> getAllNotifications(@AuthenticationPrincipal User user, @RequestParam(defaultValue = "9223372036854775807") long cursor ) {
+    public ResponseEntity<List<NotificationResponse>> getAllNotifications(@AuthenticationPrincipal User user,
+            @RequestParam(defaultValue = "9223372036854775807") long cursor) {
         List<NotificationResponse> users = notificationService.getNotificationByUserId(user.getId(), cursor);
         return ResponseEntity.ok(users);
     }
@@ -60,14 +62,20 @@ public class UserController {
 
     @GetMapping("/{userId}/subscribers")
     public ResponseEntity<List<UserResponse>> getAllsubscribers(@PathVariable long userId,
-            @RequestParam(defaultValue = "0") int page) {
-        return ResponseEntity.ok(userService.getSubscribers(userId, page));
+            @RequestParam(defaultValue = "0") long cursor) {
+        if (cursor == 0) {
+            cursor = Long.MAX_VALUE;
+        }
+        return ResponseEntity.ok(userService.getSubscribers(userId, cursor));
     }
 
     @GetMapping("/{userId}/subscribtions")
     public ResponseEntity<List<UserResponse>> getAllsubscribedTo(@PathVariable long userId,
-            @RequestParam(defaultValue = "0") int page) {
-        return ResponseEntity.ok(userService.getSubscribtions(userId, page));
+            @RequestParam(defaultValue = "0") long cursor) {
+        if (cursor == 0) {
+            cursor = Long.MAX_VALUE;
+        }
+        return ResponseEntity.ok(userService.getSubscribtions(userId, cursor));
     }
 
     @PostMapping("/subscribe")
@@ -75,11 +83,11 @@ public class UserController {
         return ResponseEntity.ok(userService.subscribe(request));
     }
 
-
     // Updated endpoint to submit a report
     @PostMapping("/{reportedId}/report")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<ReportResponse> submitReport(@RequestParam Long postId, @PathVariable Long reportedId, @RequestBody ReportRequest request, @AuthenticationPrincipal User currentUser) {
+    public ResponseEntity<ReportResponse> submitReport(@RequestParam Long postId, @PathVariable Long reportedId,
+            @RequestBody ReportRequest request, @AuthenticationPrincipal User currentUser) {
         try {
             // Fetch the reported user (assuming report targets the post author for now)
             Post post = postService.getPostEntityById(postId);

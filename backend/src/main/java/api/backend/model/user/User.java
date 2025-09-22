@@ -94,7 +94,7 @@ public class User implements UserDetails {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @ManyToMany(mappedBy = "subscribers")
     @JsonIgnore
-    private Set<User> subscribed_to = new HashSet<>();
+    private Set<User> subscribedTo = new HashSet<>();
     
     //posts
     @OnDelete(action = OnDeleteAction.CASCADE)

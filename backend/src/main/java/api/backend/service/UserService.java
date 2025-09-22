@@ -43,12 +43,12 @@ public class UserService implements UserDetailsService {
         User target = userRepository.findById(subscribeRequest.subscribedTo())
                 .orElseThrow(() -> new IllegalArgumentException("Target user not found"));
 
-        if (currentUser.getSubscribed_to().contains(target)) {
+        if (currentUser.getSubscribedTo().contains(target)) {
             unsubscribe(currentUser, target);
             return "unsubscribed";
         }
 
-        currentUser.getSubscribed_to().add(target);
+        currentUser.getSubscribedTo().add(target);
         target.getSubscribers().add(currentUser);
 
         userRepository.save(currentUser);
@@ -58,19 +58,21 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public void unsubscribe(User currentUser, User target) {
-        currentUser.getSubscribed_to().remove(target);
+        currentUser.getSubscribedTo().remove(target);
         target.getSubscribers().remove(currentUser);
         userRepository.save(currentUser);
     }
 
-    public List<UserResponse> getSubscribers(long userId, int page) {
-        Pageable pageable = PageRequest.of(page, 10);// , Direction.DESC,"id"
-        return userRepository.findSubscribersById(userId, pageable).stream().map(UserService::toUserResponse).toList();
+    public List<UserResponse> getSubscribers(long userId, long cursor) {
+        Pageable pageable = PageRequest.of(0, 10);// , Direction.DESC,"id"
+        // findAllBySubscribedToId
+        // return userRepository.findSubscribersById(userId, pageable).stream().map(UserService::toUserResponse).toList();
+        return userRepository.findAllBySubscribedToIdAndIdLessThan(userId,cursor, pageable).stream().map(UserService::toUserResponse).toList();
     }
 
-    public List<UserResponse> getSubscribtions(long userId, int page) {
-        Pageable pageable = PageRequest.of(page, 10);// , Direction.DESC,"id"
-        return userRepository.findSubscribtionsById(userId, pageable).stream().map(UserService::toUserResponse)
+    public List<UserResponse> getSubscribtions(long userId, long cursor) {
+        Pageable pageable = PageRequest.of(0, 10);// , Direction.DESC,"id"
+        return userRepository.findAllBySubscribersIdAndIdLessThan(userId,cursor, pageable).stream().map(UserService::toUserResponse)
                 .toList();
     }
 
