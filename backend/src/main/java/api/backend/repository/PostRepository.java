@@ -20,7 +20,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     // Custom query methods
     List<Post> findByUser(User user);
 
-    Page<Post> findByUserId(Long userId, Pageable pageable);
+    Page<Post> findByUserIdAndIdLessThan(Long userId, Long cursor, Pageable pageable);
+    Page<Post> findAllByIdLessThan(Long cursor, Pageable pageable);
 
     Optional<Post> findByIdAndUserId(Long id, Long userId);
 
@@ -30,7 +31,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Query("SELECT p FROM Post p WHERE p.user IN :subscribedTo AND p.isHidden = false")
     Page<Post> findPostsBySubscribedTo(@Param("subscribedTo") Set<User> subscribedTo, Pageable page);
-    
+
     // Optional: Find visible posts (not hidden)
     // List<Post> findByHiddenAtIsNull();
 }

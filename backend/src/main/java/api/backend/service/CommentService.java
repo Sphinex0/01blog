@@ -8,7 +8,7 @@ import api.backend.model.user.User;
 import api.backend.repository.CommentRepository;
 import api.backend.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -31,17 +31,17 @@ public class CommentService {
         Comment parent = null;
         if (request.parentId() != null) {
             parent = commentRepository.findById(request.parentId())
-            .filter(p -> p.getPost().getId().equals(postId)) // Ensure parent is for the same post
-            .orElseThrow(() -> new IllegalStateException("Parent comment not found"));
+                    .filter(p -> p.getPost().getId().equals(postId)) // Ensure parent is for the same post
+                    .orElseThrow(() -> new IllegalStateException("Parent comment not found"));
         }
-        
+
         Comment comment = new Comment(user, post, request.content(), parent);
         Comment savedComment = commentRepository.save(comment);
-        
+
         // Update commentsCount in Post
         post.setCommentsCount(post.getCommentsCount() + 1);
         postRepository.save(post);
-        
+
         // Update replyCount for the parent if it exists
         if (parent != null) {
             parent.getReplies().add(savedComment); // Refresh replies
@@ -81,9 +81,11 @@ public class CommentService {
         return commentRepository.findById(commentId).get();
     }
 
-    public List<CommentResponse> getReplies(Long commentId, Pageable pageable) {
-        return commentRepository.findByParentId(commentId, pageable).map(comment -> {
-            int replyCount = commentRepository.findByParentId(comment.getId(), Pageable.unpaged()).getNumberOfElements();
+    public List<CommentResponse> getReplies(Long commentId, long cursor) {
+        Pageable pageable = PageRequest.of(0, 10);// , Direction.DESC,"id"
+
+        return commentRepository.findByParentIdAndIdLessThan(commentId, cursor, pageable).map(comment -> {
+            int replyCount = commentRepository.findByParentId(comment.getId()).size();
             return new CommentResponse(
                     comment.getId(),
                     comment.getContent(),
@@ -91,14 +93,16 @@ public class CommentService {
                     comment.getPost().getId(),
                     comment.getCreatedAt(),
                     comment.getParent() != null ? comment.getParent().getId() : null,
-                    replyCount
-            );
+                    replyCount);
         }).toList();
     }
 
-    public List<CommentResponse> getTopLevelComments(Long postId, Pageable pageable) {
-        return commentRepository.findByPostIdAndParentIsNull(postId, pageable).map(comment -> {
-            int replyCount = commentRepository.findByParentId(comment.getId(), Pageable.unpaged()).getNumberOfElements();
+    public List<CommentResponse> getTopLevelComments(Long postId, long cursor) {
+        Pageable pageable = PageRequest.of(0, 10);// , Direction.DESC,"id"
+
+        return commentRepository.findByPostIdAndParentIsNull(postId, cursor, pageable).map(comment -> {
+            int replyCount = commentRepository.findByParentId(comment.getId())
+                    .size();
             return new CommentResponse(
                     comment.getId(),
                     comment.getContent(),
@@ -106,8 +110,7 @@ public class CommentService {
                     postId,
                     comment.getCreatedAt(),
                     null, // Top-level comments have no parent
-                    replyCount
-            );
+                    replyCount);
         }).toList();
     }
 

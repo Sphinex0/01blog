@@ -12,8 +12,6 @@ import api.backend.service.PostService;
 import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -44,8 +42,11 @@ public class PostController {
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<PostResponse>> getAllPosts(@RequestParam(defaultValue = "0") int page) {
-        List<PostResponse> posts = postService.getAllPosts(page);
+    public ResponseEntity<List<PostResponse>> getAllPosts(@RequestParam(defaultValue = "0") long cursor) {
+        if (cursor == 0) {
+            cursor = Long.MAX_VALUE;
+        }
+        List<PostResponse> posts = postService.getAllPosts(cursor);
         return ResponseEntity.ok(posts);
     }
 
@@ -85,10 +86,13 @@ public class PostController {
         return ResponseEntity.ok(postService.hidePost(id));
     }
 
-
     @GetMapping("/{id}/comments")
-    public ResponseEntity<List<CommentResponse>> getTopLevelComments(@PathVariable Long id, Pageable pageable) {
-        return ResponseEntity.ok(commentService.getTopLevelComments(id, pageable));
+    public ResponseEntity<List<CommentResponse>> getTopLevelComments(@PathVariable Long id,
+            @RequestParam(defaultValue = "0") long cursor) {
+        if (cursor == 0) {
+            cursor = Long.MAX_VALUE;
+        }
+        return ResponseEntity.ok(commentService.getTopLevelComments(id, cursor));
     }
 
     @PostMapping("/{id}/comments")
@@ -111,9 +115,14 @@ public class PostController {
     }
 
     @GetMapping("/comments/{commentId}/replies")
-    public ResponseEntity<List<CommentResponse>> getReplies(@PathVariable Long commentId, Pageable pageable) {
-            List<CommentResponse> replies = commentService.getReplies(commentId, pageable);
-            return ResponseEntity.ok(replies);
+    public ResponseEntity<List<CommentResponse>> getReplies(@PathVariable Long commentId,
+            @RequestParam(defaultValue = "0") long cursor) {
+        if (cursor == 0) {
+            cursor = Long.MAX_VALUE;
+        }
+
+        List<CommentResponse> replies = commentService.getReplies(commentId, cursor);
+        return ResponseEntity.ok(replies);
     }
-  
+
 }

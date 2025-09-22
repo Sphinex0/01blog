@@ -24,22 +24,24 @@ public class PostService {
     private UserRepository userRepository;
     private NotificationRepository notificationRepository;
 
-    PostService(PostRepository postRepository, UserRepository userRepository, NotificationRepository notificationRepository) {
+    PostService(PostRepository postRepository, UserRepository userRepository,
+            NotificationRepository notificationRepository) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.notificationRepository = notificationRepository;
     }
 
-    public List<PostResponse> getAllPosts(int page) {
-        Pageable pageable = PageRequest.of(page, 10, Direction.DESC, "id");// , Direction.DESC,"id"
+    public List<PostResponse> getAllPosts(long cursor) {
+        Pageable pageable = PageRequest.of(0, 10, Direction.DESC, "id");// , Direction.DESC,"id"
 
-        return postRepository.findAll(pageable).stream().map(this::toPostResponse).toList();
+        return postRepository.findAllByIdLessThan(cursor, pageable).stream().map(this::toPostResponse).toList();
     }
 
-    public List<PostResponse> getPostsByUserId(int page, long userId) {
-        Pageable pageable = PageRequest.of(page, 10, Direction.DESC, "id");// , Direction.DESC,"id"
+    public List<PostResponse> getPostsByUserId(long cursor, long userId) {
+        Pageable pageable = PageRequest.of(0, 10, Direction.DESC, "id");// , Direction.DESC,"id"
 
-        return postRepository.findByUserId(userId,pageable).stream().map(this::toPostResponse).toList();
+        return postRepository.findByUserIdAndIdLessThan(userId, cursor, pageable).stream().map(this::toPostResponse)
+                .toList();
     }
 
     public List<PostResponse> getSubscribedToPosts(int page, long user_id) {
@@ -64,13 +66,13 @@ public class PostService {
         Post post = new Post(user, request.content(), LocalDateTime.now());
         post.setMediaUrl(request.mediaUrl());
         post = postRepository.save(post);
-         sendNotifications(post);
+        sendNotifications(post);
         return toPostResponse(post);
     }
 
     public void sendNotifications(Post post) {
         User currentUser = post.getUser();
-        for (User user: currentUser.getSubscribers()){
+        for (User user : currentUser.getSubscribers()) {
             Notification notification = new Notification(user, post);
             // user.getNotifications().add(notification);
             notificationRepository.save(notification);

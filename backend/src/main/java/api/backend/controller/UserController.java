@@ -41,22 +41,31 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserResponse>> getAllUsers(@RequestParam(defaultValue = "0") int page) {
-        List<UserResponse> users = userService.getAllUsers(page);
+    public ResponseEntity<List<UserResponse>> getAllUsers(@RequestParam(defaultValue = "0") long cursor) {
+        if (cursor == 0) {
+            cursor = Long.MAX_VALUE;
+        }
+        List<UserResponse> users = userService.getAllUsers(cursor);
         return ResponseEntity.ok(users);
     }
 
     @GetMapping("/notifications")
     public ResponseEntity<List<NotificationResponse>> getAllNotifications(@AuthenticationPrincipal User user,
-            @RequestParam(defaultValue = "9223372036854775807") long cursor) {
+            @RequestParam(defaultValue = "0") long cursor) {
+        if (cursor == 0) {
+            cursor = Long.MAX_VALUE;
+        }
         List<NotificationResponse> users = notificationService.getNotificationByUserId(user.getId(), cursor);
         return ResponseEntity.ok(users);
     }
 
     @GetMapping("/{userId}/posts")
-    public ResponseEntity<List<PostResponse>> getPostsByUserId(@RequestParam(defaultValue = "0") int page,
+    public ResponseEntity<List<PostResponse>> getPostsByUserId(@RequestParam(defaultValue = "0") long cursor,
             @PathVariable long userId) {
-        List<PostResponse> posts = postService.getPostsByUserId(page, userId);
+        if (cursor == 0) {
+            cursor = Long.MAX_VALUE;
+        }
+        List<PostResponse> posts = postService.getPostsByUserId(cursor, userId);
         return ResponseEntity.ok(posts);
     }
 

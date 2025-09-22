@@ -29,7 +29,7 @@ import api.backend.model.post.Post;
         @UniqueConstraint(columnNames = "username"),
         @UniqueConstraint(columnNames = "email")
 })
-@EqualsAndHashCode(exclude = { "subscribers", "subscribed_to" })
+@EqualsAndHashCode(exclude = { "subscribers", "subscribedTo" })
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

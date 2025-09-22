@@ -5,7 +5,6 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import api.backend.model.user.User;
@@ -17,6 +16,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
 
     Optional<User> findByUsernameOrEmail(String username, String Email);
+
+    // findAllByIdLessThan
+    Page<User> findAllByIdLessThan(Long cursor, Pageable pageable);
 
     // @Query("SELECT u FROM User u JOIN u.subscribed_to sub WHERE sub.id =
     // :userId")

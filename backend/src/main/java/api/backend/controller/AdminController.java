@@ -62,13 +62,17 @@ public class AdminController {
     }
 
     @GetMapping("/reports")
-    public ResponseEntity<List<ReportResponse>> getAllReports(@RequestParam(defaultValue = "0") int page) {
-        List<ReportResponse> reports = reportService.getAllReports(page);
+    public ResponseEntity<List<ReportResponse>> getAllReports(@RequestParam(defaultValue = "0") long cursor) {
+        if (cursor == 0) {
+            cursor = Long.MAX_VALUE;
+        }
+        List<ReportResponse> reports = reportService.getAllReports(cursor);
         return ResponseEntity.ok(reports);
     }
 
     @PatchMapping("/reports/{reportId}/review")
-    public ResponseEntity<String> reviewReport(@PathVariable long reportId, @AuthenticationPrincipal User user,@RequestBody ReviewRequest request) {
+    public ResponseEntity<String> reviewReport(@PathVariable long reportId, @AuthenticationPrincipal User user,
+            @RequestBody ReviewRequest request) {
         String reports = reportService.reviewReport(reportId, user, request.decision());
         return ResponseEntity.ok(reports);
     }

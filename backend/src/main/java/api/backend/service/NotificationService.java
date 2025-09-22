@@ -36,7 +36,7 @@ public class NotificationService {
                     notification.setRead(true);
                     notificationRepository.save(notification);
                     return true;
-                }).orElse(false);
+                }).get();
     }
 
     public NotificationResponse toNotificationResponse(Notification notification) {

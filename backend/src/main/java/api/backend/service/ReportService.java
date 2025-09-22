@@ -74,10 +74,10 @@ public class ReportService {
                 }).get();
     }
 
-    public List<ReportResponse> getAllReports(int page) {
-        Pageable pageable = PageRequest.of(page, 10, Direction.DESC, "id");
+    public List<ReportResponse> getAllReports(long cursor) {
+        Pageable pageable = PageRequest.of(0, 10, Direction.DESC, "id");
 
-        return reportRepository.findAll(pageable).stream().map(this::toReportResponse).toList();
+        return reportRepository.findAllByIdLessThan(cursor, pageable).stream().map(this::toReportResponse).toList();
     }
 
     public ReportResponse toReportResponse(Report report) {

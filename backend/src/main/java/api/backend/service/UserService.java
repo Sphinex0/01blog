@@ -65,20 +65,20 @@ public class UserService implements UserDetailsService {
 
     public List<UserResponse> getSubscribers(long userId, long cursor) {
         Pageable pageable = PageRequest.of(0, 10);// , Direction.DESC,"id"
-        // findAllBySubscribedToId
-        // return userRepository.findSubscribersById(userId, pageable).stream().map(UserService::toUserResponse).toList();
-        return userRepository.findAllBySubscribedToIdAndIdLessThan(userId,cursor, pageable).stream().map(UserService::toUserResponse).toList();
+        return userRepository.findAllBySubscribedToIdAndIdLessThan(userId, cursor, pageable).stream()
+                .map(UserService::toUserResponse).toList();
     }
 
     public List<UserResponse> getSubscribtions(long userId, long cursor) {
         Pageable pageable = PageRequest.of(0, 10);// , Direction.DESC,"id"
-        return userRepository.findAllBySubscribersIdAndIdLessThan(userId,cursor, pageable).stream().map(UserService::toUserResponse)
+        return userRepository.findAllBySubscribersIdAndIdLessThan(userId, cursor, pageable).stream()
+                .map(UserService::toUserResponse)
                 .toList();
     }
 
-    public List<UserResponse> getAllUsers(int page) {
-        Pageable pageable = PageRequest.of(page, 10, Direction.DESC, "id");
-        return userRepository.findAll(pageable).stream().map(UserService::toUserResponse).toList();
+    public List<UserResponse> getAllUsers(long cursor) {
+        Pageable pageable = PageRequest.of(0, 10, Direction.DESC, "id");
+        return userRepository.findAllByIdLessThan(cursor, pageable).stream().map(UserService::toUserResponse).toList();
     }
 
     public Optional<User> getUserById(Long id) {
@@ -113,21 +113,20 @@ public class UserService implements UserDetailsService {
         User user = userRepository.findById(request.id()).get();
         user.setRole("ADMIN");
         userRepository.save(user);
-        return "user "+ user.getUsername() +" promoted";
+        return "user " + user.getUsername() + " promoted";
     }
 
     public String demoteUser(DeleteRequest request) {
         User user = userRepository.findById(request.id()).get();
         user.setRole("USER");
         userRepository.save(user);
-        return "user "+ user.getUsername() +" demoted";
+        return "user " + user.getUsername() + " demoted";
     }
 
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsernameOrEmail(username, username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
 
-        // Check if the user is banned
         if (user.getBannedUntil() != null && user.getBannedUntil().isAfter(LocalDateTime.now())) {
             throw new DisabledException("Account is banned until " + user.getBannedUntil());
         }
