@@ -1,0 +1,28 @@
+// Light theme (default)
+[data-theme="light"] {
+  --bg-primary: #{var(--color-white)};
+  --bg-secondary: #{var(--color-gray-100)};
+  --bg-tertiary: #{var(--color-gray-200)};
+  --text-primary: #{var(--color-gray-900)};
+  --text-secondary: #{var(--color-gray-600)};
+  --text-muted: #{var(--color-gray-500)};
+  --border-color: #{var(--color-gray-300)};
+  --shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+// Dark theme
+[data-theme="dark"] {
+  --bg-primary: #{var(--color-dark-bg)};
+  --bg-secondary: #{var(--color-dark-surface)};
+  --bg-tertiary: #{var(--color-gray-800)};
+  --text-primary: #{var(--color-dark-text)};
+  --text-secondary: #{var(--color-dark-text-secondary)};
+  --text-muted: #{var(--color-gray-400)};
+  --border-color: #{var(--color-gray-700)};
+  --shadow-color: rgba(0, 0, 0, 0.3);
+}
+
+// Theme transition
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
