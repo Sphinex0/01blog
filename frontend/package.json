@@ -30,6 +30,7 @@
     "@angular/material": "^20.2.5",
     "@angular/platform-browser": "^20.3.0",
     "@angular/router": "^20.3.0",
+    "@angular/service-worker": "^20.3.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
@@ -47,15 +48,4 @@
     "karma-jasmine-html-reporter": "~2.1.0",
     "typescript": "~5.9.2"
   }
-},
-  "scripts": {
-    "build:prod": "ng build --configuration production",
-    "build:staging": "ng build --configuration staging",
-    "test:watch": "ng test --watch",
-    "test:coverage": "ng test --code-coverage",
-    "lint": "ng lint",
-    "lint:fix": "ng lint --fix",
-    "e2e": "ng e2e",
-    "analyze": "npm run build:prod -- --stats-json && npx webpack-bundle-analyzer dist/blog-frontend/stats.json",
-    "serve:pwa": "npm run build:prod && npx http-server dist/blog-frontend -p 8080"
-  }
+}

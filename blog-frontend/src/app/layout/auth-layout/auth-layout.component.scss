@@ -1,0 +1,40 @@
+.auth-layout {
+  min-height: 100vh;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  z-index: -1;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('/assets/images/backgrounds/pattern.svg') repeat;
+    opacity: 0.1;
+  }
+}
+
+.auth-content {
+  width: 100%;
+  max-width: 500px;
+  padding: 1rem;
+}
+
+@media (max-width: 600px) {
+  .auth-content {
+    padding: 0.5rem;
+  }
+}

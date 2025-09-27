@@ -1,0 +1,91 @@
+.header-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.mobile-menu-button {
+  margin-right: 1rem;
+  
+  @media (min-width: 768px) {
+    display: none;
+  }
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: white;
+  font-weight: 600;
+  font-size: 1.25rem;
+  
+  &:hover {
+    color: white;
+  }
+}
+
+.logo-icon {
+  margin-right: 0.5rem;
+  font-size: 1.5rem;
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.logo-text {
+  @media (max-width: 480px) {
+    display: none;
+  }
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.desktop-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-right: 1rem;
+  
+  @media (max-width: 768px) {
+    display: none;
+  }
+
+  a {
+    color: white;
+    
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    &.active-link {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    mat-icon {
+      margin-right: 0.5rem;
+    }
+  }
+}
+
+.user-menu-trigger {
+  color: white;
+}
+
+:host ::ng-deep {
+  .user-info {
+    padding: 8px 16px;
+    
+    .user-name {
+      font-weight: 500;
+      font-size: 0.875rem;
+    }
+    
+    .user-username {
+      font-size: 0.75rem;
+      color: #666;
+    }
+  }
+}

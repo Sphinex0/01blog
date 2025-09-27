@@ -1,31 +1,46 @@
 import { Routes } from '@angular/router';
 import { noAuthGuard } from '../../core/guards/no-auth-guard';
+import { Login } from './components/login/login';
+import { RegisterComponent } from './components/register/register';
 
 export const authRoutes: Routes = [
-  {
-    path: '',
-    canActivate: [noAuthGuard],
-    children: [
-      {
+  // {
+  //   path: '',
+  //   canActivate: [noAuthGuard],
+  //   children: [
+  //     {
+  //       path: 'login',
+  //       loadComponent: () => import('./components/login/login').then(c => c.Login),
+  //       title: '01Blog - Login'
+  //     },
+  //     {
+  //       path: 'register',
+  //       // component: RegisterComponent,
+  //       title: '01Blog - Register'
+  //     },
+  //     {
+  //       path: 'forgot-password',
+  //       loadComponent: () => import('./components/forgot-password/forgot-password').then(c => c.ForgotPassword),
+  //       title: '01Blog - Forgot Password'
+  //     },
+  //     {
+  //       path: '',
+  //       redirectTo: 'login',
+  //       pathMatch: 'full'
+  //     }
+  //   ]
+  // }
+   {
         path: 'login',
-        loadComponent: () => import('./components/login/login').then(c => c.Login),
-        title: '01Blog - Login'
-      },
-      {
+        component: Login
+    },
+    {
         path: 'register',
-        loadComponent: () => import('./components/register/register').then(c => c.Register),
-        title: '01Blog - Register'
-      },
-      {
-        path: 'forgot-password',
-        loadComponent: () => import('./components/forgot-password/forgot-password').then(c => c.ForgotPassword),
-        title: '01Blog - Forgot Password'
-      },
-      {
+        component: RegisterComponent
+    },
+    {
         path: '',
-        redirectTo: 'login',
+        redirectTo: 'register',
         pathMatch: 'full'
-      }
-    ]
-  }
+    },
 ];

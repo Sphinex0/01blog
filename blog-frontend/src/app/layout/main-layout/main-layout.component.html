@@ -1,0 +1,62 @@
+<div class="main-layout">
+  <mat-sidenav-container class="sidenav-container">
+    
+    <!-- Mobile Sidebar -->
+    <mat-sidenav 
+      #drawer 
+      class="sidenav" 
+      fixedInViewport 
+      [attr.role]="'dialog'" 
+      [mode]="'over'"
+      [opened]="isMobileMenuOpen()">
+      
+      <div class="sidenav-content">
+        <div class="sidenav-header">
+          <h3>01Blog</h3>
+          <button mat-icon-button (click)="closeMobileMenu()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+        
+        <nav class="sidenav-nav">
+          <!-- Navigation items will go here -->
+          <a mat-button routerLink="/" (click)="closeMobileMenu()">
+            <mat-icon>home</mat-icon>
+            Home
+          </a>
+          <a mat-button routerLink="/profile/me" (click)="closeMobileMenu()">
+            <mat-icon>person</mat-icon>
+            My Profile
+          </a>
+          <a mat-button routerLink="/posts/create" (click)="closeMobileMenu()">
+            <mat-icon>add</mat-icon>
+            Create Post
+          </a>
+          <a mat-button routerLink="/notifications" (click)="closeMobileMenu()">
+            <mat-icon>notifications</mat-icon>
+            Notifications
+          </a>
+          <a mat-button routerLink="/settings" (click)="closeMobileMenu()">
+            <mat-icon>settings</mat-icon>
+            Settings
+          </a>
+        </nav>
+      </div>
+    </mat-sidenav>
+
+    <!-- Main Content -->
+    <mat-sidenav-content>
+      <app-header 
+        [currentUser]="currentUser()" 
+        (mobileMenuToggle)="toggleMobileMenu()">
+      </app-header>
+      
+      <main class="main-content">
+        <router-outlet></router-outlet>
+      </main>
+      
+      <app-footer></app-footer>
+    </mat-sidenav-content>
+    
+  </mat-sidenav-container>
+</div>

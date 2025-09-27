@@ -1,0 +1,149 @@
+<div class="register-container">
+  <mat-card class="register-card">
+    <mat-card-header>
+      <mat-card-title class="register-title">
+        <mat-icon class="register-icon">account_circle</mat-icon>
+        Join 01Blog
+      </mat-card-title>
+      <mat-card-subtitle>
+        Start your learning journey and share your discoveries
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
+        
+        <!-- Full Name Field -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Full Name</mat-label>
+          <input 
+            matInput 
+            formControlName="fullName" 
+            placeholder="Enter your full name"
+            autocomplete="name">
+          <mat-icon matSuffix>person</mat-icon>
+          @if (hasFieldError('fullName')) {
+            <mat-error>{{ getFieldErrorMessage('fullName') }}</mat-error>
+          }
+        </mat-form-field>
+
+        <!-- Username Field -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Username</mat-label>
+          <input 
+            matInput 
+            formControlName="username" 
+            placeholder="Choose a unique username"
+            autocomplete="username">
+          <mat-icon matSuffix>alternate_email</mat-icon>
+          @if (hasFieldError('username')) {
+            <mat-error>{{ getFieldErrorMessage('username') }}</mat-error>
+          }
+        </mat-form-field>
+
+        <!-- Email Field -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Email</mat-label>
+          <input 
+            matInput 
+            type="email" 
+            formControlName="email" 
+            placeholder="Enter your email address"
+            autocomplete="email">
+          <mat-icon matSuffix>email</mat-icon>
+          @if (hasFieldError('email')) {
+            <mat-error>{{ getFieldErrorMessage('email') }}</mat-error>
+          }
+        </mat-form-field>
+
+        <!-- Password Field -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Password</mat-label>
+          <input 
+            matInput 
+            [type]="hidePassword() ? 'password' : 'text'" 
+            formControlName="password" 
+            placeholder="Create a strong password"
+            autocomplete="new-password">
+          <button 
+            mat-icon-button 
+            matSuffix 
+            type="button"
+            (click)="togglePasswordVisibility()"
+            [attr.aria-label]="'Hide password'"
+            [attr.aria-pressed]="hidePassword()">
+            <mat-icon>{{ hidePassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+          @if (hasFieldError('password')) {
+            <mat-error>{{ getFieldErrorMessage('password') }}</mat-error>
+          }
+        </mat-form-field>
+
+        <!-- Confirm Password Field -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Confirm Password</mat-label>
+          <input 
+            matInput 
+            [type]="hideConfirmPassword() ? 'password' : 'text'" 
+            formControlName="confirmPassword" 
+            placeholder="Confirm your password"
+            autocomplete="new-password">
+          <button 
+            mat-icon-button 
+            matSuffix 
+            type="button"
+            (click)="toggleConfirmPasswordVisibility()"
+            [attr.aria-label]="'Hide confirm password'"
+            [attr.aria-pressed]="hideConfirmPassword()">
+            <mat-icon>{{ hideConfirmPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+          @if (hasFieldError('confirmPassword')) {
+            <mat-error>{{ getFieldErrorMessage('confirmPassword') }}</mat-error>
+          }
+        </mat-form-field>
+
+        <!-- Password Requirements -->
+        <div class="password-requirements">
+          <p class="requirements-title">Password must contain:</p>
+          <ul class="requirements-list">
+            <li>At least 8 characters</li>
+            <li>One uppercase letter (A-Z)</li>
+            <li>One lowercase letter (a-z)</li>
+            <li>One number (0-9)</li>
+            <li>One special character (#?!@$%^&*-)</li>
+          </ul>
+        </div>
+
+        <!-- Submit Button -->
+        <button 
+          mat-raised-button 
+          color="primary" 
+          type="submit" 
+          class="submit-button full-width"
+          [disabled]="registerForm.invalid || isLoading()">
+          
+          @if (isLoading()) {
+            <ng-container>
+              <mat-spinner diameter="20" class="button-spinner"></mat-spinner>
+              Creating Account...
+            </ng-container>
+          } @else {
+            <ng-container>
+              <mat-icon>person_add</mat-icon>
+              Create Account
+            </ng-container>
+          }
+        </button>
+
+      </form>
+    </mat-card-content>
+
+    <mat-card-actions class="card-actions">
+      <div class="login-link">
+        Already have an account? 
+        <a [routerLink]="loginRoute" class="link">Sign in here</a>
+      </div>
+    </mat-card-actions>
+
+  </mat-card>
+</div>
