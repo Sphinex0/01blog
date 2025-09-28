@@ -5,8 +5,10 @@ import java.util.Map;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import api.backend.model.user.AuthResponse;
 import api.backend.model.user.LoginRequest;
 import api.backend.model.user.RegisterRequest;
+import api.backend.model.user.UserResponse;
 import api.backend.service.AuthService;
 import jakarta.validation.Valid;
 
@@ -21,16 +23,14 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Map<String, Object>> register(@Valid @RequestBody RegisterRequest request) {
-        // String result = 
-        authService.register(request);
-        String token = authService.login(new LoginRequest(request.username(), request.password()));
-        return ResponseEntity.ok(Map.of("success",true,"data",Map.of("token",token)));
+    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
+        AuthResponse response = authService.register(request);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@Valid @RequestBody LoginRequest request) {
-        String token = authService.login(request);
-        return ResponseEntity.ok("{\"token\": \""+token+"\" }");
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
+        AuthResponse response = authService.login(request);
+        return ResponseEntity.ok(response);
     }
 }

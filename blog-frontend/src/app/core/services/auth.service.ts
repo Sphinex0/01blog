@@ -33,25 +33,24 @@ export class AuthService {
   private initializeAuth(): void {
     const token = this.storage.getToken();
     const userData = this.storage.getUserData();
-    
+
     if (token && userData) {
       this._currentUser.set(userData);
       this._isAuthenticated.set(true);
     }
   }
 
-  register(data: RegisterRequest): Observable<ApiResponse<AuthResponse>> {
+  register(data: RegisterRequest): Observable<AuthResponse> {
     this._isLoading.set(true);
-    
+
     return this.authApi.register(data).pipe(
       tap((response) => {
-    console.log("############################",response)
-    console.log("############################",response.data)
-        
-        if (response.success && response.data) {
-        console.log("inside register tap")
+        console.log("############################", response)
 
-          this.handleAuthSuccess(response.data);
+        if (response) {
+          console.log("inside register tap")
+
+          this.handleAuthSuccess(response);
         }
       }),
       catchError((error) => {
@@ -61,14 +60,14 @@ export class AuthService {
     );
   }
 
-  login(data: LoginRequest): Observable<ApiResponse<AuthResponse>> {
+  login(data: LoginRequest): Observable<AuthResponse> {
     this._isLoading.set(true);
-    
+
     return this.authApi.login(data).pipe(
       tap((response) => {
-        if (response.success && response.data) {
-          this.handleAuthSuccess(response.data);
-        }
+        // if (response.success && response.data) {
+          this.handleAuthSuccess(response);
+        // }
       }),
       catchError((error) => {
         this._isLoading.set(false);
@@ -79,7 +78,7 @@ export class AuthService {
 
   logout(): void {
     this._isLoading.set(true);
-    
+
     this.authApi.logout().subscribe({
       complete: () => {
         this.handleLogout();
@@ -93,7 +92,7 @@ export class AuthService {
 
   refreshToken(): Observable<ApiResponse<AuthResponse>> {
     const refreshToken = this.storage.getRefreshToken();
-    
+
     if (!refreshToken) {
       this.handleLogout();
       return throwError(() => new Error('No refresh token available'));

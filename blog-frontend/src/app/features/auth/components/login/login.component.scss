@@ -88,13 +88,13 @@ mat-form-field {
   border-radius: 8px;
   margin-top: 1rem;
   
-  &:not(:disabled) {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  // &:not(:disabled) {
+  //   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     
-    &:hover {
-      background: linear-gradient(135deg, #5a6fd8 0%, #6b4190 100%);
-    }
-  }
+  //   &:hover {
+  //     background: linear-gradient(135deg, #5a6fd8 0%, #6b4190 100%);
+  //   }
+  // }auth-layout
 
   .button-spinner {
     margin-right: 8px;

@@ -46,8 +46,8 @@ export const routes: Routes = [
     loadComponent: () => import('./layout/auth-layout/auth-layout.component').then(c => c.AuthLayoutComponent),
     loadChildren: () => import('./features/auth/auth.routes').then(r => r.authRoutes),
   },
-  {
-    path: '**',
-    redirectTo: '/auth/login'
-  }
+  // {
+  //   path: '**',
+  //   redirectTo: '/auth/login'
+  // }
 ];

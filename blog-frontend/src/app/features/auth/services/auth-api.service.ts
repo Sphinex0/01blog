@@ -13,15 +13,15 @@ export class AuthApiService {
 
   constructor(private http: HttpClient) {}
 
-  register(data: RegisterRequest): Observable<ApiResponse<AuthResponse>> {
-    return this.http.post<ApiResponse<AuthResponse>>(
+  register(data: RegisterRequest): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(
       `${this.baseUrl}${API_ENDPOINTS.AUTH.REGISTER}`,
       data
     );
   }
 
-  login(data: LoginRequest): Observable<ApiResponse<AuthResponse>> {
-    return this.http.post<ApiResponse<AuthResponse>>(
+  login(data: LoginRequest): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(
       `${this.baseUrl}${API_ENDPOINTS.AUTH.LOGIN}`,
       data
     );

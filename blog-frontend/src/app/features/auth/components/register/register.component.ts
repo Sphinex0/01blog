@@ -17,8 +17,6 @@ import { ROUTES } from '../../../../core/constants/app.constants';
 
 @Component({
   selector: 'app-register',
-    // imports: [MatFormFieldModule, MatCard, MatCardHeader, MatCardTitle, MatCardContent, ReactiveFormsModule, MatInputModule, MatButtonModule],
-
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -92,7 +90,7 @@ export class RegisterComponent {
 
       this.authService.register(request).subscribe({
         next: (response) => {
-          if (response.success) {
+          if (response) {
             this.snackBar.open('Registration successful! Welcome to 01Blog!', 'Close', {
               duration: 5000,
               panelClass: ['success-snackbar']

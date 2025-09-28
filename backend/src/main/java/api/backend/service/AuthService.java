@@ -28,7 +28,7 @@ public class AuthService {
         this.jwtUtil = jwtUtil;
     }
 
-    public String register(@Valid RegisterRequest request) {
+    public AuthResponse register(@Valid RegisterRequest request) {
         if (userRepository.findByUsername(request.username()).isPresent()) {
             throw new IllegalStateException("Username already exists");
         }
@@ -43,18 +43,29 @@ public class AuthService {
                 "USER",
                 LocalDateTime.now());
         userRepository.save(user);
-        return "User registered successfully";
+        return login(new LoginRequest(request.username(), request.password()));
     }
 
-    public String login(LoginRequest request) {
+    public AuthResponse login(LoginRequest request) {
         try {
             
             var auth = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.username(), request.password()));
 
-            return jwtUtil.generateToken((User) auth.getPrincipal());
+            return new AuthResponse(jwtUtil.generateToken((User) auth.getPrincipal()), toUserResponse((User) auth.getPrincipal()));
         } catch (BadCredentialsException e) {
             throw new BadCredentialsException("Invalid username or password");
         }
+    }
+
+    public static UserResponse toUserResponse(User user) {
+        return new UserResponse(
+                user.getId(),
+                user.getFullName(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getRole(),
+                user.getAvatar(),
+                user.getCreatedAt());
     }
 }
