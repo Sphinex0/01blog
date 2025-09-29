@@ -2,6 +2,8 @@
   height: 100vh;
   display: flex;
   flex-direction: column;
+  background: #1e1e1e;
+	background: radial-gradient(circle at 50% 30%, #2a2a2a 0%, #131313 64%);
 }
 
 .sidenav-container {
