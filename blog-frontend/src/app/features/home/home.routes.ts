@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { noAuthGuard } from '../../core/guards/no-auth.guard';
+// import { noAuthGuard } from '../../core/guards/no-auth.guard';
 
 export const homeRoutes: Routes = [
     {
@@ -9,7 +9,7 @@ export const homeRoutes: Routes = [
                 path: '',
                 loadComponent: () => {
                     console.log("loading feed");
-                    return import('./components/feed/feed.component').then(c => c.FeedComponent);
+                    return import('./components/home/home.component').then(c => c.HomeComponent);
                 },
                 title: '01Blog - feed'
               },

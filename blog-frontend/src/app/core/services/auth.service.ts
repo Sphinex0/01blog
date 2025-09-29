@@ -45,8 +45,6 @@ export class AuthService {
 
     return this.authApi.register(data).pipe(
       tap((response) => {
-        console.log("############################", response)
-
         if (response) {
           console.log("inside register tap")
 

@@ -131,6 +131,8 @@ export class LoginComponent {
 
 
   private getFieldDisplayName(fieldName: string): string {
+    console.log("getFieldDisplayName", fieldName);
+    // Map field names to user-friendly display names
     const displayNames: Record<string, string> = {
       username: 'Username/Email',
       password: 'Password'
