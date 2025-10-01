@@ -16,10 +16,10 @@ export const routes: Routes = [
       //   path: 'profile',
       //   loadChildren: () => import('./features/profile/profile.routes').then(r => r.profileRoutes),
       // },
-      // {
-      //   path: 'posts',
-      //   loadChildren: () => import('./features/posts/posts.routes').then(r => r.postRoutes),
-      // },
+      {
+        path: 'posts',
+        loadChildren: () => import('./features/posts/posts.routes').then(r => r.postRoutes),
+      },
       // {
       //   path: 'notifications',
       //   loadChildren: () => import('./features/notifications/notifications.routes').then(r => r.notificationRoutes),
