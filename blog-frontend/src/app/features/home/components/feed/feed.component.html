@@ -1,1 +1,169 @@
-<p>feed works!</p>
+<div class="feed-container">
+  <!-- Feed Header -->
+  <div class="feed-header">
+    <div class="header-content">
+      <h1 class="feed-title">Feed</h1>
+      <p class="feed-subtitle">Discover and share learning experiences</p>
+    </div>
+    <button
+      class="refresh-btn"
+      (click)="refreshFeed()"
+      [disabled]="isRefreshing()"
+      [class.spinning]="isRefreshing()"
+    >
+      <mat-icon>refresh</mat-icon>
+    </button>
+  </div>
+
+  <!-- Loading State (Initial Load) -->
+  @if (isLoading() && posts().length === 0) {
+  <div class="loading-state">
+    <div class="loading-content">
+      <div class="spinner-wrapper">
+        <mat-spinner diameter="48"></mat-spinner>
+      </div>
+      <p class="loading-text">Loading your feed...</p>
+    </div>
+  </div>
+  }
+
+  <!-- Error State -->
+  @if (error() !== null && posts().length === 0) {
+  <div class="error-state">
+    <div class="error-icon-wrapper">
+      <mat-icon>cloud_off</mat-icon>
+    </div>
+    <h2>Something went wrong</h2>
+    <p>{{ error() }}</p>
+    <button class="retry-btn" (click)="loadFeed()">
+      <mat-icon>refresh</mat-icon>
+      Try Again
+    </button>
+  </div>
+  }
+
+  <!-- Empty State -->
+  @if (!isLoading() && error() === null && posts().length === 0) {
+  <div class="empty-state">
+    <div class="empty-icon-wrapper">
+      <mat-icon>explore</mat-icon>
+    </div>
+    <h2>Welcome to 01Blog!</h2>
+    <p>Your feed is empty. Start following users to see their posts here.</p>
+    <div class="empty-actions">
+      <a class="primary-action-btn" routerLink="/explore">
+        <mat-icon>search</mat-icon>
+        Discover Users
+      </a>
+      <a class="secondary-action-btn" routerLink="/posts/create">
+        <mat-icon>add</mat-icon>
+        Create Post
+      </a>
+    </div>
+  </div>
+  }
+
+  <!-- Posts Feed -->
+  @if (posts().length > 0) {
+  <div class="posts-grid">
+    @for (post of posts(); track post.id) {
+    <article class="post-card" (click)="navigateToPost(post.id)">
+      <!-- Post Media (if exists) -->
+      @if (post.mediaUrl) {
+      <div class="post-media">
+        @if (post.mediaType === 'image') {
+        <img
+          [src]="getMediaUrl(post.mediaUrl)"
+          [alt]="post.title"
+          class="media-image"
+          loading="lazy"
+        />
+        } @else if (post.mediaType === 'video') {
+        <div class="video-wrapper">
+          <video [src]="getMediaUrl(post.mediaUrl)" class="media-video" preload="metadata"></video>
+          <div class="video-overlay">
+            <mat-icon class="play-icon">play_circle</mat-icon>
+          </div>
+        </div>
+        }
+      </div>
+      }
+
+      <!-- Post Content -->
+      <div class="post-body">
+        <!-- Author Info -->
+        <div class="post-author">
+          <a
+            [routerLink]="['/profile', post.user.username]"
+            class="author-avatar"
+            (click)="$event.stopPropagation()"
+          >
+            @if (post.user.avatar) {
+            <img [src]="getMediaUrl(post.user.avatar)" [alt]="post.user.fullName" />
+            } @else {
+            <div class="avatar-placeholder">
+              {{ getAuthorInitials(post.user.fullName) }}
+            </div>
+            }
+          </a>
+
+          <div class="author-details">
+            <a
+              [routerLink]="['/profile', post.user.username]"
+              class="author-name"
+              (click)="$event.stopPropagation()"
+            >
+              {{ post.user.fullName }}
+            </a>
+            <span class="post-time">{{ post.createdAt | timeAgo }}</span>
+          </div>
+        </div>
+
+        <!-- Post Title -->
+        <h2 class="post-title">{{ post.title }}</h2>
+
+        <!-- Post Content -->
+        <p class="post-content">{{ post.content }}</p>
+
+        <!-- Post Actions -->
+        <div class="post-actions">
+          <button
+            class="action-btn"
+            [class.active]="post.isLiked"
+            (click)="onLikePost(post, $event)"
+            matRipple
+          >
+            <mat-icon>{{ post.isLiked ? 'favorite' : 'favorite_border' }}</mat-icon>
+            <span>{{ post.likesCount }}</span>
+          </button>
+
+          <button class="action-btn" matRipple>
+            <mat-icon>chat_bubble_outline</mat-icon>
+            <span>{{ post.commentsCount }}</span>
+          </button>
+
+          <button class="action-btn" matRipple>
+            <mat-icon>bookmark_border</mat-icon>
+          </button>
+        </div>
+      </div>
+    </article>
+    }
+  </div>
+
+  <!-- Load More Indicator -->
+  @if (isLoadingMore() || (isLoading() && posts().length > 0)) {
+  <div class="load-more-indicator">
+    <mat-spinner diameter="32"></mat-spinner>
+    <p>Loading more posts...</p>
+  </div>
+  }
+
+  <!-- End of Feed -->
+  @if (!hasMore() && !isLoading()) {
+  <div class="end-of-feed">
+    <mat-icon>check_circle</mat-icon>
+    <p>You're all caught up!</p>
+  </div>
+  } }
+</div>

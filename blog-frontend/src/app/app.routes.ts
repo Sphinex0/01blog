@@ -9,7 +9,7 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       {
-        path: 'feed',
+        path: '',
         loadChildren: () => import('./features/home/home.routes').then(r => r.homeRoutes),
       },
       // {

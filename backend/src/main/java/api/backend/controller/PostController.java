@@ -51,8 +51,9 @@ public class PostController {
     }
 
     @GetMapping("/feed")
-    public ResponseEntity<List<PostResponse>> getSubscribedToPosts(@RequestParam(defaultValue = "0") int page,
+    public ResponseEntity<List<PostResponse>> getSubscribedToPosts(@RequestParam(defaultValue = "1") int page,
             @AuthenticationPrincipal User user) {
+
         List<PostResponse> posts = postService.getSubscribedToPosts(page, user.getId());
         return ResponseEntity.ok(posts);
     }
@@ -75,7 +76,7 @@ public class PostController {
         return ResponseEntity.ok(postService.deletePost(id));
     }
 
-    @PostMapping("/{id}/like")
+    @PostMapping("/like/{id}")
     public ResponseEntity<Integer> likePost(@PathVariable Long id, @AuthenticationPrincipal User user) {
         return ResponseEntity.ok(postService.likePost(id, user.getId()));
     }

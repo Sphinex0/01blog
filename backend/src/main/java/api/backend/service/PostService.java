@@ -3,6 +3,7 @@ package api.backend.service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
@@ -45,11 +46,11 @@ public class PostService {
     }
 
     public List<PostResponse> getSubscribedToPosts(int page, long user_id) {
-        Pageable pageable = PageRequest.of(page, 10, Direction.DESC, "id");// , Direction.DESC,"id"
+        Pageable pageable = PageRequest.of(page - 1, 10, Direction.DESC, "id");// , Direction.DESC,"id"
         User user = userRepository.findById(user_id)
                 .orElseThrow(() -> new IllegalArgumentException("No authenticated user found"));
 
-        return postRepository.findPostsBySubscribedTo(user.getSubscribedTo(), pageable).stream()
+        return postRepository.findPostsBySubscribedTo(user.getSubscribedTo(), pageable)
                 .map(this::toPostResponse).toList();
     }
 

@@ -1,0 +1,78 @@
+.home-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  min-height: calc(100vh - 64px); // Subtract header height
+  background: #fafafa;
+  gap: 0;
+}
+
+.home-sidebar {
+  position: sticky;
+  top: 64px; // Header height
+  height: calc(100vh - 64px);
+  overflow-y: auto;
+  background: white;
+  border-right: 1px solid #f0f0f0;
+
+  // Hide scrollbar
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+
+  &::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
+}
+
+.home-main {
+  background: #fafafa;
+  overflow-y: auto;
+}
+
+// Responsive Design
+@media (max-width: 1024px) {
+  .home-layout {
+    grid-template-columns: 240px 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .home-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .home-sidebar {
+    display: none; // Hidden on mobile, accessible via hamburger menu
+  }
+
+  .home-main {
+    width: 100%;
+  }
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+  .home-layout {
+    background: #121212;
+  }
+
+  .home-sidebar {
+    background: #1e1e1e;
+    border-right-color: #2a2a2a;
+  }
+
+  .home-main {
+    background: #121212;
+  }
+}
+
+// Smooth scrolling
+.home-sidebar,
+.home-main {
+  scroll-behavior: smooth;
+}
+
+// Performance optimization
+.home-layout {
+  will-change: scroll-position;
+  contain: layout style paint;
+}

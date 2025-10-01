@@ -4,7 +4,7 @@ export interface Post {
   content: string;
   mediaUrl?: string;
   mediaType?: 'image' | 'video';
-  author: User;
+  user: User;
   likesCount: number;
   commentsCount: number;
   isLiked?: boolean;
