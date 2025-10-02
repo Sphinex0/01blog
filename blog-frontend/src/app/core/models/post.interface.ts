@@ -13,9 +13,9 @@ export interface Post {
 }
 
 export interface CreatePostRequest {
-  title: string;
+  // title: string;
   content: string;
-  media?: File;
+  // media?: File;
 }
 
 export interface UpdatePostRequest {

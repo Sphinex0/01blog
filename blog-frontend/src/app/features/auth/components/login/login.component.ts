@@ -12,7 +12,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { RouterModule } from '@angular/router';
 import { ROUTES } from '../../../../core/constants/app.constants';
 import { AuthService } from '../../../../core/services/auth.service';
-import { CustomValidators } from '../../../../shared/validators/custom-validators';
+// import { CustomValidators } from '../../../../shared/validators/custom-validators';
 import { LoginRequest } from '../../../../core/models/user.interface';
 
 @Component({

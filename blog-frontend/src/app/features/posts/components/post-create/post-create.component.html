@@ -1,0 +1,15 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div class="NgxEditor__Wrapper">
+    <ngx-editor-menu [editor]="editor"> </ngx-editor-menu>
+    <button matButton type="submit">save</button>
+    <ngx-editor
+      [editor]="editor"
+      formControlName="html"
+      [disabled]="false"
+      [placeholder]="'Type here...'"
+    ></ngx-editor>
+    @if (form.get('html')?.invalid && form.get('html')?.touched) {
+    <mat-error class="error">Content is required</mat-error>
+    }
+  </div>
+</form>

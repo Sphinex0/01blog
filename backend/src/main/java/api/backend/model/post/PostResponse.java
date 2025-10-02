@@ -11,5 +11,6 @@ public record PostResponse(
     String mediaUrl,
     LocalDateTime createdAt,
     Integer likesCount,
-    Integer commentsCount
+    Integer commentsCount,
+    boolean isLiked
 ) {}

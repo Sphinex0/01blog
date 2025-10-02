@@ -9,7 +9,7 @@ export const postRoutes: Routes = [
                 path: 'create',
                 loadComponent: () => {
                     console.log("loading feed");
-                    return import('./components/post-create/post-create').then(c => c.PostCreate);
+                    return import('./components/post-create/post-create.component').then(c => c.PostCreateComponent);
                 },
                 title: '01Blog - feed'
               },

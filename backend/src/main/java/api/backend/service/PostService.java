@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import api.backend.model.notification.Notification;
@@ -131,6 +132,9 @@ public class PostService {
     }
 
     public PostResponse toPostResponse(Post post) {
+        var user = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        boolean likedByCurrentUser = post.getLikedBy().contains(user);
+        
         return new PostResponse(
                 post.getId(),
                 (UserService.toUserResponse(post.getUser())),
@@ -138,7 +142,8 @@ public class PostService {
                 post.getMediaUrl(),
                 post.getCreatedAt(),
                 post.getLikesCount(),
-                post.getCommentsCount());
+                post.getCommentsCount(),
+                likedByCurrentUser);
     }
 
 }

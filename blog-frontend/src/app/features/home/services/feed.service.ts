@@ -57,9 +57,7 @@ export class FeedService {
           this._currentPage.set(page);
         }
         this._isLoading.set(false);
-        console.log("vvvvvvvvvvvvvvv")
-        console.log(this._posts(),"<<<<<<<<<<")
-        // console.log(response,7451)
+
       }),
       catchError((error) => {
         this._isLoading.set(false);
