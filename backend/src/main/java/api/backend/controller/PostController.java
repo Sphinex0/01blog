@@ -51,10 +51,12 @@ public class PostController {
     }
 
     @GetMapping("/feed")
-    public ResponseEntity<List<PostResponse>> getSubscribedToPosts(@RequestParam(defaultValue = "1") int page,
+    public ResponseEntity<List<PostResponse>> getSubscribedToPosts(@RequestParam(defaultValue = "0") long cursor,
             @AuthenticationPrincipal User user) {
-
-        List<PostResponse> posts = postService.getSubscribedToPosts(page, user.getId());
+        if (cursor == 0) {
+            cursor = Long.MAX_VALUE;
+        }
+        List<PostResponse> posts = postService.getSubscribedToPosts(cursor, user.getId());
         return ResponseEntity.ok(posts);
     }
 

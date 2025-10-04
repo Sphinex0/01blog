@@ -74,14 +74,16 @@ public class DataLoader implements CommandLineRunner {
         // Generate posts for each user
         fakeUsers.forEach(user -> {
             IntStream.range(0, faker.number().numberBetween(1, 5)).forEach(i -> {
-                String content = faker.leagueOfLegends().quote();
-                Post post = new Post(user, content, LocalDateTime.now());
+                String content = faker.lorem().paragraph(100);
+                String title = faker.leagueOfLegends().quote();
+                Post post = new Post(user, title, content, LocalDateTime.now());
                 postRepository.save(post);
             });
         });
         IntStream.range(0, faker.number().numberBetween(1, 5)).forEach(i -> {
-            String content = faker.leagueOfLegends().quote();
-            Post post = new Post(testUser, content, LocalDateTime.now());
+            String content = faker.lorem().paragraph(100);
+            String title = faker.leagueOfLegends().quote();
+            Post post = new Post(testUser, title, content, LocalDateTime.now());
             postRepository.save(post);
         });
 
@@ -98,9 +100,11 @@ public class DataLoader implements CommandLineRunner {
                             fakeUsers.get(faker.number().numberBetween(0, fakeUsers.size() - 1)),
                             post,
                             faker.leagueOfLegends().quote(),
-                            topLevelComment
-                    );
+                            topLevelComment);
                     commentRepository.save(reply);
+
+                    post.setCommentsCount(post.getCommentsCount() + 1);
+                    postRepository.save(post);
                 });
             });
         });

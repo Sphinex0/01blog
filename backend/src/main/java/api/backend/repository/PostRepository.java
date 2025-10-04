@@ -29,8 +29,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     List<Post> findByCommentsCountGreaterThanEqual(Integer commentsCount);
 
-    @Query("SELECT p FROM Post p WHERE p.user IN :subscribedTo AND p.isHidden = false")
-    Page<Post> findPostsBySubscribedTo(@Param("subscribedTo") Set<User> subscribedTo, Pageable page);
+    @Query("SELECT p FROM Post p WHERE p.user IN :subscribedTo AND p.isHidden = false AND p.id < :cursor")
+    Page<Post> findPostsBySubscribedTo(@Param("subscribedTo") Set<User> subscribedTo, @Param("cursor") long cursor, Pageable page);
 
     // Optional: Find visible posts (not hidden)
     // List<Post> findByHiddenAtIsNull();

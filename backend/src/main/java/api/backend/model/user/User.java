@@ -76,7 +76,7 @@ public class User implements UserDetails {
     private LocalDateTime deletedAt;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
-    // @JsonIgnore
+    @JsonIgnore
     private List<Post> posts;
     
 

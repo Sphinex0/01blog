@@ -17,25 +17,25 @@ export class FeedService {
   private readonly _posts = signal<Post[]>([]);
   private readonly _isLoading = signal<boolean>(false);
   private readonly _hasMore = signal<boolean>(true);
-  private readonly _currentPage = signal<number>(1);
+  private readonly __currentCursor = signal<number>(1);
   private readonly _error = signal<string | null>(null);
 
   // Public computed signals
   readonly posts = computed(() => this._posts());
   readonly isLoading = computed(() => this._isLoading());
   readonly hasMore = computed(() => this._hasMore());
-  readonly currentPage = computed(() => this._currentPage());
+  // readonly _currentCursor = computed(() => this.__currentCursor());
   readonly error = computed(() => this._error());
 
   /**
    * Fetch personalized feed from followed users
    */
-  getFeed(page: number = 1, limit: number = APP_CONSTANTS.PAGINATION.DEFAULT_PAGE_SIZE): Observable<Post[]> {
+  getFeed(cursor: number = 0, limit: number = APP_CONSTANTS.PAGINATION.DEFAULT_PAGE_SIZE): Observable<Post[]> {
     this._isLoading.set(true);
     this._error.set(null);
 
     const params = new HttpParams()
-      .set('page', page.toString())
+      .set('cursor', cursor.toString())
       .set('limit', limit.toString());
 
     return this.http.get<Post[]>(
@@ -47,14 +47,14 @@ export class FeedService {
           const paginatedData = response;
           
           // Append or replace posts based on page number
-          if (page === 1) {
+          if (cursor === 0) {
             this._posts.set(paginatedData);
           } else {
             this._posts.update(current => [...current, ...paginatedData]);
           }
 
           this._hasMore.set(paginatedData.length != 0);
-          this._currentPage.set(page);
+          this.__currentCursor.set(paginatedData[paginatedData.length - 1]?.id || this.__currentCursor());
         }
         this._isLoading.set(false);
 
@@ -72,7 +72,7 @@ export class FeedService {
    */
   loadMore(): void {
     if (!this._isLoading() && this._hasMore()) {
-      const nextPage = this._currentPage() + 1;
+      const nextPage = this.__currentCursor();
       this.getFeed(nextPage).subscribe();
     }
   }
@@ -81,8 +81,8 @@ export class FeedService {
    * Refresh feed (pull-to-refresh)
    */
   refreshFeed(): Observable<Post[]> {
-    this._currentPage.set(1);
-    return this.getFeed(1);
+    this.__currentCursor.set(0);
+    return this.getFeed();
   }
 
   /**
@@ -153,7 +153,7 @@ export class FeedService {
    */
   clearFeed(): void {
     this._posts.set([]);
-    this._currentPage.set(1);
+    this.__currentCursor.set(1);
     this._hasMore.set(true);
     this._error.set(null);
   }

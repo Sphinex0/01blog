@@ -46,12 +46,12 @@ public class PostService {
                 .toList();
     }
 
-    public List<PostResponse> getSubscribedToPosts(int page, long user_id) {
-        Pageable pageable = PageRequest.of(page - 1, 10, Direction.DESC, "id");// , Direction.DESC,"id"
+    public List<PostResponse> getSubscribedToPosts(long cursor, long user_id) {
+        Pageable pageable = PageRequest.of(0, 10, Direction.DESC, "id");// , Direction.DESC,"id"
         User user = userRepository.findById(user_id)
                 .orElseThrow(() -> new IllegalArgumentException("No authenticated user found"));
 
-        return postRepository.findPostsBySubscribedTo(user.getSubscribedTo(), pageable)
+        return postRepository.findPostsBySubscribedTo(user.getSubscribedTo(), cursor, pageable)
                 .map(this::toPostResponse).toList();
     }
 
@@ -65,8 +65,7 @@ public class PostService {
 
     public PostResponse createPost(PostRequest request, long userId) {
         User user = userRepository.findById(userId).get();
-        Post post = new Post(user, request.content(), LocalDateTime.now());
-        post.setMediaUrl(request.mediaUrl());
+        Post post = new Post(user, request.title(), request.content(), LocalDateTime.now());
         post = postRepository.save(post);
         sendNotifications(post);
         return toPostResponse(post);
@@ -112,8 +111,7 @@ public class PostService {
         Post target = postRepository.findById(post_id)
                 .orElseThrow(() -> new IllegalArgumentException("Target post not found"));
 
-        System.out.println(user.getPosts().contains(target));
-        System.out.println();
+
         if (target.getLikedBy().contains(user)) {
             user.getLikedPosts().remove(target);
             target.getLikedBy().remove(user);
@@ -132,14 +130,16 @@ public class PostService {
     }
 
     public PostResponse toPostResponse(Post post) {
-        var user = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        long user_id = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+        User user = userRepository.findById(user_id)
+                .orElseThrow(() -> new IllegalArgumentException("No authenticated user found"));
         boolean likedByCurrentUser = post.getLikedBy().contains(user);
-        
+
         return new PostResponse(
                 post.getId(),
                 (UserService.toUserResponse(post.getUser())),
+                post.getTitle(),
                 post.getContent(),
-                post.getMediaUrl(),
                 post.getCreatedAt(),
                 post.getLikesCount(),
                 post.getCommentsCount(),
