@@ -12,6 +12,6 @@ export class PostService {
   private readonly http = inject(HttpClient);
 
   savePost(data: CreatePostRequest) {
-    this.http.post<Post>(`${this.baseUrl}${API_ENDPOINTS.POSTS.CREATE}`, data).subscribe();
+    return this.http.post<Post>(`${this.baseUrl}${API_ENDPOINTS.POSTS.CREATE}`, data);
   }
 }

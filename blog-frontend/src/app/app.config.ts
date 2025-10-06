@@ -11,6 +11,7 @@ import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { errorInterceptor } from './core/interceptors/error.interceptor';
 import { loadingInterceptor } from './core/interceptors/loading.interceptor';
 // import { environment } from '../environments/environment';
+import { provideMarkdown } from "ngx-markdown" 
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -40,6 +41,7 @@ export const appConfig: ApplicationConfig = {
     //   enabled: environment.production && environment.features.enablePWA,
     //   registrationStrategy: 'registerWhenStable:30000'
     // }),
+    provideMarkdown(),
     
     // Material Design configuration
     {

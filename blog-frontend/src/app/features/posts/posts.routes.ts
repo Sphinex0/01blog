@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { PostCreateComponent } from './components/post-create/post-create.component';
 // import { noAuthGuard } from '../../core/guards/no-auth.guard';
 
 export const postRoutes: Routes = [
@@ -7,12 +8,13 @@ export const postRoutes: Routes = [
     children: [
       {
         path: 'create',
-        loadComponent: () => {
-          console.log('loading feed');
-          return import('./components/post-create/post-create.component').then(
-            (c) => c.PostCreateComponent
-          );
-        },
+        // loadComponent: () => {
+        //   console.log('loading feed');
+        //   return import('./components/post-create/post-create.component').then(
+        //     (c) => c.PostCreateComponent
+        //   );
+        // },
+        component:PostCreateComponent,
         title: '01Blog - feed',
       },
       {

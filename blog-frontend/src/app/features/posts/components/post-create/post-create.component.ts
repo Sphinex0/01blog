@@ -1,87 +1,152 @@
-import { Component, inject } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-import { MatButton, MatButtonModule } from '@angular/material/button';
-import { MatError } from '@angular/material/form-field';
-import { NgxEditorComponent, NgxEditorMenuComponent, Editor } from 'ngx-editor';
+import { Component } from '@angular/core';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field'
+import { MarkdownModule } from 'ngx-markdown';
 import { PostService } from '../../services/post.service';
 
+
 @Component({
-  selector: 'app-post-create',
-  imports: [
-    NgxEditorComponent,
-    NgxEditorMenuComponent,
-    FormsModule,
-    ReactiveFormsModule,
-    MatButtonModule,
-    MatError,
-  ],
-  templateUrl: './post-create.component.html',
-  styleUrl: './post-create.component.scss',
+	selector: 'app-create-blog',
+	imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, MarkdownModule],
+	templateUrl: './post-create.component.html',
+	styleUrl: './post-create.component.scss'
 })
 export class PostCreateComponent {
-  editor: Editor = new Editor();
-  // private readonly postService = inject(PostService);
+	markdown = ``;
+	formBlog: FormGroup;
+	previewUrl = "";
+	isUploading = false;
 
-  html: '' = '';
-  form: FormGroup;
-  constructor(private fb: FormBuilder,private readonly postService:PostService) {
-    this.form = this.fb.group({
-      html: ['', Validators.required],
-    });
-  }
+	constructor(private fb: FormBuilder, private blogService: PostService) {
+		this.formBlog = this.fb.group({
+			description: ['', Validators.required],
+			title: ['', Validators.required]
+		})
+	}
 
-  onSubmit(): void {
-    console.log('submittttttted ');
-    let str = this.form.value.html;
-    this.form.setValue({ html: str.replaceAll(/<[^>]*>*<\/[^>]*>/g, '') });
-    this.form.setValue({ html: str.replaceAll(/<[^>]*>*<\/[^>]*>/g, '') });
-    if (this.form.valid) {
-      // const { registerData } = this.loginForm.value;
-      console.log(this.form.get('html')?.value);
-      this.postService.savePost({content:this.form.get('html')?.value});
-      // const request: LoginRequest = this.loginForm.value;
+	onSubmit() {
+		this.formBlog.markAllAsTouched();
 
-      // this.authService.login(request).subscribe({
-      //   next: (response) => {
-      //     if (response) {
-      //       this.snackBar.open('Login successful! Welcome to 01Blog!', 'Close', {
-      //         duration: 5000,
-      //         panelClass: ['success-snackbar']
-      //       });
-      //     }
-      //   },
-      //   error: (error) => {
-      //     const message = error.error?.message || 'Login failed. Please try again.';
-      //     this.snackBar.open(message, 'Close', {
-      //       duration: 5000,
-      //       panelClass: ['error-snackbar']
-      //     });
-      //   }
-      // });
-    } else {
-      this.markFormGroupTouched();
-    }
-  }
+		if (this.formBlog.valid) {
+			console.log('data', this.formBlog.value.description)
+			this.blogService.savePost(this.formBlog.value).subscribe({
+				next: (res) => {
+					console.log("ok")
+				},
+				error: (err) => {
+					console.log(err)
+				}
+			})
 
-  private markFormGroupTouched(): void {
-    Object.keys(this.form.controls).forEach((key) => {
-      const control = this.form.get(key);
-      control?.markAsTouched();
-    });
-  }
+		}
+	}
 
-  ngOnInit(): void {
-    this.editor = new Editor();
-  }
 
-  // make sure to destory the editor
-  ngOnDestroy(): void {
-    this.editor.destroy();
-  }
+	async onPaste(event: ClipboardEvent) {
+		const clipboardData = event.clipboardData;
+
+
+		const pastedText = clipboardData?.getData('text/plain');
+		if (pastedText) {
+			try {
+				const url = new URL(pastedText)
+				if (this.isImage(url.pathname)) {
+					event.preventDefault()
+					this.insertMarkdownImage(pastedText);
+				} else if (this.isVideo(url.pathname)) {
+					event.preventDefault()
+					this.insertMarkdownVideo(pastedText);
+				}
+			} catch {
+				return
+			}
+
+		} else {
+			if (clipboardData?.items) {
+				for (const item of clipboardData?.items) {
+					console.log(item)
+					if (item.kind == 'file') {
+						event.preventDefault()
+						const file = item.getAsFile();
+						if (file) {
+							console.log(file.type)
+							let previewUrl = URL.createObjectURL(file)
+							this.insertMarkdownImage(previewUrl);
+							await this.handleFileUpload(file);
+						}
+					}
+				}
+			}
+		}
+
+	}
+
+	onDrop(event: DragEvent) {
+		event.preventDefault();
+		const files = event.dataTransfer?.files;
+		console.log(files)
+		if (files) {
+			for (const file of files) {
+				let previewUrl = URL.createObjectURL(file)
+				document.execCommand('insertText', false, `![image](${previewUrl})`);
+			}
+		}
+
+	}
+
+
+
+
+	async handleFileUpload(file: File): Promise<void> {
+		this.isUploading = true;
+
+		try {
+			const uploadedUrl = null //await this.blogService.uploadFile(file).toPromise();
+			if (uploadedUrl) {
+				if (file.type.startsWith('image/')) {
+					// this.insertMarkdownImage(uploadedUrl.url);
+				} else if (file.type.startsWith('video/')) {
+					// this.insertMarkdownVideo(uploadedUrl.url);
+				}
+			}
+
+
+
+		} catch (error) {
+			console.error('Upload failed:', error);
+			alert('File upload failed. Please try again.');
+		} finally {
+			this.isUploading = false;
+		}
+	}
+
+	getExtension(filename: string): string {
+		return filename.split('.').pop()?.toLowerCase() || '';
+	}
+
+	isImage(filename: string): boolean {
+		return imageExtensions.has(this.getExtension(filename));
+	}
+
+	isVideo(filename: string): boolean {
+		return videoExtensions.has(this.getExtension(filename));
+	}
+
+	insertMarkdownImage(url: string): void {
+		const markdown = `![image](${url})`;
+		this.insertText(markdown);
+	}
+
+	insertMarkdownVideo(url: string): void {
+		const markdown = `<video controls><source src="${url}" ></video>`;
+		this.insertText(markdown);
+	}
+
+	insertText(pastedText: string) {
+		document.execCommand('insertText', false, pastedText);
+	}
+
 }
+
+const imageExtensions = new Set(['jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff', 'webp', 'svg']);
+const videoExtensions = new Set(['mp4', 'avi', 'mov', 'wmv', 'flv', 'webm', 'mkv', 'm4v']);
