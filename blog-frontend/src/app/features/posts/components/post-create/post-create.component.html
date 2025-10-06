@@ -2,7 +2,7 @@
     <div class="shadow">
         <div class="editor-layout">
             <div class="editor-panel">
-                <form [formGroup]="formBlog" (submit)="onSubmit()" class="form-blog">
+                <form [formGroup]="postForm" (submit)="onSubmit()" class="form-blog">
                     <label class="panel-label">
                         <button type="submit" class="btn btn-primary with-100">save</button>
                     </label>
@@ -12,12 +12,12 @@
                     </label>
 
                     <!-- <img [src]="previewUrl" alt="Preview" class="preview-image" /> -->
-                    <textarea tool (drop)="onDrop($event)" (paste)="onPaste($event)" class="markdown-textarea NgxEditor__Wrapper" formControlName="description"
+                    <textarea tool (drop)="onDrop($event)" (paste)="onPaste($event)" class="markdown-textarea NgxEditor__Wrapper" formControlName="content"
                         placeholder="Start typing your markdown here..."></textarea>
 
                     <!-- Proper error handling -->
                     <div class="panel-label error">
-                        @if (formBlog.get('description')?.invalid && formBlog.get('description')?.touched) {
+                        @if (postForm.get('content')?.invalid && postForm.get('content')?.touched) {
                         <mat-error>Content is required</mat-error>
                         }
                     </div>
@@ -27,8 +27,8 @@
                 </form>
             </div>
             <div class="preview-panel">
-                <h1>{{ this.formBlog.value.title }}</h1>
-                <markdown class="markdown-preview" [data]="this.formBlog.value.description"></markdown>
+                <h1>{{ this.postForm.value.title }}</h1>
+                <markdown class="markdown-preview" [data]="this.postForm.value.content"></markdown>
             </div>
             <!-- </div> -->
         </div>

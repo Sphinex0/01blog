@@ -16,8 +16,9 @@
 	grid-template-columns: 1fr 1fr;
 
 }
-img{
+::ng-deep img{
     max-width: 100%;
+
 }
 
 @media (max-width: 700px) {

@@ -35,13 +35,14 @@ public class DataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        if (userRepository.count() >= 10)
-            return;
 
-        // password: admin123
+        if (userRepository.count() >= 10){
+            return; // Prevent reseeding if users already exist
+        }
         User adminUser = new User("admin", "admin", "admin@gmail.com",
                 "$2a$10$gLOE1XiudLgmuyvhiWl9WOXXEEvqOofpkN9wbXkUynZzAahmq6oV2", "ADMIN", LocalDateTime.now());
         userRepository.save(adminUser);
+
 
         // password: test123
         User testUser = new User("test", "test", "test@gmail.com",

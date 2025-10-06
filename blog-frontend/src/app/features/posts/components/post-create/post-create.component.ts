@@ -13,23 +13,23 @@ import { PostService } from '../../services/post.service';
 })
 export class PostCreateComponent {
 	markdown = ``;
-	formBlog: FormGroup;
+	postForm: FormGroup;
 	previewUrl = "";
 	isUploading = false;
 
-	constructor(private fb: FormBuilder, private blogService: PostService) {
-		this.formBlog = this.fb.group({
-			description: ['', Validators.required],
+	constructor(private fb: FormBuilder, private postService: PostService) {
+		this.postForm = this.fb.group({
+			content: ['', Validators.required],
 			title: ['', Validators.required]
 		})
 	}
 
 	onSubmit() {
-		this.formBlog.markAllAsTouched();
+		this.postForm.markAllAsTouched();
 
-		if (this.formBlog.valid) {
-			console.log('data', this.formBlog.value.description)
-			this.blogService.savePost(this.formBlog.value).subscribe({
+		if (this.postForm.valid) {
+			console.log('data', this.postForm.value.content)
+			this.postService.savePost(this.postForm.value).subscribe({
 				next: (res) => {
 					console.log("ok")
 				},
@@ -101,7 +101,7 @@ export class PostCreateComponent {
 		this.isUploading = true;
 
 		try {
-			const uploadedUrl = null //await this.blogService.uploadFile(file).toPromise();
+			const uploadedUrl = null //await this.postService.uploadFile(file).toPromise();
 			if (uploadedUrl) {
 				if (file.type.startsWith('image/')) {
 					// this.insertMarkdownImage(uploadedUrl.url);
