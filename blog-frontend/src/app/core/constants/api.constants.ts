@@ -33,7 +33,7 @@ export const API_ENDPOINTS = {
     CREATE: '/comments',
     GET_BY_POST: '/comments/post',
     UPDATE: '/comments',
-    DELETE: '/comments',
+    DELETE: '/posts/comments',
   },
   NOTIFICATIONS: {
     GET_ALL: '/notifications',

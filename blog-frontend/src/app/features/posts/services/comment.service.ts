@@ -24,9 +24,9 @@ export class CommentService {
   /**
    * Create new comment
    */
-  createComment(data: CreateCommentRequest): Observable<ApiResponse<Comment>> {
-    return this.http.post<ApiResponse<Comment>>(
-      `${this.baseUrl}${API_ENDPOINTS.COMMENTS.CREATE}`,
+  createComment(postId: number,data: CreateCommentRequest): Observable<Comment> {
+    return this.http.post<Comment>(
+      `${this.baseUrl}${API_ENDPOINTS.POSTS.GET_BY_ID}/${postId}/comments`,
       data
     );
   }
@@ -44,8 +44,8 @@ export class CommentService {
   /**
    * Delete comment
    */
-  deleteComment(commentId: number): Observable<ApiResponse<void>> {
-    return this.http.delete<ApiResponse<void>>(
+  deleteComment(commentId: number): Observable<void> {
+    return this.http.delete<void>(
       `${this.baseUrl}${API_ENDPOINTS.COMMENTS.DELETE}/${commentId}`
     );
   }

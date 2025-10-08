@@ -169,11 +169,11 @@ export class PostDetailComponent implements OnInit {
       postId: post.id
     };
 
-    this.commentService.createComment(request).subscribe({
+    this.commentService.createComment(post.id,request).subscribe({
       next: (response) => {
-        if (response.success && response.data) {
+        if (response) {
           // Add new comment to list
-          this.comments.update(current => [response.data!, ...current]);
+          this.comments.update(current => [response!, ...current]);
           
           // Update post comment count
           this.post.update(current => {
