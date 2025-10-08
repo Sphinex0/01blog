@@ -15,9 +15,9 @@ export class CommentService {
   /**
    * Get comments by post ID
    */
-  getCommentsByPost(postId: number): Observable<ApiResponse<Comment[]>> {
-    return this.http.get<ApiResponse<Comment[]>>(
-      `${this.baseUrl}${API_ENDPOINTS.COMMENTS.GET_BY_POST}/${postId}`
+  getCommentsByPost(postId: number): Observable<Comment[]> {
+    return this.http.get<Comment[]>(
+      `${this.baseUrl}${API_ENDPOINTS.POSTS.GET_BY_ID}/${postId}/comments`
     );
   }
 

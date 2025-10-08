@@ -1,6 +1,5 @@
 package api.backend.controller;
 
-import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -8,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import api.backend.model.user.AuthResponse;
 import api.backend.model.user.LoginRequest;
 import api.backend.model.user.RegisterRequest;
-import api.backend.model.user.UserResponse;
 import api.backend.service.AuthService;
 import jakarta.validation.Valid;
 

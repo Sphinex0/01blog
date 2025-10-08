@@ -1,6 +1,5 @@
 package api.backend.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -31,7 +30,6 @@ public class UserController {
     private final ReportService reportService;
     private final NotificationService notificationService;
 
-    @Autowired
     public UserController(UserService userService, PostService postService, ReportService reportService,
             NotificationService notificationService) {
         this.userService = userService;

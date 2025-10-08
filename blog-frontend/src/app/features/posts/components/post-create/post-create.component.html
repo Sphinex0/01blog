@@ -17,8 +17,8 @@
 
                     <!-- Proper error handling -->
                     <div class="panel-label error">
-                        @if (postForm.get('content')?.invalid && postForm.get('content')?.touched) {
-                        <mat-error>Content is required</mat-error>
+                        @if ((postForm.get('content')?.invalid || postForm.get('title')?.invalid) && postForm.get('content')?.touched) {
+                        <mat-error>title and Content is required</mat-error>
                         }
                     </div>
                     <!-- <label >

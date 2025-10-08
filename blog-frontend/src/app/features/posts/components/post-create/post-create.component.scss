@@ -16,10 +16,7 @@
 	grid-template-columns: 1fr 1fr;
 
 }
-::ng-deep img{
-    max-width: 100%;
 
-}
 
 @media (max-width: 700px) {
 	.editor-layout {
@@ -72,9 +69,9 @@ textarea:focus {
 	padding: 40px;
 }
 
-textarea:focus {
-	/* background-color: red; */
-}
+// textarea:focus {
+// 	/* background-color: red; */
+// }
 
 
 .preview-content {

@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import api.backend.service.CloudinaryService;
 
 @RestController
-@RequestMapping("/api/upload")
+@RequestMapping("/api/media")
 public class FileUploadController {
 
     private CloudinaryService cloudinaryService;
@@ -24,7 +24,7 @@ public class FileUploadController {
         this.cloudinaryService = cloudinaryService;
     }
 
-    @PostMapping
+    @PostMapping("/upload")
     public ResponseEntity<Map<String, String>> uploadFile(@RequestParam("file") MultipartFile file) {
         String fileName = file.getOriginalFilename();
         String resourceType = "";

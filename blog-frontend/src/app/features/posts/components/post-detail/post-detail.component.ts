@@ -17,8 +17,10 @@ import { CommentService } from '../../services/comment.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { Post } from '../../../../core/models/post.interface';
 import { Comment, CreateCommentRequest } from '../../../../core/models/comment.interface';
-import { TimeAgoPipe } from '../../../../shared/pipes/time-ago-pipe';
+// import { TimeAgoPipe } from '../../../../shared/pipes/time-ago.pipe';
 import { ConfirmationDialogComponent } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
+import { TimeAgoPipe } from '../../../../shared/pipes/time-ago-pipe';
+import { MarkdownModule } from 'ngx-markdown';
 
 @Component({
   selector: 'app-post-detail',
@@ -36,6 +38,7 @@ import { ConfirmationDialogComponent } from '../../../../shared/components/confi
     MatMenuModule,
     MatDialogModule,
     TimeAgoPipe,
+    MarkdownModule
   ],
   templateUrl: './post-detail.component.html',
   styleUrl: './post-detail.component.scss'
@@ -87,22 +90,24 @@ export class PostDetailComponent implements OnInit {
     this.isLoadingPost.set(true);
     this.error.set(null);
 
-    // this.postService.getPostById(postId).subscribe({
-    //   next: (response) => {
-    //     if (response.success && response.data) {
-    //       this.post.set(response.data);
-    //     }
-    //     this.isLoadingPost.set(false);
-    //   },
-    //   error: (err) => {
-    //     this.error.set(err.error?.message || 'Failed to load post');
-    //     this.isLoadingPost.set(false);
-    //     this.snackBar.open('Failed to load post', 'Close', {
-    //       duration: 3000,
-    //       panelClass: ['error-snackbar']
-    //     });
-    //   }
-    // });
+    this.postService.getPostById(postId).subscribe({
+      next: (response) => {
+        if (response) {
+          this.post.set(response);
+        }
+        this.isLoadingPost.set(false);
+      },
+      error: (err) => {
+        this.error.set(err.error?.message || 'Failed to load post');
+        this.isLoadingPost.set(false);
+        this.snackBar.open('Failed to load post', 'Close', {
+          duration: 3000,
+          panelClass: ['error-snackbar']
+        });
+      }
+    });
+
+    console.log("Loading post with ID:", this.post());
   }
 
   loadComments(postId: number): void {
@@ -110,8 +115,8 @@ export class PostDetailComponent implements OnInit {
 
     this.commentService.getCommentsByPost(postId).subscribe({
       next: (response) => {
-        if (response.success && response.data) {
-          this.comments.set(response.data);
+        if (response) {
+          this.comments.set(response);
         }
         this.isLoadingComments.set(false);
       },
@@ -127,25 +132,25 @@ export class PostDetailComponent implements OnInit {
     if (!post) return;
 
     const isLiked = post.isLiked || false;
-    // this.postService.toggleLike(post.id, isLiked).subscribe({
-    //   next: () => {
-    //     // Update post locally
-    //     this.post.update(current => {
-    //       if (!current) return current;
-    //       return {
-    //         ...current,
-    //         isLiked: !isLiked,
-    //         likesCount: isLiked ? current.likesCount - 1 : current.likesCount + 1
-    //       };
-    //     });
-    //   },
-    //   error: () => {
-    //     this.snackBar.open('Failed to update like', 'Close', {
-    //       duration: 3000,
-    //       panelClass: ['error-snackbar']
-    //     });
-    //   }
-    // });
+    this.postService.likePost(post.id).subscribe({
+      next: () => {
+        // Update post locally
+        this.post.update(current => {
+          if (!current) return current;
+          return {
+            ...current,
+            isLiked: !isLiked,
+            likesCount: isLiked ? current.likesCount - 1 : current.likesCount + 1
+          };
+        });
+      },
+      error: () => {
+        this.snackBar.open('Failed to update like', 'Close', {
+          duration: 3000,
+          panelClass: ['error-snackbar']
+        });
+      }
+    });
   }
 
   onSubmitComment(): void {
@@ -218,21 +223,21 @@ export class PostDetailComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result && post) {
-        // this.postService.deletePost(post.id).subscribe({
-        //   next: () => {
-        //     this.snackBar.open('Post deleted successfully', 'Close', {
-        //       duration: 2000,
-        //       panelClass: ['success-snackbar']
-        //     });
-        //     this.router.navigate(['/home']);
-        //   },
-        //   error: () => {
-        //     this.snackBar.open('Failed to delete post', 'Close', {
-        //       duration: 3000,
-        //       panelClass: ['error-snackbar']
-        //     });
-        //   }
-        // });
+        this.postService.deletePost(post.id).subscribe({
+          next: () => {
+            this.snackBar.open('Post deleted successfully', 'Close', {
+              duration: 2000,
+              panelClass: ['success-snackbar']
+            });
+            this.router.navigate(['/home']);
+          },
+          error: () => {
+            this.snackBar.open('Failed to delete post', 'Close', {
+              duration: 3000,
+              panelClass: ['error-snackbar']
+            });
+          }
+        });
       }
     });
   }
@@ -281,11 +286,11 @@ export class PostDetailComponent implements OnInit {
 
   isCommentAuthor(comment: Comment): boolean {
     const user = this.currentUser();
-    return user ? comment.author.id === user.id : false;
+    return user ? comment.user.id === user.id : false;
   }
 
   goBack(): void {
-    this.router.navigate(['/home']);
+    this.router.navigate(['/']);
   }
 
   getMediaUrl(url: string | undefined): string {

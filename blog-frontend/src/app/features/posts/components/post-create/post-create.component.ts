@@ -2,19 +2,17 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field'
 import { MarkdownModule } from 'ngx-markdown';
+
 import { PostService } from '../../services/post.service';
 
-
 @Component({
-	selector: 'app-create-blog',
+	selector: 'app-post-create',
 	imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, MarkdownModule],
 	templateUrl: './post-create.component.html',
-	styleUrl: './post-create.component.scss'
+	styleUrl: './post-create.component.scss',
 })
 export class PostCreateComponent {
-	markdown = ``;
 	postForm: FormGroup;
-	previewUrl = "";
 	isUploading = false;
 
 	constructor(private fb: FormBuilder, private postService: PostService) {
@@ -28,7 +26,6 @@ export class PostCreateComponent {
 		this.postForm.markAllAsTouched();
 
 		if (this.postForm.valid) {
-			console.log('data', this.postForm.value.content)
 			this.postService.savePost(this.postForm.value).subscribe({
 				next: (res) => {
 					console.log("ok")
@@ -64,14 +61,11 @@ export class PostCreateComponent {
 		} else {
 			if (clipboardData?.items) {
 				for (const item of clipboardData?.items) {
-					console.log(item)
 					if (item.kind == 'file') {
 						event.preventDefault()
 						const file = item.getAsFile();
 						if (file) {
-							console.log(file.type)
-							let previewUrl = URL.createObjectURL(file)
-							this.insertMarkdownImage(previewUrl);
+							document.execCommand("insertText", false, `![Uploading image](...)`)
 							await this.handleFileUpload(file);
 						}
 					}
@@ -81,14 +75,13 @@ export class PostCreateComponent {
 
 	}
 
-	onDrop(event: DragEvent) {
+	async onDrop(event: DragEvent) {
 		event.preventDefault();
 		const files = event.dataTransfer?.files;
-		console.log(files)
 		if (files) {
 			for (const file of files) {
-				let previewUrl = URL.createObjectURL(file)
-				document.execCommand('insertText', false, `![image](${previewUrl})`);
+				document.execCommand("insertText", false, `![Uploading image](...)`)
+				await this.handleFileUpload(file);
 			}
 		}
 
@@ -101,12 +94,26 @@ export class PostCreateComponent {
 		this.isUploading = true;
 
 		try {
-			const uploadedUrl = null //await this.postService.uploadFile(file).toPromise();
+			const uploadedUrl = await this.postService.uploadFile(file).toPromise();
 			if (uploadedUrl) {
+				let content = this.postForm.value?.content
 				if (file.type.startsWith('image/')) {
-					// this.insertMarkdownImage(uploadedUrl.url);
+					if (content
+						.includes("![Uploading image](...)")) {
+						this.postForm.patchValue({
+							content: content.replace("![Uploading image](...)", this.MarkdownImage(uploadedUrl.url))
+						})
+					} else {
+						this.insertMarkdownImage(uploadedUrl.url)
+					}
 				} else if (file.type.startsWith('video/')) {
-					// this.insertMarkdownVideo(uploadedUrl.url);
+					if (content.includes("![Uploading video](...)")) {
+						this.postForm.patchValue({
+							content: content.replace("![Uploading video](...)", this.MarkdownVideo(uploadedUrl.url))
+						})
+					} else {
+						this.insertMarkdownVideo(uploadedUrl.url)
+					}
 				}
 			}
 
@@ -114,11 +121,11 @@ export class PostCreateComponent {
 
 		} catch (error) {
 			console.error('Upload failed:', error);
-			alert('File upload failed. Please try again.');
 		} finally {
 			this.isUploading = false;
 		}
 	}
+
 
 	getExtension(filename: string): string {
 		return filename.split('.').pop()?.toLowerCase() || '';
@@ -140,6 +147,14 @@ export class PostCreateComponent {
 	insertMarkdownVideo(url: string): void {
 		const markdown = `<video controls><source src="${url}" ></video>`;
 		this.insertText(markdown);
+	}
+
+	MarkdownVideo(url: string): string {
+		return `<video controls><source src="${url}" ></video>`;
+	}
+
+	MarkdownImage(url: string): string {
+		return `![image](${url})`;
 	}
 
 	insertText(pastedText: string) {

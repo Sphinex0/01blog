@@ -18,7 +18,7 @@ export const postRoutes: Routes = [
         title: '01Blog - feed',
       },
       {
-        path: 'posts/:id',
+        path: ':id',
         loadComponent: () =>
           import('../posts/components/post-detail/post-detail.component').then(
             (c) => c.PostDetailComponent

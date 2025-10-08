@@ -11,7 +11,6 @@ import api.backend.service.CommentService;
 import api.backend.service.PostService;
 import jakarta.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,7 +26,6 @@ public class PostController {
     private final PostService postService;
     private final CommentService commentService;
 
-    @Autowired
     public PostController(PostService postService, CommentService commentService) {
         this.postService = postService;
         this.commentService = commentService;
@@ -36,6 +34,8 @@ public class PostController {
     @PostMapping
     public ResponseEntity<PostResponse> createPost(@Valid @RequestBody PostRequest post,
             @AuthenticationPrincipal User currentUser) {
+        System.out.println("################################");
+
         PostResponse savedPost = postService.createPost(post, currentUser.getId());
         return ResponseEntity.ok(savedPost);
     }
@@ -92,6 +92,8 @@ public class PostController {
     @GetMapping("/{id}/comments")
     public ResponseEntity<List<CommentResponse>> getTopLevelComments(@PathVariable Long id,
             @RequestParam(defaultValue = "0") long cursor) {
+
+                //System.out.println("Fetching comments for post ID: " + id + " with cursor: " + cursor);
         if (cursor == 0) {
             cursor = Long.MAX_VALUE;
         }

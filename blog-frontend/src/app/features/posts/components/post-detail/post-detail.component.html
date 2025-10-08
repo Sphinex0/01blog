@@ -1,6 +1,4 @@
-<p>post-detail works!</p>
 <div class="post-detail-container">
-  
   <!-- Back Button -->
   <div class="back-button-wrapper">
     <button mat-icon-button (click)="goBack()" class="back-btn">
@@ -11,254 +9,236 @@
 
   <!-- Loading State -->
   @if (isLoadingPost()) {
-    <div class="loading-state">
-      <mat-spinner diameter="48"></mat-spinner>
-      <p>Loading post...</p>
-    </div>
+  <div class="loading-state">
+    <mat-spinner diameter="48"></mat-spinner>
+    <p>Loading post...</p>
+  </div>
   }
 
   <!-- Error State -->
   @if (error() && !post()) {
-    <div class="error-state">
-      <mat-icon class="error-icon">error_outline</mat-icon>
-      <h2>Post Not Found</h2>
-      <p>{{ error() }}</p>
-      <button mat-raised-button color="primary" (click)="goBack()">
-        <mat-icon>home</mat-icon>
-        Go to Home
-      </button>
-    </div>
+  <div class="error-state">
+    <mat-icon class="error-icon">error_outline</mat-icon>
+    <h2>Post Not Found</h2>
+    <p>{{ error() }}</p>
+    <button mat-raised-button color="primary" (click)="goBack()">
+      <mat-icon>home</mat-icon>
+      Go to Home
+    </button>
+  </div>
   }
 
   <!-- Post Content -->
   @if (post(); as postData) {
-    <article class="post-detail">
-      
-      <!-- Post Header -->
-      <div class="post-header">
-        <div class="author-info">
-          <a [routerLink]="['/profile', postData.user.username]" class="author-avatar">
-            @if (postData.user.avatar) {
-              <img [src]="getMediaUrl(postData.user.avatar)" [alt]="postData.user.fullName">
-            } @else {
-              <div class="avatar-placeholder">
-                {{ getAuthorInitials(postData.user.fullName) }}
-              </div>
-            }
-          </a>
-          
-          <div class="author-details">
-            <a [routerLink]="['/profile', postData.user.username]" class="author-name">
-              {{ postData.user.fullName }}
-            </a>
-            <span class="post-meta">
-              &#64;{{ postData.user.username }} · {{ postData.createdAt | timeAgo }}
-            </span>
+  <article class="post-detail">
+    <!-- Post Header -->
+    <div class="post-header">
+      <div class="author-info">
+        <a [routerLink]="['/profile', postData.user.username]" class="author-avatar">
+          @if (postData.user.avatar) {
+          <img [src]="getMediaUrl(postData.user.avatar)" [alt]="postData.user.fullName" />
+          } @else {
+          <div class="avatar-placeholder">
+            {{ getAuthorInitials(postData.user.fullName) }}
           </div>
+          }
+        </a>
+
+        <div class="author-details">
+          <a [routerLink]="['/profile', postData.user.username]" class="author-name">
+            {{ postData.user.fullName }}
+          </a>
+          <span class="post-meta">
+            &#64;{{ postData.user.username }} · {{ postData.createdAt | timeAgo }}
+          </span>
         </div>
-
-        <!-- Post Menu (for author only) -->
-        @if (isAuthor()) {
-          <button mat-icon-button [matMenuTriggerFor]="postMenu" class="post-menu-btn">
-            <mat-icon>more_vert</mat-icon>
-          </button>
-          <mat-menu #postMenu="matMenu">
-            <button mat-menu-item (click)="onEditPost()">
-              <mat-icon>edit</mat-icon>
-              <span>Edit Post</span>
-            </button>
-            <button mat-menu-item (click)="onDeletePost()" class="delete-btn">
-              <mat-icon>delete</mat-icon>
-              <span>Delete Post</span>
-            </button>
-          </mat-menu>
-        }
       </div>
 
-      <!-- Post Title -->
-      <h1 class="post-title">{{ postData.title }}</h1>
+      <!-- Post Menu (for author only) -->
+      @if (isAuthor()) {
+      <button mat-icon-button [matMenuTriggerFor]="postMenu" class="post-menu-btn">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #postMenu="matMenu">
+        <button mat-menu-item (click)="onEditPost()">
+          <mat-icon>edit</mat-icon>
+          <span>Edit Post</span>
+        </button>
+        <button mat-menu-item (click)="onDeletePost()" class="delete-btn">
+          <mat-icon>delete</mat-icon>
+          <span>Delete Post</span>
+        </button>
+      </mat-menu>
+      }
+    </div>
 
-      <!-- Post Content -->
-      <div class="post-content">
-        {{ postData.content }}
-      </div>
+    <!-- Post Title -->
+    <h1 class="post-title">{{ postData.title }}</h1>
 
-      <!-- Post Media -->
-      @if (postData.mediaUrl) {
-        <div class="post-media">
-          @if (postData.mediaType === 'image') {
-            <img 
-              [src]="getMediaUrl(postData.mediaUrl)" 
-              [alt]="postData.title"
-              class="media-image">
-          } @else if (postData.mediaType === 'video') {
-            <video 
-              [src]="getMediaUrl(postData.mediaUrl)" 
-              controls 
-              class="media-video">
-              Your browser does not support the video tag.
-            </video>
+    <!-- Post Content -->
+    <markdown class="post-content markdown-preview" [data]="postData.content"></markdown>
+
+    <!-- <div class="post-content">
+      {{ postData.content }}
+    </div> -->
+
+    <!-- Post Media -->
+    @if (postData.mediaUrl) {
+    <div class="post-media">
+      @if (postData.mediaType === 'image') {
+      <img [src]="getMediaUrl(postData.mediaUrl)" [alt]="postData.title" class="media-image" />
+      } @else if (postData.mediaType === 'video') {
+      <video [src]="getMediaUrl(postData.mediaUrl)" controls class="media-video">
+        Your browser does not support the video tag.
+      </video>
+      }
+    </div>
+    }
+
+    <!-- Post Stats -->
+    <div class="post-stats">
+      <span class="stat-item">
+        <mat-icon>favorite</mat-icon>
+        {{ postData.likesCount }} {{ postData.likesCount === 1 ? 'like' : 'likes' }}
+      </span>
+      <span class="stat-item">
+        <mat-icon>comment</mat-icon>
+        {{ postData.commentsCount }} {{ postData.commentsCount === 1 ? 'comment' : 'comments' }}
+      </span>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <!-- Post Actions -->
+    <div class="post-actions">
+      <button mat-button (click)="onLikePost()" [class.liked]="postData.isLiked" class="action-btn">
+        <mat-icon>{{ postData.isLiked ? 'favorite' : 'favorite_border' }}</mat-icon>
+        <span>{{ postData.isLiked ? 'Liked' : 'Like' }}</span>
+      </button>
+
+      <button mat-button class="action-btn">
+        <mat-icon>share</mat-icon>
+        <span>Share</span>
+      </button>
+
+      <button mat-button class="action-btn">
+        <mat-icon>bookmark_border</mat-icon>
+        <span>Save</span>
+      </button>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <!-- Comments Section -->
+    <div class="comments-section">
+      <h2 class="comments-title">Comments ({{ postData.commentsCount }})</h2>
+
+      <!-- Add Comment Form -->
+      @if (currentUser()) {
+      <form [formGroup]="commentForm" (ngSubmit)="onSubmitComment()" class="comment-form">
+        <div class="form-avatar">
+          @if (currentUser()!.avatar) {
+          <img [src]="getMediaUrl(currentUser()!.avatar)" [alt]="currentUser()!.fullName" />
+          } @else {
+          <div class="avatar-placeholder">
+            {{ getAuthorInitials(currentUser()!.fullName) }}
+          </div>
           }
         </div>
+
+        <div class="form-content">
+          <mat-form-field appearance="outline" class="comment-input">
+            <mat-label>Add a comment</mat-label>
+            <textarea
+              matInput
+              formControlName="content"
+              placeholder="Share your thoughts..."
+              rows="3"
+              maxlength="500"
+            ></textarea>
+            @if (commentForm.get('content')?.hasError('required') &&
+            commentForm.get('content')?.touched) {
+            <mat-error>Comment is required</mat-error>
+            } @if (commentForm.get('content')?.hasError('maxlength')) {
+            <mat-error>Comment must be less than 500 characters</mat-error>
+            }
+            <mat-hint align="end">
+              {{ commentForm.get('content')?.value?.length || 0 }} / 500
+            </mat-hint>
+          </mat-form-field>
+
+          <div class="form-actions">
+            <button
+              mat-raised-button
+              color="primary"
+              type="submit"
+              [disabled]="commentForm.invalid || isSubmittingComment()"
+            >
+              @if (isSubmittingComment()) {
+              <mat-spinner diameter="20" class="button-spinner"></mat-spinner>
+              Posting... } @else { Post Comment }
+            </button>
+          </div>
+        </div>
+      </form>
       }
 
-      <!-- Post Stats -->
-      <div class="post-stats">
-        <span class="stat-item">
-          <mat-icon>favorite</mat-icon>
-          {{ postData.likesCount }} {{ postData.likesCount === 1 ? 'like' : 'likes' }}
-        </span>
-        <span class="stat-item">
-          <mat-icon>comment</mat-icon>
-          {{ postData.commentsCount }} {{ postData.commentsCount === 1 ? 'comment' : 'comments' }}
-        </span>
+      <mat-divider class="comments-divider"></mat-divider>
+
+      <!-- Comments List -->
+      @if (isLoadingComments()) {
+      <div class="comments-loading">
+        <mat-spinner diameter="32"></mat-spinner>
+        <p>Loading comments...</p>
       </div>
-
-      <mat-divider></mat-divider>
-
-      <!-- Post Actions -->
-      <div class="post-actions">
-        <button 
-          mat-button 
-          (click)="onLikePost()"
-          [class.liked]="postData.isLiked"
-          class="action-btn">
-          <mat-icon>{{ postData.isLiked ? 'favorite' : 'favorite_border' }}</mat-icon>
-          <span>{{ postData.isLiked ? 'Liked' : 'Like' }}</span>
-        </button>
-
-        <button mat-button class="action-btn">
-          <mat-icon>share</mat-icon>
-          <span>Share</span>
-        </button>
-
-        <button mat-button class="action-btn">
-          <mat-icon>bookmark_border</mat-icon>
-          <span>Save</span>
-        </button>
+      } @if (!isLoadingComments() && comments().length === 0) {
+      <div class="no-comments">
+        <mat-icon>chat_bubble_outline</mat-icon>
+        <p>No comments yet. Be the first to comment!</p>
       </div>
+      } @if (comments().length > 0) {
+      <div class="comments-list">
+        @for (comment of comments(); track comment.id) {
+        <div class="comment-item">
+          <a [routerLink]="['/profile', comment.user.username]" class="comment-avatar">
+            @if (comment.user.avatar) {
+            <img [src]="getMediaUrl(comment.user.avatar)" [alt]="comment.user.fullName" />
+            } @else {
+            <div class="avatar-placeholder">
+              {{ getAuthorInitials(comment.user.fullName) }}
+            </div>
+            }
+          </a>
 
-      <mat-divider></mat-divider>
+          <div class="comment-content">
+            <div class="comment-header">
+              <div class="comment-author-info">
+                <a [routerLink]="['/profile', comment.user.username]" class="comment-author-name">
+                  {{ comment.user.fullName }}
+                </a>
+                <span class="comment-time">{{ comment.createdAt | timeAgo }}</span>
+              </div>
 
-      <!-- Comments Section -->
-      <div class="comments-section">
-        <h2 class="comments-title">
-          Comments ({{ postData.commentsCount }})
-        </h2>
-
-        <!-- Add Comment Form -->
-        @if (currentUser()) {
-          <form [formGroup]="commentForm" (ngSubmit)="onSubmitComment()" class="comment-form">
-            <div class="form-avatar">
-              @if (currentUser()!.avatar) {
-                <img [src]="getMediaUrl(currentUser()!.avatar)" [alt]="currentUser()!.fullName">
-              } @else {
-                <div class="avatar-placeholder">
-                  {{ getAuthorInitials(currentUser()!.fullName) }}
-                </div>
+              @if (isCommentAuthor(comment)) {
+              <button mat-icon-button [matMenuTriggerFor]="commentMenu" class="comment-menu-btn">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #commentMenu="matMenu">
+                <button mat-menu-item (click)="onDeleteComment(comment)" class="delete-btn">
+                  <mat-icon>delete</mat-icon>
+                  <span>Delete</span>
+                </button>
+              </mat-menu>
               }
             </div>
 
-            <div class="form-content">
-              <mat-form-field appearance="outline" class="comment-input">
-                <mat-label>Add a comment</mat-label>
-                <textarea 
-                  matInput 
-                  formControlName="content"
-                  placeholder="Share your thoughts..."
-                  rows="3"
-                  maxlength="500"></textarea>
-                @if (commentForm.get('content')?.hasError('required') && commentForm.get('content')?.touched) {
-                  <mat-error>Comment is required</mat-error>
-                }
-                @if (commentForm.get('content')?.hasError('maxlength')) {
-                  <mat-error>Comment must be less than 500 characters</mat-error>
-                }
-                <mat-hint align="end">
-                  {{ commentForm.get('content')?.value?.length || 0 }} / 500
-                </mat-hint>
-              </mat-form-field>
-
-              <div class="form-actions">
-                <button 
-                  mat-raised-button 
-                  color="primary" 
-                  type="submit"
-                  [disabled]="commentForm.invalid || isSubmittingComment()">
-                  @if (isSubmittingComment()) {
-                    <mat-spinner diameter="20" class="button-spinner"></mat-spinner>
-                    Posting...
-                  } @else {
-                    Post Comment
-                  }
-                </button>
-              </div>
-            </div>
-          </form>
-        }
-
-        <mat-divider class="comments-divider"></mat-divider>
-
-        <!-- Comments List -->
-        @if (isLoadingComments()) {
-          <div class="comments-loading">
-            <mat-spinner diameter="32"></mat-spinner>
-            <p>Loading comments...</p>
+            <p class="comment-text">{{ comment.content }}</p>
           </div>
-        }
-
-        @if (!isLoadingComments() && comments().length === 0) {
-          <div class="no-comments">
-            <mat-icon>chat_bubble_outline</mat-icon>
-            <p>No comments yet. Be the first to comment!</p>
-          </div>
-        }
-
-        @if (comments().length > 0) {
-          <div class="comments-list">
-            @for (comment of comments(); track comment.id) {
-              <div class="comment-item">
-                <a [routerLink]="['/profile', comment.author.username]" class="comment-avatar">
-                  @if (comment.author.avatar) {
-                    <img [src]="getMediaUrl(comment.author.avatar)" [alt]="comment.author.fullName">
-                  } @else {
-                    <div class="avatar-placeholder">
-                      {{ getAuthorInitials(comment.author.fullName) }}
-                    </div>
-                  }
-                </a>
-
-                <div class="comment-content">
-                  <div class="comment-header">
-                    <div class="comment-author-info">
-                      <a [routerLink]="['/profile', comment.author.username]" class="comment-author-name">
-                        {{ comment.author.fullName }}
-                      </a>
-                      <span class="comment-time">{{ comment.createdAt | timeAgo }}</span>
-                    </div>
-
-                    @if (isCommentAuthor(comment)) {
-                      <button mat-icon-button [matMenuTriggerFor]="commentMenu" class="comment-menu-btn">
-                        <mat-icon>more_vert</mat-icon>
-                      </button>
-                      <mat-menu #commentMenu="matMenu">
-                        <button mat-menu-item (click)="onDeleteComment(comment)" class="delete-btn">
-                          <mat-icon>delete</mat-icon>
-                          <span>Delete</span>
-                        </button>
-                      </mat-menu>
-                    }
-                  </div>
-
-                  <p class="comment-text">{{ comment.content }}</p>
-                </div>
-              </div>
-            }
-          </div>
+        </div>
         }
       </div>
-
-    </article>
+      }
+    </div>
+  </article>
   }
-
 </div>

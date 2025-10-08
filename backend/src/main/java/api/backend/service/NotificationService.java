@@ -5,7 +5,6 @@ import api.backend.model.notification.NotificationResponse;
 import api.backend.model.user.User;
 import api.backend.model.user.UserResponse;
 import api.backend.repository.NotificationRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
@@ -18,7 +17,6 @@ public class NotificationService {
 
     private final NotificationRepository notificationRepository;
 
-    @Autowired
     public NotificationService(NotificationRepository notificationRepository) {
         this.notificationRepository = notificationRepository;
     }

@@ -7,7 +7,6 @@ import api.backend.model.post.Post;
 import api.backend.model.user.User;
 import api.backend.repository.CommentRepository;
 import api.backend.repository.PostRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -20,7 +19,6 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
 
-    @Autowired
     public CommentService(CommentRepository commentRepository, PostRepository postRepository) {
         this.commentRepository = commentRepository;
         this.postRepository = postRepository;
@@ -51,7 +49,7 @@ public class CommentService {
         return new CommentResponse(
                 savedComment.getId(),
                 savedComment.getContent(),
-                user.getId(),
+                (UserService.toUserResponse(user)),
                 postId,
                 savedComment.getCreatedAt(),
                 request.parentId(),
@@ -89,7 +87,7 @@ public class CommentService {
             return new CommentResponse(
                     comment.getId(),
                     comment.getContent(),
-                    comment.getUser().getId(),
+                    (UserService.toUserResponse(comment.getUser())),
                     comment.getPost().getId(),
                     comment.getCreatedAt(),
                     comment.getParent() != null ? comment.getParent().getId() : null,
@@ -99,14 +97,14 @@ public class CommentService {
 
     public List<CommentResponse> getTopLevelComments(Long postId, long cursor) {
         Pageable pageable = PageRequest.of(0, 10);// , Direction.DESC,"id"
-
-        return commentRepository.findByPostIdAndParentIsNull(postId, cursor, pageable).map(comment -> {
+        //, cursor
+        return commentRepository.findByPostIdAndParentIsNull(postId, pageable).map(comment -> {
             int replyCount = commentRepository.findByParentId(comment.getId())
                     .size();
             return new CommentResponse(
                     comment.getId(),
                     comment.getContent(),
-                    comment.getUser().getId(),
+                    (UserService.toUserResponse(comment.getUser())),
                     postId,
                     comment.getCreatedAt(),
                     null, // Top-level comments have no parent

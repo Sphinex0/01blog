@@ -8,7 +8,6 @@ import api.backend.model.user.User;
 import api.backend.model.user.UserResponse;
 import api.backend.repository.PostRepository;
 import api.backend.repository.ReportRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
@@ -23,7 +22,6 @@ public class ReportService {
     private final ReportRepository reportRepository;
     private final PostRepository postRepository;
 
-    @Autowired
     public ReportService(ReportRepository reportRepository, PostRepository postRepository) {
         this.reportRepository = reportRepository;
         this.postRepository = postRepository;
