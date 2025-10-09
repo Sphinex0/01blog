@@ -25,42 +25,6 @@ import { Post } from '../../../../core/models/post.interface';
 import { TimeAgoPipe } from '../../../../shared/pipes/time-ago-pipe';
 import { FeedService } from '../../services/feed.service';
 
-@Directive({
-  selector: '[elementVisible]',
-  standalone: true,
-})
-export class ElementVisibleDirective implements AfterViewInit {
-  @Output() elementVisible = new EventEmitter<void>();
-
-  private observer?: IntersectionObserver;
-  private readonly elementRef = inject(ElementRef);
-
-  ngAfterViewInit(): void {
-    this.observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            this.elementVisible.emit();
-          }
-        });
-      },
-      {
-        root: null,
-        rootMargin: '300px',
-        threshold: 0.1,
-      }
-    );
-
-    this.observer.observe(this.elementRef.nativeElement);
-  }
-
-  ngOnDestroy(): void {
-    if (this.observer) {
-      this.observer.disconnect();
-    }
-  }
-}
-
 @Component({
   selector: 'app-feed',
   imports: [
@@ -73,11 +37,8 @@ export class ElementVisibleDirective implements AfterViewInit {
     MatRippleModule,
     MatChipsModule,
     TimeAgoPipe,
-    ElementVisibleDirective,
   ],
-  host: {
-    '(window:scroll)': 'onScroll()',
-  },
+
   templateUrl: './feed.component.html',
   styleUrl: './feed.component.scss',
 })
@@ -88,7 +49,6 @@ export class FeedComponent implements OnInit, OnDestroy {
   @ViewChild('loadMoreTrigger') loadMoreTrigger?: ElementRef;
 
   private readonly router = inject(Router);
-
 
   // Computed signals from service
   readonly posts = this.feedService.posts;
@@ -112,7 +72,10 @@ export class FeedComponent implements OnInit, OnDestroy {
 
   onTriggerVisible(): void {
     if (this.hasMore() && !this.isLoading() && !this.isLoadingMore()) {
-      this.loadMore();
+      console.log('1');
+      setTimeout(() => {
+        this.loadMore();
+      }, 0);
     }
   }
   private setupIntersectionObserver(): void {
@@ -134,27 +97,9 @@ export class FeedComponent implements OnInit, OnDestroy {
     }
   }
 
-  // @HostListener('window:scroll')
-  onScroll(): void {
-    console.log('scrolling...');
-    if (this.shouldLoadMore()) {
-      this.loadMore();
-    }
-  }
+  
 
-  private shouldLoadMore(): boolean {
-    const scrollPosition = window.innerHeight + window.scrollY;
-    const documentHeight = document.documentElement.scrollHeight;
-    const distanceFromBottom = documentHeight - scrollPosition;
 
-    return (
-      distanceFromBottom < this.scrollThreshold &&
-      !this.isLoading() &&
-      !this.isLoadingMore() &&
-      this.hasMore() &&
-      this.posts().length > 0
-    );
-  }
 
   loadFeed(): void {
     this.feedService.getFeed().subscribe();
@@ -176,6 +121,7 @@ export class FeedComponent implements OnInit, OnDestroy {
   loadMore(): void {
     if (this.isLoadingMore()) return;
 
+    console.log('2');
     this.isLoadingMore.set(true);
     this.feedService.loadMore();
 
