@@ -4,12 +4,19 @@ set -e
 
 echo "📦 Setting up Docker (rootless)..."
 
-# Check if Docker is already installed
-if command -v docker &> /dev/null; then
-    echo "✅ Docker is already installed."
+# Check if Docker is already installed and working
+if command -v docker &> /dev/null && docker version &> /dev/null; then
+    echo "✅ Docker is already installed and running."
 else
-    # Download and install Docker rootless
-    curl -fsSL https://get.docker.com/rootless | sh
+    echo "🔄 Installing Docker rootless..."
+    
+    # Remove old installation
+    rm -rf ~/bin/docker* ~/.local/bin/docker* || true
+    pkill -f dockerd || true
+    pkill -f rootlesskit || true
+    
+    # Install with force flag
+    curl -fsSL https://get.docker.com/rootless | FORCE=1 sh
     echo "✅ Docker rootless installed."
 fi
 
@@ -17,44 +24,49 @@ fi
 echo "⚙️ Setting up environment variables..."
 
 # Remove existing Docker-related lines from .zshrc
-sed -i.bak '/export PATH=\$HOME\/bin/d' ~/.zshrc
+sed -i.bak '/export PATH.*bin/d' ~/.zshrc
 sed -i.bak '/export DOCKER_HOST/d' ~/.zshrc
 sed -i.bak '/dockerd-rootless.sh/d' ~/.zshrc
 
 # Add new environment variables
-echo 'export PATH=$HOME/bin:$PATH' >> ~/.zshrc
-echo 'export DOCKER_HOST=unix:///run/user/$(id -u)/docker.sock' >> ~/.zshrc
+cat >> ~/.zshrc << 'EOF'
+# Docker rootless
 export PATH=$HOME/bin:$PATH
-export DOCKER_HOST=unix:///run/user/$(id -u)/docker.sock
+export DOCKER_HOST=unix://$XDG_RUNTIME_DIR/docker.sock
+EOF
+
+source ~/.zshrc
 
 echo "✅ Environment configured."
 
 # Function to check if Docker daemon is running
 is_docker_running() {
-    if [ -S "/run/user/$(id -u)/docker.sock" ] && docker version &> /dev/null; then
+    if [ -S "$XDG_RUNTIME_DIR/docker.sock" ] && docker version &> /dev/null; then
         return 0
     else
         return 1
     fi
 }
 
-# Start Docker daemon only if not already running
-echo "🔍 Checking if Docker daemon is already running..."
+# Start Docker daemon
+echo "🔍 Checking if Docker daemon is running..."
 if is_docker_running; then
     echo "✅ Docker daemon is already running."
 else
-    echo "🚀 Starting Docker daemon (rootless) in background..."
+    echo "🚀 Starting Docker daemon..."
     
-    # Kill any stale processes first
-    pkill -f dockerd-rootless || true
+    # Kill any stale processes
+    pkill -f dockerd || true
     pkill -f rootlesskit || true
     sleep 2
     
-    # Remove any stale lock files
-    rm -f /run/user/$(id -u)/dockerd-rootless/lock 2>/dev/null || true
-    
-    # Start Docker daemon directly (not via systemd)
-    nohup ~/bin/dockerd-rootless.sh > ~/docker-rootless.log 2>&1 &
+    # Start via systemd user service if available
+    if systemctl --user start docker 2>/dev/null; then
+        echo "✅ Started via systemd"
+    else
+        # Fallback to manual start
+        nohup ~/bin/dockerd-rootless.sh > ~/docker-rootless.log 2>&1 &
+    fi
     
     # Wait for Docker to start
     echo "⏳ Waiting for Docker to start..."
@@ -67,23 +79,19 @@ else
     done
     
     if ! is_docker_running; then
-        echo "❌ Docker failed to start. Check ~/docker-rootless.log for details."
-        tail -20 ~/docker-rootless.log
+        echo "❌ Docker failed to start. Check ~/docker-rootless.log"
+        echo "📋 Last 10 lines of log:"
+        tail -10 ~/docker-rootless.log
         exit 1
     fi
 fi
 
-# Optional: install Docker Compose v2
+# Install Docker Compose
 echo "📦 Installing Docker Compose v2..."
 mkdir -p ~/.docker/cli-plugins
-if [ ! -f ~/.docker/cli-plugins/docker-compose ]; then
-    curl -SL https://github.com/docker/compose/releases/download/v2.26.1/docker-compose-linux-x86_64 \
-      -o ~/.docker/cli-plugins/docker-compose
-    chmod +x ~/.docker/cli-plugins/docker-compose
-    echo "✅ Docker Compose installed."
-else
-    echo "✅ Docker Compose already installed."
-fi
+COMPOSE_URL="https://github.com/docker/compose/releases/download/v2.26.1/docker-compose-linux-$(uname -m)"
+curl -SL $COMPOSE_URL -o ~/.docker/cli-plugins/docker-compose
+chmod +x ~/.docker/cli-plugins/docker-compose
 
 echo 'export PATH=$HOME/.docker/cli-plugins:$PATH' >> ~/.zshrc
 export PATH=$HOME/.docker/cli-plugins:$PATH
@@ -94,4 +102,5 @@ docker --version
 docker compose version
 
 echo ""
-echo "✅ All done! Run 'source ~/.zshrc' to apply environment changes."
+echo "🎉 Docker rootless setup complete!"
+echo "💡 Run 'source ~/.zshrc' or restart your terminal to apply changes."

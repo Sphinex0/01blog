@@ -10,9 +10,49 @@
                         <input class="title-input"
                             formControlName="title" placeholder="New post title here" type="text"/>
                     </label>
+                    <div class="editor-toolbar">
+                        <!-- Bold Button -->
+                        <button (click)="toolBarClick(myTextarea, '**', '**')" type="button" class="toolbar-btn">
+                            <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
+                                class="crayons-icon">
+                                <path
+                                    d="M8 11h4.5a2.5 2.5 0 0 0 0-5H8v5Zm10 4.5a4.501 4.501 0 0 1-4.5 4.5H6V4h6.5a4.5 4.5 0 0 1 3.256 7.606A4.5 4.5 0 0 1 18 15.5ZM8 13v5h5.5a2.5 2.5 0 0 0 0-5H8Z">
+                                </path>
+                            </svg>
+                        </button>
+                        <!-- Italic Button -->
+                        <button (click)="toolBarClick(myTextarea, '*', '*')" type="button" class="toolbar-btn"
+                            aria-label="Italic">
+                            <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
+                                class="crayons-icon">
+                                <path d="M15 20H7v-2h2.927l2.116-12H9V4h8v2h-2.927l-2.116 12H15v2Z"></path>
+                            </svg>
+                        </button>
+                        <!-- Link Button -->
+                        <button (click)="toolBarClick(myTextarea, '[', '](url)')" type="button" class="toolbar-btn"
+                            aria-label="Link">
+                            <svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"
+                                class="crayons-icon">
+                                <path
+                                    d="M18.364 15.536 16.95 14.12l1.414-1.414a5.001 5.001 0 0 0-3.531-8.551 5 5 0 0 0-3.54 1.48L9.879 7.05 8.464 5.636 9.88 4.222a7 7 0 1 1 9.9 9.9l-1.415 1.414zm-2.828 2.828-1.415 1.414a7 7 0 0 1-9.9-9.9l1.415-1.414L7.05 9.88l-1.414 1.414a5 5 0 1 0 7.071 7.071l1.414-1.414 1.415 1.414zm-.708-10.607 1.415 1.415-7.071 7.07-1.415-1.414 7.071-7.07z">
+                                </path>
+                            </svg>
+                        </button>
+                        <!-- Image Upload Button (Placeholder) -->
+                        <button (click)="fileInput.click()" type="button" aria-label="Upload image" class="toolbar-btn">
+                            <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
+                                class="crayons-icon">
+                                <path
+                                    d="M20 5H4v14l9.292-9.294a1 1 0 011.414 0L20 15.01V5zM2 3.993A1 1 0 012.992 3h18.016c.548 0 .992.445.992.993v16.014a1 1 0 01-.992.993H2.992A.993.993 0 012 20.007V3.993zM8 11a2 2 0 110-4 2 2 0 010 4z">
+                                </path>
+                            </svg>
+                        </button>
+                        <input #fileInput type="file" accept="image/*,video/*" style="display: none;"
+                            (change)="onImageUpload($event,myTextarea)">
+                    </div>
 
                     <!-- <img [src]="previewUrl" alt="Preview" class="preview-image" /> -->
-                    <textarea tool (drop)="onDrop($event)" (paste)="onPaste($event)" class="markdown-textarea NgxEditor__Wrapper" formControlName="content"
+                    <textarea #myTextarea tool (drop)="onDrop($event)" (paste)="onPaste($event)" class="markdown-textarea NgxEditor__Wrapper" formControlName="content"
                         placeholder="Start typing your markdown here..."></textarea>
 
                     <!-- Proper error handling -->

@@ -52,8 +52,8 @@ export class PostService {
   /**
    * Delete post
    */
-  deletePost(postId: number): Observable<ApiResponse<void>> {
-    return this.http.delete<ApiResponse<void>>(
+  deletePost(postId: number): Observable<void> {
+    return this.http.delete<void>(
       `${this.baseUrl}${API_ENDPOINTS.POSTS.DELETE}/${postId}`
     );
   }

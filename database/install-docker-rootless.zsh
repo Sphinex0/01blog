@@ -11,7 +11,7 @@ if [ -f "$HOME/bin/dockerd" ]; then
     pkill -f dockerd-rootless.sh 2>/dev/null || true
     rm -f "$HOME/bin/dockerd"
     "$HOME/bin/dockerd-rootless-setuptool.sh" uninstall -f 2>/dev/null || true
-fi
+fi.
 
 # Download and install Docker rootless
 curl -fsSL https://get.docker.com/rootless | sh
