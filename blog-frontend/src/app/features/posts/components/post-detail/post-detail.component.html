@@ -55,11 +55,11 @@
       </div>
 
       <!-- Post Menu (for author only) -->
-      @if (isAuthor()) {
       <button mat-icon-button [matMenuTriggerFor]="postMenu" class="post-menu-btn">
         <mat-icon>more_vert</mat-icon>
       </button>
       <mat-menu #postMenu="matMenu">
+        @if (isAuthor()) {
         <button mat-menu-item (click)="onEditPost()">
           <mat-icon>edit</mat-icon>
           <span>Edit Post</span>
@@ -68,8 +68,14 @@
           <mat-icon>delete</mat-icon>
           <span>Delete Post</span>
         </button>
-      </mat-menu>
+      }@else {
+        <button mat-menu-item class="report-btn"> 
+          <!-- (click)="onReportPost()"  -->
+          <mat-icon>flag</mat-icon>
+          <span>Report Post</span>
+        </button>
       }
+      </mat-menu>
     </div>
 
     <!-- Post Title -->

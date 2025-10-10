@@ -8,13 +8,12 @@ export const postRoutes: Routes = [
     children: [
       {
         path: 'create',
-        // loadComponent: () => {
-        //   console.log('loading feed');
-        //   return import('./components/post-create/post-create.component').then(
-        //     (c) => c.PostCreateComponent
-        //   );
-        // },
-        component:PostCreateComponent,
+        loadComponent: () => {
+          console.log('loading feed');
+          return import('./components/post-create/post-create.component').then(
+            (c) => c.PostCreateComponent
+          );
+        },
         title: '01Blog - feed',
       },
       {
@@ -22,6 +21,14 @@ export const postRoutes: Routes = [
         loadComponent: () =>
           import('../posts/components/post-detail/post-detail.component').then(
             (c) => c.PostDetailComponent
+          ),
+        title: '01Blog - Post',
+      },
+      {
+        path: 'edit/:id',
+        loadComponent: () =>
+          import('./components/post-create/post-create.component').then(
+            (c) => c.PostCreateComponent
           ),
         title: '01Blog - Post',
       },

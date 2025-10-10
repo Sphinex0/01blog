@@ -17,7 +17,6 @@ import { CommentService } from '../../services/comment.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { Post } from '../../../../core/models/post.interface';
 import { Comment, CreateCommentRequest } from '../../../../core/models/comment.interface';
-// import { TimeAgoPipe } from '../../../../shared/pipes/time-ago.pipe';
 import { ConfirmationDialogComponent } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { TimeAgoPipe } from '../../../../shared/pipes/time-ago-pipe';
 import { MarkdownModule } from 'ngx-markdown';

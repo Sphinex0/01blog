@@ -94,11 +94,12 @@ public class PostService {
         return "Post hidden";
     }
 
-    public Post updatePost(Long id, PostRequest request) {
-        return postRepository.findById(id).map(existingPost -> {
-            existingPost.setContent(request.content());
-            return postRepository.save(existingPost);
-        }).get();
+    public PostResponse updatePost(Long id, PostRequest request) {
+        Post existingPost = postRepository.findById(id).get();
+        existingPost.setTitle(request.title());
+        existingPost.setContent(request.content());
+        existingPost.setModifiedAt(LocalDateTime.now());
+        return toPostResponse(postRepository.save(existingPost));
     }
 
     // likes

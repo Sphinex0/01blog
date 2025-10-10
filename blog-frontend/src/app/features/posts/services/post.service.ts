@@ -33,29 +33,15 @@ export class PostService {
   /**
    * Update existing post
    */
-  updatePost(postId: number, data: UpdatePostRequest): Observable<ApiResponse<Post>> {
-    const formData = new FormData();
-
-    if (data.title) {
-      formData.append('title', data.title);
-    }
-    if (data.content) {
-      formData.append('content', data.content);
-    }
-
-    return this.http.put<ApiResponse<Post>>(
-      `${this.baseUrl}${API_ENDPOINTS.POSTS.UPDATE}/${postId}`,
-      formData
-    );
+  updatePost(postId: number, data: UpdatePostRequest): Observable<Post> {
+    return this.http.put<Post>(`${this.baseUrl}${API_ENDPOINTS.POSTS.UPDATE}/${postId}`, data);
   }
 
   /**
    * Delete post
    */
   deletePost(postId: number): Observable<void> {
-    return this.http.delete<void>(
-      `${this.baseUrl}${API_ENDPOINTS.POSTS.DELETE}/${postId}`
-    );
+    return this.http.delete<void>(`${this.baseUrl}${API_ENDPOINTS.POSTS.DELETE}/${postId}`);
   }
 
   /**
@@ -95,8 +81,11 @@ export class PostService {
 
   uploadFile(file: File) {
     const formData = new FormData();
-    formData.append('file', file)
-    return this.http.post<{url: string}>(`${this.baseUrl}${API_ENDPOINTS.MEDIA.UPLOAD}`, formData)
+    formData.append('file', file);
+    return this.http.post<{ url: string }>(
+      `${this.baseUrl}${API_ENDPOINTS.MEDIA.UPLOAD}`,
+      formData
+    );
     // return new Observable<{ url: string }>();
   }
 }

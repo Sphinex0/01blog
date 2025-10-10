@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -10,6 +10,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MarkdownModule } from 'ngx-markdown';
 
 import { PostService } from '../../services/post.service';
+import { ActivatedRoute } from '@angular/router';
+import { Post } from '../../../../core/models/post.interface';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-post-create',
@@ -17,8 +20,14 @@ import { PostService } from '../../services/post.service';
   templateUrl: './post-create.component.html',
   styleUrl: './post-create.component.scss',
 })
-export class PostCreateComponent {
+export class PostCreateComponent implements OnInit {
   postForm: FormGroup;
+  private readonly route = inject(ActivatedRoute);
+  readonly isLoadingPost = signal(false);
+  readonly post = signal<Post | null>(null);
+  private readonly snackBar = inject(MatSnackBar);
+  readonly error = signal<string | null>(null);
+
   isUploading = false;
 
   constructor(private fb: FormBuilder, private postService: PostService) {
@@ -26,6 +35,42 @@ export class PostCreateComponent {
       content: ['', Validators.required],
       title: ['', Validators.required],
     });
+  }
+
+  ngOnInit(): void {
+    const postId = this.route.snapshot.params['id'];
+    if (postId) {
+      this.loadPost(+postId);
+      // this.loadComments(+postId);
+    }
+  }
+
+  loadPost(postId: number): void {
+    this.isLoadingPost.set(true);
+    // this.error.set(null);
+
+    this.postService.getPostById(postId).subscribe({
+      next: (response) => {
+        if (response) {
+          this.post.set(response);
+          this.postForm.setValue({
+            title: response.title,
+            content: response.content,
+          });
+        }
+        this.isLoadingPost.set(false);
+      },
+      error: (err) => {
+        this.error.set(err.error?.message || 'Failed to load post');
+        this.isLoadingPost.set(false);
+        this.snackBar.open('Failed to load post', 'Close', {
+          duration: 3000,
+          panelClass: ['error-snackbar'],
+        });
+      },
+    });
+
+    console.log('Loading post with ID:', this.post());
   }
 
   toolBarClick(textarea: HTMLTextAreaElement, start: string, end: string) {
@@ -50,14 +95,26 @@ export class PostCreateComponent {
     this.postForm.markAllAsTouched();
 
     if (this.postForm.valid) {
-      this.postService.savePost(this.postForm.value).subscribe({
-        next: (res) => {
-          console.log('ok');
-        },
-        error: (err) => {
-          console.log(err);
-        },
-      });
+      let p = this.post();
+      if (p) {
+        this.postService.updatePost(p.id, this.postForm.value).subscribe({
+          next: (res) => {
+            console.log('ok');
+          },
+          error: (err) => {
+            console.log(err);
+          },
+        });
+      } else {
+        this.postService.savePost(this.postForm.value).subscribe({
+          next: (res) => {
+            console.log('ok');
+          },
+          error: (err) => {
+            console.log(err);
+          },
+        });
+      }
     }
   }
 
