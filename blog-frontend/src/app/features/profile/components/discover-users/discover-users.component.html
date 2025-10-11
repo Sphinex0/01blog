@@ -1,0 +1,87 @@
+<div class="discover-container">
+  
+  <!-- Header -->
+  <div class="discover-header">
+    <h1 class="page-title">Discover Users</h1>
+    <p class="page-subtitle">Connect with learners and share your journey</p>
+  </div>
+
+  <!-- Search Bar -->
+  <div class="search-section">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Search users</mat-label>
+      <input 
+        matInput 
+        [formControl]="searchControl" 
+        placeholder="Search by name or username...">
+      <mat-icon matPrefix>search</mat-icon>
+      @if (searchControl.value) {
+        <button 
+          matSuffix 
+          mat-icon-button 
+          (click)="clearSearch()"
+          aria-label="Clear search">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+    </mat-form-field>
+  </div>
+
+  <!-- Loading State -->
+  @if (isLoading() && users().length === 0) {
+    <div class="loading-state">
+      <mat-spinner diameter="48"></mat-spinner>
+      <p>Discovering users...</p>
+    </div>
+  }
+
+  <!-- Error State -->
+  @if (error() && users().length === 0) {
+    <div class="error-state">
+      <mat-icon class="error-icon">error_outline</mat-icon>
+      <h2>Oops! Something went wrong</h2>
+      <p>{{ error() }}</p>
+      <button mat-raised-button color="primary" (click)="loadUsers()">
+        <mat-icon>refresh</mat-icon>
+        Try Again
+      </button>
+    </div>
+  }
+
+  <!-- Empty State -->
+  @if (!isLoading() && !error() && users().length === 0) {
+    <div class="empty-state">
+      <mat-icon class="empty-icon">person_search</mat-icon>
+      <h2>No users found</h2>
+      @if (searchControl.value) {
+        <p>No users match "{{ searchControl.value }}". Try a different search.</p>
+        <button mat-raised-button color="primary" (click)="clearSearch()">
+          <mat-icon>clear</mat-icon>
+          Clear Search
+        </button>
+      } @else {
+        <p>Be the first to join the community!</p>
+      }
+    </div>
+  }
+
+  <!-- Users Grid -->
+  @if (users().length > 0) {
+    <div class="users-grid">
+      @for (user of users(); track user.id) {
+        <app-user-card 
+          [user]="user" 
+          (followToggle)="onFollowToggle($event)">
+        </app-user-card>
+      }
+    </div>
+
+    <!-- Loading More Indicator -->
+    @if (isLoading() && users().length > 0) {
+      <div class="loading-more">
+        <mat-spinner diameter="32"></mat-spinner>
+      </div>
+    }
+  }
+
+</div>

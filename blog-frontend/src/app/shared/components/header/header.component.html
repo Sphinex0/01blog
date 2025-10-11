@@ -24,7 +24,7 @@
       <mat-icon>home</mat-icon>
       Home
     </a>
-    <a mat-button routerLink="/">
+    <a mat-button routerLink="/users" >
       <mat-icon>group</mat-icon>
       Users
     </a>
@@ -37,6 +37,26 @@
       Notifications
     </a>
   </nav>
+
+  <!-- <mat-tab-group 
+        [(selectedIndex)]="selectedTabIndex"
+        (selectedIndexChange)="onTabChange($event)"
+        class="feed-tabs"
+        animationDuration="300ms">
+        
+        <mat-tab label="Following">
+          <ng-template matTabContent>
+            <app-feed></app-feed>
+          </ng-template>
+        </mat-tab>
+
+        <mat-tab label="Explore">
+          <ng-template matTabContent>
+            <app-public-feed></app-public-feed>
+          </ng-template>
+        </mat-tab>
+
+      </mat-tab-group> -->
 
   <!-- User Menu -->
   @if (currentUser(); as user) {

@@ -20,6 +20,7 @@ import api.backend.service.UserService;
 import jakarta.validation.Valid;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users") // Define a specific path
@@ -85,9 +86,12 @@ public class UserController {
         return ResponseEntity.ok(userService.getSubscribtions(userId, cursor));
     }
 
-    @PostMapping("/subscribe")
-    public ResponseEntity<String> subscribe(@Valid @RequestBody SubscribeRequest request) {
-        return ResponseEntity.ok(userService.subscribe(request));
+    @PostMapping("/subscribe/{subscribedTo}")
+    public ResponseEntity<Map<String,String>> subscribe(@Valid @PathVariable long subscribedTo,
+            @AuthenticationPrincipal User currentUser) {
+
+                
+        return ResponseEntity.ok(Map.of("action", userService.subscribe(subscribedTo)));
     }
 
     // Updated endpoint to submit a report

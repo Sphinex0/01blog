@@ -14,14 +14,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
-import api.backend.model.subscription.SubscribeRequest;
 import api.backend.model.user.BanRequest;
 import api.backend.model.user.DeleteRequest;
 import api.backend.model.user.User;
 import api.backend.model.user.UserResponse;
 import api.backend.repository.UserRepository;
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -32,15 +30,15 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public String subscribe(@Valid SubscribeRequest subscribeRequest) {
+    public String subscribe(long subscribedTo) {
         long id = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
-        if (id == subscribeRequest.subscribedTo()) {
+        if (id == subscribedTo) {
             throw new IllegalArgumentException("You can't subscribe to yourself");
         }
         User currentUser = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("No authenticated user found"));
 
-        User target = userRepository.findById(subscribeRequest.subscribedTo())
+        User target = userRepository.findById(subscribedTo)
                 .orElseThrow(() -> new IllegalArgumentException("Target user not found"));
 
         if (currentUser.getSubscribedTo().contains(target)) {
@@ -135,6 +133,11 @@ public class UserService implements UserDetailsService {
     }
 
     public static UserResponse toUserResponse(User user) {
+        User currentUser = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        String currentUsername = currentUser.getUsername();
+        boolean currentInSubscribersByUsername = currentUsername != null && user.getSubscribers().stream()
+                .anyMatch(sub -> currentUsername.equals(sub.getUsername()));
+
         return new UserResponse(
                 user.getId(),
                 user.getFullName(),
@@ -142,7 +145,11 @@ public class UserService implements UserDetailsService {
                 user.getEmail(),
                 user.getRole(),
                 user.getAvatar(),
-                user.getCreatedAt());
+                user.getCreatedAt(),
+                user.getPosts().size(),
+                user.getSubscribers().size(),
+                user.getSubscribedTo().size(),
+                currentInSubscribersByUsername);
     }
 
 }

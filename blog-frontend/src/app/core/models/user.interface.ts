@@ -15,7 +15,7 @@ export interface UserProfile extends User {
   postsCount: number;
   followersCount: number;
   followingCount: number;
-  isFollowing?: boolean;
+  isFollowed?: boolean;
 }
 
 export interface RegisterRequest {

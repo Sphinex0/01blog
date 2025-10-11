@@ -9,5 +9,10 @@ public record UserResponse(
         String email,
         String role,
         String avatar,
-        LocalDateTime createdAt) {
+        LocalDateTime createdAt,
+        int postsCount,
+        int followersCount,
+        int followingCount,
+        boolean isFollowed
+        ) {
 }

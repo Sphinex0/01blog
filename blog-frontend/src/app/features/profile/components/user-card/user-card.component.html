@@ -1,0 +1,68 @@
+    <mat-card class="user-card">
+      <div class="card-header">
+        <a [routerLink]="['/profile', user().username]" class="avatar-link">
+          @if (user().avatar) {
+            <img [src]="getAvatarUrl(user().avatar)" [alt]="user().fullName" class="avatar">
+          } @else {
+            <div class="avatar-placeholder">
+              {{ getInitials(user().fullName) }}
+            </div>
+          }
+        </a>
+      </div>
+
+      <mat-card-content class="card-content">
+        <a [routerLink]="['/profile', user().username]" class="user-name">
+          {{ user().fullName }}
+        </a>
+        <p class="username">&#64;{{ user().username }}</p>
+        
+        @if (user().bio) {
+          <p class="bio">{{ user().bio }}</p>
+        }
+
+        <div class="user-stats">
+          <div class="stat">
+            <span class="stat-value">{{ user().postsCount || 0 }}</span>
+            <span class="stat-label">Posts</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value">{{ user().followersCount || 0 }}</span>
+            <span class="stat-label">Followers</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value">{{ user().followingCount || 0 }}</span>
+            <span class="stat-label">Following</span>
+          </div>
+        </div>
+      </mat-card-content>
+
+      <mat-card-actions class="card-actions">
+        @if (user().isFollowed) {
+          <button 
+            mat-stroked-button 
+            color="primary"
+            (click)="onUnfollow()"
+            class="follow-btn following">
+            <mat-icon>check</mat-icon>
+            Following
+          </button>
+        } @else {
+          <button 
+            mat-raised-button 
+            color="primary"
+            (click)="onFollow()"
+            class="follow-btn">
+            <mat-icon>person_add</mat-icon>
+            Follow
+          </button>
+        }
+
+        <a 
+          mat-button 
+          [routerLink]="['/profile', user().username]"
+          class="view-profile-btn">
+          View Profile
+        </a>
+      </mat-card-actions>
+    </mat-card>

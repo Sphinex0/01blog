@@ -66,6 +66,7 @@ public class AuthService {
                 user.getEmail(),
                 user.getRole(),
                 user.getAvatar(),
-                user.getCreatedAt());
+                user.getCreatedAt(),
+                0,0,0,false);
     }
 }

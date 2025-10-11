@@ -4,7 +4,6 @@ package api.backend.controller;
 import api.backend.model.user.User;
 import api.backend.model.comment.CommentRequest;
 import api.backend.model.comment.CommentResponse;
-import api.backend.model.post.Post;
 import api.backend.model.post.PostRequest;
 import api.backend.model.post.PostResponse;
 import api.backend.service.CommentService;
@@ -68,7 +67,6 @@ public class PostController {
     @PreAuthorize("hasRole('ADMIN') or  @postService.getPostById(#id).user.id == authentication.principal.id")
     public ResponseEntity<PostResponse> updatePost(@PathVariable Long id, @Valid @RequestBody PostRequest post) {
         PostResponse updatedPost = postService.updatePost(id, post);
-        
         return ResponseEntity.ok(updatedPost);
     }
 

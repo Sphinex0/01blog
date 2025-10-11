@@ -12,7 +12,7 @@ export const API_ENDPOINTS = {
   USERS: {
     PROFILE: '/users/profile',
     UPDATE_PROFILE: '/users/profile',
-    FOLLOW: '/users/follow',
+    FOLLOW: '/users/subscribe', // '/users/follow',
     UNFOLLOW: '/users/unfollow',
     FOLLOWERS: '/users/followers',
     FOLLOWING: '/users/following',

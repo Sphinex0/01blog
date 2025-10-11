@@ -1,0 +1,257 @@
+.discover-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  min-height: calc(100vh - 64px);
+}
+
+// Header
+.discover-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.page-title {
+  margin: 0 0 0.5rem;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  letter-spacing: -0.02em;
+}
+
+.page-subtitle {
+  margin: 0;
+  font-size: 1rem;
+  color: #6b7280;
+}
+
+// Search Section
+.search-section {
+  max-width: 600px;
+  margin: 0 auto 3rem;
+}
+
+.search-field {
+  width: 100%;
+
+  ::ng-deep {
+    .mat-mdc-text-field-wrapper {
+      background: white;
+      border-radius: 50px;
+    }
+
+    .mat-mdc-form-field-infix {
+      padding: 0.75rem 0;
+    }
+
+    .mat-mdc-form-field-icon-prefix {
+      padding-left: 1rem;
+    }
+  }
+}
+
+// Users Grid
+.users-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+// Loading State
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 1rem;
+
+  p {
+    margin-top: 1rem;
+    color: #6b7280;
+    font-size: 0.9375rem;
+  }
+}
+
+.loading-more {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+// Error State
+.error-state {
+  text-align: center;
+  padding: 4rem 1rem;
+
+  .error-icon {
+    font-size: 4rem;
+    width: 4rem;
+    height: 4rem;
+    color: #ef4444;
+    margin-bottom: 1rem;
+  }
+
+  h2 {
+    margin: 0 0 0.5rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1a1a1a;
+  }
+
+  p {
+    margin: 0 0 1.5rem;
+    color: #6b7280;
+  }
+
+  button {
+    mat-icon {
+      margin-right: 0.5rem;
+    }
+  }
+}
+
+// Empty State
+.empty-state {
+  text-align: center;
+  padding: 4rem 1rem;
+
+  .empty-icon {
+    font-size: 5rem;
+    width: 5rem;
+    height: 5rem;
+    color: #9ca3af;
+    margin-bottom: 1rem;
+  }
+
+  h2 {
+    margin: 0 0 0.75rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1a1a1a;
+  }
+
+  p {
+    margin: 0 0 1.5rem;
+    color: #6b7280;
+    font-size: 1rem;
+  }
+
+  button {
+    mat-icon {
+      margin-right: 0.5rem;
+    }
+  }
+}
+
+// Responsive Design
+@media (max-width: 1024px) {
+  .users-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .discover-container {
+    padding: 1rem;
+  }
+
+  .page-title {
+    font-size: 1.5rem;
+  }
+
+  .page-subtitle {
+    font-size: 0.9375rem;
+  }
+
+  .users-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .search-section {
+    margin-bottom: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .users-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+// Dark Mode Support
+@media (prefers-color-scheme: dark) {
+  .discover-container {
+    background: #121212;
+  }
+
+  .page-title {
+    color: #e0e0e0;
+  }
+
+  .page-subtitle {
+    color: #9ca3af;
+  }
+
+  .search-field {
+    ::ng-deep {
+      .mat-mdc-text-field-wrapper {
+        background: #1e1e1e;
+      }
+    }
+  }
+
+  .error-state h2,
+  .empty-state h2 {
+    color: #e0e0e0;
+  }
+
+  .error-state p,
+  .empty-state p {
+    color: #9ca3af;
+  }
+
+  .loading-state p {
+    color: #9ca3af;
+  }
+}
+
+// Animations
+.users-grid {
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Staggered animation for cards
+.users-grid app-user-card {
+  animation: slideUp 0.4s ease-out backwards;
+}
+
+@for $i from 1 through 12 {
+  .users-grid app-user-card:nth-child(#{$i}) {
+    animation-delay: #{$i * 0.05}s;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

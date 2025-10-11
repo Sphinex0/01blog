@@ -12,10 +12,10 @@ export const routes: Routes = [
         path: '',
         loadChildren: () => import('./features/home/home.routes').then(r => r.homeRoutes),
       },
-      // {
-      //   path: 'profile',
-      //   loadChildren: () => import('./features/profile/profile.routes').then(r => r.profileRoutes),
-      // },
+      {
+        path: 'users',
+        loadChildren: () => import('./features/profile/profile.routes').then(r => r.profileRoutes),
+      },
       {
         path: 'posts',
         loadChildren: () => import('./features/posts/posts.routes').then(r => r.postRoutes),
