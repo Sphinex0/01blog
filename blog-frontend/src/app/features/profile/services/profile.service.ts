@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, computed, inject, signal } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { UserProfile, UpdateUserRequest } from '../../../core/models/user.interface';
@@ -11,6 +11,11 @@ import { API_BASE_URL, API_ENDPOINTS } from '../../../core/constants/api.constan
 export class ProfileService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = API_BASE_URL;
+
+
+  // private readonly __currentCursor = signal<number>(0);
+
+
 
   /**
    * Get current user profile
@@ -43,9 +48,12 @@ export class ProfileService {
   /**
    * Get all users (for discover page)
    */
-  getAllUsers(): Observable<UserProfile[]> {
+  getAllUsers( cursor: number): Observable<UserProfile[]> {
+    const params = new HttpParams().set('cursor', cursor);
+
     return this.http.get<UserProfile[]>(
-      `${this.baseUrl}/users`
+      `${this.baseUrl}/users`,
+      { params }
     );
   }
 

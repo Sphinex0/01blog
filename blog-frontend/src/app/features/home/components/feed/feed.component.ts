@@ -60,8 +60,6 @@ export class FeedComponent implements OnInit, OnDestroy {
   readonly isRefreshing = signal(false);
   readonly isLoadingMore = signal(false);
 
-  // Infinite scroll state
-  private scrollThreshold = 300; // pixels from bottom to trigger load
 
   ngOnInit(): void {
     this.loadFeed();
@@ -72,58 +70,30 @@ export class FeedComponent implements OnInit, OnDestroy {
 
   onTriggerVisible(): void {
     if (this.hasMore() && !this.isLoading() && !this.isLoadingMore()) {
-      console.log('1');
       setTimeout(() => {
         this.loadMore();
       }, 0);
     }
   }
-  private setupIntersectionObserver(): void {
-    const options = {
-      root: null,
-      rootMargin: '300px',
-      threshold: 0.1,
-    };
-    this.observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        console.log('IntersectionObserver entry:', entry);
-        if (entry.isIntersecting && this.hasMore() && !this.isLoading() && !this.isLoadingMore()) {
-          this.loadMore();
-        }
-      });
-    }, options);
-    if (this.loadMoreTrigger) {
-      this.observer.observe(this.loadMoreTrigger.nativeElement);
-    }
-  }
-
-  
-
 
 
   loadFeed(): void {
-    this.feedService.getFeed().subscribe();
+    this.feedService.getFeed();
   }
 
   refreshFeed(): void {
     this.isRefreshing.set(true);
 
-    this.feedService.refreshFeed().subscribe({
-      next: () => {
-        this.isRefreshing.set(false);
-      },
-      error: () => {
-        this.isRefreshing.set(false);
-      },
-    });
+    this.feedService.refreshFeed();
+    this.isRefreshing.set(false);
+
   }
 
   loadMore(): void {
     if (this.isLoadingMore()) return;
 
-    console.log('2');
     this.isLoadingMore.set(true);
-    this.feedService.loadMore();
+    this.feedService.getFeed();
 
     // Reset loading state after a delay
     setTimeout(() => {

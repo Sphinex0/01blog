@@ -41,6 +41,8 @@ export class DiscoverUsersComponent implements OnInit {
   // Signals
   readonly users = signal<UserProfile[]>([]);
   readonly isLoading = signal(false);
+  readonly cursor = signal(0);
+  readonly hasMore = signal(true);
   readonly error = signal<string | null>(null);
 
   // Search control
@@ -63,14 +65,30 @@ export class DiscoverUsersComponent implements OnInit {
       });
   }
 
+  onTriggerVisible(): void {
+    if (this.hasMore() &&!this.isLoading() && this.error() === null) {
+      setTimeout(() => {
+        this.loadUsers();
+      }, 0);
+    }
+  }
+
   loadUsers(): void {
+    if (this.isLoading()) {
+      return;
+    }
     this.isLoading.set(true);
     this.error.set(null);
 
-    this.profileService.getAllUsers().subscribe({
+    this.profileService.getAllUsers(this.cursor()).subscribe({
       next: (response) => {
-        if (response) {
-          this.users.set(response);
+        if (response && response.length > 0) {
+          if (this.cursor() === 0) {
+            this.users.set(response);
+          } else {
+            this.users.update((users) => [...users, ...response]);
+          }
+          this.cursor.set(response[response.length - 1].id);
         }
         this.isLoading.set(false);
       },
@@ -104,39 +122,13 @@ export class DiscoverUsersComponent implements OnInit {
   }
 
   onFollowToggle(event: { userId: number; isFollowing: boolean }): void {
-    // if (event.isFollowing) {
-    //   // Unfollow
-    //   this.subscriptionService.unfollowUser(event.userId).subscribe({
-    //     next: () => {
-    //       // Update user in list
-    //       this.users.update(users =>
-    //         users.map(user =>
-    //           user.id === event.userId
-    //             ? { ...user, isFollowing: false, followersCount: Math.max(0, user.followersCount! - 1) }
-    //             : user
-    //         )
-    //       );
-    //       this.snackBar.open('Unfollowed successfully', 'Close', {
-    //         duration: 2000,
-    //         panelClass: ['success-snackbar']
-    //       });
-    //     },
-    //     error: () => {
-    //       this.snackBar.open('Failed to unfollow user', 'Close', {
-    //         duration: 3000,
-    //         panelClass: ['error-snackbar']
-    //       });
-    //     }
-    //   });
-    // } else {
     // Follow
     this.subscriptionService.TogglefollowUser(event.userId).subscribe({
       next: (response) => {
         // Update user in list
         let action = response.action;
-        console.log('Response from follow API:', response); 
+        console.log('Response from follow API:', response);
         this.users.update((users) =>
-
           users.map((user) =>
             user.id === event.userId
               ? {
@@ -160,7 +152,6 @@ export class DiscoverUsersComponent implements OnInit {
         });
       },
     });
-    // }
   }
 
   clearSearch(): void {

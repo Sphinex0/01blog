@@ -7,7 +7,7 @@ import { API_BASE_URL, API_ENDPOINTS } from '../../../core/constants/api.constan
 import { APP_CONSTANTS } from '../../../core/constants/app.constants';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class FeedService {
   private readonly http = inject(HttpClient);
@@ -17,114 +17,106 @@ export class FeedService {
   private readonly _posts = signal<Post[]>([]);
   private readonly _isLoading = signal<boolean>(false);
   private readonly _hasMore = signal<boolean>(true);
-  private readonly __currentCursor = signal<number>(1);
+  private readonly __currentCursor = signal<number>(0);
   private readonly _error = signal<string | null>(null);
 
   // Public computed signals
   readonly posts = computed(() => this._posts());
   readonly isLoading = computed(() => this._isLoading());
   readonly hasMore = computed(() => this._hasMore());
-  // readonly _currentCursor = computed(() => this.__currentCursor());
   readonly error = computed(() => this._error());
 
   /**
    * Fetch personalized feed from followed users
    */
-  getFeed(cursor: number = 0, limit: number = APP_CONSTANTS.PAGINATION.DEFAULT_PAGE_SIZE): Observable<Post[]> {
+  getFeed(): void {
     this._isLoading.set(true);
     this._error.set(null);
 
-    const params = new HttpParams()
-      .set('cursor', cursor.toString())
-      .set('limit', limit.toString());
+    const params = new HttpParams().set('cursor', this.__currentCursor().toString());
 
-    return this.http.get<Post[]>(
-      `${this.baseUrl}${API_ENDPOINTS.POSTS.FEED}`,
-      { params }
-    ).pipe(
-      tap((response) => {
+    this.http.get<Post[]>(`${this.baseUrl}${API_ENDPOINTS.POSTS.FEED}`, { params }).subscribe({
+      next: (response: Post[]) => {
         if (response) {
           const paginatedData = response;
-          
+
           // Append or replace posts based on page number
-          if (cursor === 0) {
+          if (this.__currentCursor() === 0) {
             this._posts.set(paginatedData);
           } else {
-            this._posts.update(current => [...current, ...paginatedData]);
+            this._posts.update((current) => [...current, ...paginatedData]);
           }
 
           this._hasMore.set(paginatedData.length != 0);
-          this.__currentCursor.set(paginatedData[paginatedData.length - 1]?.id || this.__currentCursor());
+          this.__currentCursor.set(
+            paginatedData[paginatedData.length - 1]?.id || this.__currentCursor()
+          );
         }
         this._isLoading.set(false);
-
-      }),
-      catchError((error) => {
+      },
+      error: (error) => {
         this._isLoading.set(false);
         this._error.set(error.error?.message || 'Failed to load feed');
         return throwError(() => error);
-      })
-    );
+      },
+    });
   }
 
   /**
    * Load next page of posts
    */
-  loadMore(): void {
-    if (!this._isLoading() && this._hasMore()) {
-      const nextPage = this.__currentCursor();
-      this.getFeed(nextPage).subscribe();
-    }
-  }
+  // loadMore(): void {
+  //   if (!this._isLoading() && this._hasMore()) {
+  //     this.getFeed().subscribe();
+  //   }
+  // }
 
   /**
    * Refresh feed (pull-to-refresh)
    */
-  refreshFeed(): Observable<Post[]> {
+  refreshFeed(): void {
     this.__currentCursor.set(0);
-    return this.getFeed();
+    this.getFeed();
   }
 
   /**
    * Like a post
    */
   likePost(postId: number): Observable<ApiResponse<void>> {
-    return this.http.post<ApiResponse<void>>(
-      `${this.baseUrl}${API_ENDPOINTS.POSTS.LIKE}/${postId}`,
-      {}
-    ).pipe(
-      tap(() => {
-        // Update post in local state
-        this._posts.update(posts =>
-          posts.map(post =>
-            post.id === postId
-              ? { ...post, isLiked: true, likesCount: post.likesCount + 1 }
-              : post
-          )
-        );
-      })
-    );
+    return this.http
+      .post<ApiResponse<void>>(`${this.baseUrl}${API_ENDPOINTS.POSTS.LIKE}/${postId}`, {})
+      .pipe(
+        tap(() => {
+          // Update post in local state
+          this._posts.update((posts) =>
+            posts.map((post) =>
+              post.id === postId
+                ? { ...post, isLiked: true, likesCount: post.likesCount + 1 }
+                : post
+            )
+          );
+        })
+      );
   }
 
   /**
    * Unlike a post
    */
   unlikePost(postId: number): Observable<ApiResponse<void>> {
-    return this.http.post<ApiResponse<void>>(
-      `${this.baseUrl}${API_ENDPOINTS.POSTS.LIKE}/${postId}`,
-      {}
-    ).pipe(
-      tap(() => {
-        // Update post in local state
-        this._posts.update(posts =>
-          posts.map(post =>
-            post.id === postId
-              ? { ...post, isLiked: false, likesCount: Math.max(0, post.likesCount - 1) }
-              : post
-          )
-        );
-      })
-    );
+    return this.http
+      .post<ApiResponse<void>>(`${this.baseUrl}${API_ENDPOINTS.POSTS.LIKE}/${postId}`, {})
+      .pipe(
+        tap(() => {
+          // Update post in local state
+          this._posts.update((posts) =>
+            posts.map((post) =>
+              post.id === postId
+                ? { ...post, isLiked: false, likesCount: Math.max(0, post.likesCount - 1) }
+                : post
+            )
+          );
+        })
+      );
   }
 
   /**
@@ -137,11 +129,8 @@ export class FeedService {
   /**
    * Get all posts (public feed)
    */
-  getAllPosts(page: number = 1, limit: number = APP_CONSTANTS.PAGINATION.DEFAULT_PAGE_SIZE): Observable<ApiResponse<PaginatedResponse<Post>>> {
-    const params = new HttpParams()
-      .set('page', page.toString())
-      .set('limit', limit.toString());
-
+  getAllPosts(page: number = 1): Observable<ApiResponse<PaginatedResponse<Post>>> {
+    const params = new HttpParams().set('page', page.toString());
     return this.http.get<ApiResponse<PaginatedResponse<Post>>>(
       `${this.baseUrl}${API_ENDPOINTS.POSTS.GET_ALL}`,
       { params }
@@ -162,8 +151,8 @@ export class FeedService {
    * Update post in feed after edit
    */
   updatePostInFeed(updatedPost: Post): void {
-    this._posts.update(posts =>
-      posts.map(post => post.id === updatedPost.id ? updatedPost : post)
+    this._posts.update((posts) =>
+      posts.map((post) => (post.id === updatedPost.id ? updatedPost : post))
     );
   }
 
@@ -171,6 +160,6 @@ export class FeedService {
    * Remove post from feed after delete
    */
   removePostFromFeed(postId: number): void {
-    this._posts.update(posts => posts.filter(post => post.id !== postId));
+    this._posts.update((posts) => posts.filter((post) => post.id !== postId));
   }
 }
