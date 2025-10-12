@@ -66,7 +66,7 @@ export class DiscoverUsersComponent implements OnInit {
   }
 
   onTriggerVisible(): void {
-    if (this.hasMore() &&!this.isLoading() && this.error() === null) {
+    if (this.hasMore() && !this.isLoading() && this.error() === null) {
       setTimeout(() => {
         this.loadUsers();
       }, 0);
@@ -90,6 +90,11 @@ export class DiscoverUsersComponent implements OnInit {
           }
           this.cursor.set(response[response.length - 1].id);
         }
+
+        if (response.length === 0) {
+          this.hasMore.set(false);
+        }
+        
         this.isLoading.set(false);
       },
       error: (err) => {
