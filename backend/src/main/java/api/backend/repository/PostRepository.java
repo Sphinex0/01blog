@@ -20,7 +20,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     // Custom query methods
     List<Post> findByUser(User user);
 
-    Page<Post> findByUserIdAndIdLessThan(Long userId, Long cursor, Pageable pageable);
+    Page<Post> findByUserAndIdLessThan(User user, Long cursor, Pageable pageable);
     Page<Post> findAllByIdLessThan(Long cursor, Pageable pageable);
 
     Optional<Post> findByIdAndUserId(Long id, Long userId);

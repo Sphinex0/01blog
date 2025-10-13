@@ -60,7 +60,8 @@ public class DataLoader implements CommandLineRunner {
                     String password = faker.internet().password(60, 255);
                     String role = "USER";
                     User user = new User(fullName, username, email, password, role, LocalDateTime.now());
-
+                    user.setAvatar(faker.internet().image());
+                    // user.setAvatar(faker.avatar().image());
                     adminUser.getSubscribers().add(user);
                     user.getSubscribedTo().add(adminUser);
                     if (i % 2 == 0) {

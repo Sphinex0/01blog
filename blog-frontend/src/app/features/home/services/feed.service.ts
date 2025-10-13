@@ -29,13 +29,13 @@ export class FeedService {
   /**
    * Fetch personalized feed from followed users
    */
-  getFeed(): void {
+  getFeed(endpoint: string | undefined = undefined): void {
     this._isLoading.set(true);
     this._error.set(null);
 
     const params = new HttpParams().set('cursor', this.__currentCursor().toString());
-
-    this.http.get<Post[]>(`${this.baseUrl}${API_ENDPOINTS.POSTS.FEED}`, { params }).subscribe({
+    let url = endpoint ? endpoint : API_ENDPOINTS.POSTS.FEED;
+    this.http.get<Post[]>(`${this.baseUrl}${url}`, { params }).subscribe({
       next: (response: Post[]) => {
         if (response) {
           const paginatedData = response;

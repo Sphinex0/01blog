@@ -35,7 +35,7 @@
     </div>
     <h2>Something went wrong</h2>
     <p>{{ error() }}</p>
-    <button class="retry-btn" (click)="loadFeed()">
+    <button class="retry-btn" (click)="refreshFeed()">
       <mat-icon>refresh</mat-icon>
       Try Again
     </button>
@@ -51,7 +51,7 @@
     <h2>Welcome to 01Blog!</h2>
     <p>Your feed is empty. Start following users to see their posts here.</p>
     <div class="empty-actions">
-      <a class="primary-action-btn" routerLink="/explore">
+      <a class="primary-action-btn" routerLink="/users">
         <mat-icon>search</mat-icon>
         Discover Users
       </a>

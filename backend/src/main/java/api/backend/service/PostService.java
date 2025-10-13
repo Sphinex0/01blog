@@ -38,10 +38,12 @@ public class PostService {
         return postRepository.findAllByIdLessThan(cursor, pageable).stream().map(this::toPostResponse).toList();
     }
 
-    public List<PostResponse> getPostsByUserId(long cursor, long userId) {
+    public List<PostResponse> getPostsByUsername(long cursor, String username) {
         Pageable pageable = PageRequest.of(0, 10, Direction.DESC, "id");// , Direction.DESC,"id"
 
-        return postRepository.findByUserIdAndIdLessThan(userId, cursor, pageable).stream().map(this::toPostResponse)
+        User user = userRepository.findByUsername(username).get();
+
+        return postRepository.findByUserAndIdLessThan(user, cursor, pageable).stream().map(this::toPostResponse)
                 .toList();
     }
 

@@ -29,8 +29,8 @@ export class ProfileService {
   /**
    * Get user profile by username
    */
-  getUserByUsername(username: string): Observable<ApiResponse<UserProfile>> {
-    return this.http.get<ApiResponse<UserProfile>>(
+  getUserByUsername(username: string): Observable<UserProfile> {
+    return this.http.get<UserProfile>(
       `${this.baseUrl}${API_ENDPOINTS.USERS.BY_USERNAME}/${username}`
     );
   }

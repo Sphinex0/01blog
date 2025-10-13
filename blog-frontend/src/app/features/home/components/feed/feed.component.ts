@@ -12,6 +12,8 @@ import {
   Directive,
   Output,
   EventEmitter,
+  input,
+  Input,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
@@ -24,6 +26,8 @@ import { MatChipsModule } from '@angular/material/chips';
 import { Post } from '../../../../core/models/post.interface';
 import { TimeAgoPipe } from '../../../../shared/pipes/time-ago-pipe';
 import { FeedService } from '../../services/feed.service';
+import { UserProfile } from '../../../../core/models/user.interface';
+import { API_ENDPOINTS } from '../../../../core/constants/api.constants';
 
 @Component({
   selector: 'app-feed',
@@ -62,7 +66,7 @@ export class FeedComponent implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
-    this.loadFeed();
+    this.loadMore();
   }
   ngOnDestroy(): void {
     this.observer?.disconnect();
@@ -77,9 +81,7 @@ export class FeedComponent implements OnInit, OnDestroy {
   }
 
 
-  loadFeed(): void {
-    this.feedService.getFeed();
-  }
+
 
   refreshFeed(): void {
     this.isRefreshing.set(true);
@@ -89,11 +91,23 @@ export class FeedComponent implements OnInit, OnDestroy {
 
   }
 
+  // readonly user = input.required<UserProfile>();
+  @Input() user :UserProfile | null = null;
+
+
+
   loadMore(): void {
     if (this.isLoadingMore()) return;
-
+    console.log('Loading more posts...');
     this.isLoadingMore.set(true);
-    this.feedService.getFeed();
+    if (this.user != null){
+      console.log('Loading posts for user:', this.user);
+      this.feedService.getFeed(`${API_ENDPOINTS.USERS.BY_USERNAME}/${this.user.username}${API_ENDPOINTS.POSTS.GET_ALL}`);
+
+    }else{
+      this.feedService.getFeed();
+
+    }
 
     // Reset loading state after a delay
     setTimeout(() => {

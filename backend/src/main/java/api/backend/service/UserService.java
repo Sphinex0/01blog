@@ -83,6 +83,10 @@ public class UserService implements UserDetailsService {
         return userRepository.findById(id);
     }
 
+    public UserResponse getUserByUsername(String username) {
+        return toUserResponse(userRepository.findByUsername(username).get());
+    }
+
     public User saveUser(User user) {
         return userRepository.save(user);
     }

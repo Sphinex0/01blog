@@ -1,0 +1,127 @@
+<div class="profile-header">
+  <!-- Cover Image -->
+  <!-- <div class="cover-image" [style.background]="getCoverGradient()"></div> -->
+
+  <!-- Profile Content -->
+
+  <div class="profile-content">
+    <!-- Avatar -->
+    <div class="avatar-wrapper">
+      @if (user()?.avatar) {
+      <h1 class="">hhhh</h1>
+      <img [src]="getAvatarUrl(user()?.avatar)" [alt]="user()?.fullName" class="avatar" />
+      } @else {
+      <h1 class="">ssss</h1>
+
+      <div class="avatar-placeholder">
+        {{ getInitials(user()?.fullName) }}
+      </div>
+      }
+    </div>
+
+    <!-- User Info -->
+    <div class="user-info">
+      <div class="user-details">
+        <h1 class="user-name">{{ user()?.fullName }}</h1>
+        <p class="username">&#64;{{ user()?.username }}</p>
+
+        @if (user()?.bio) {
+        <p class="bio">{{ user()?.bio }}</p>
+        }
+
+        <!-- Stats -->
+        <div class="stats">
+          <div class="stat-item">
+            <span class="stat-value">{{ user()?.postsCount || 0 }}</span>
+            <span class="stat-label">Posts</span>
+          </div>
+          <mat-divider [vertical]="true"></mat-divider>
+          <a [routerLink]="['/profile', user()?.username, 'followers']" class="stat-item clickable">
+            <span class="stat-value">{{ user()?.followersCount || 0 }}</span>
+            <span class="stat-label">Followers</span>
+          </a>
+          <mat-divider [vertical]="true"></mat-divider>
+          <a [routerLink]="['/profile', user()?.username, 'following']" class="stat-item clickable">
+            <span class="stat-value">{{ user()?.followingCount || 0 }}</span>
+            <span class="stat-label">Following</span>
+          </a>
+        </div>
+
+        <!-- Badges -->
+        @if (user()?.isAdmin) {
+        <div class="badges">
+          <mat-chip class="admin-badge">
+            <mat-icon>admin_panel_settings</mat-icon>
+            Admin
+          </mat-chip>
+        </div>
+        }
+      </div>
+
+      <!-- Actions -->
+      <div class="actions">
+        @if (isOwnProfile()) {
+        <!-- Own Profile Actions -->
+        <button mat-raised-button color="primary" (click)="onEditProfile()" class="action-btn">
+          <mat-icon>edit</mat-icon>
+          Edit Profile
+        </button>
+
+        <button mat-icon-button [matMenuTriggerFor]="ownMenu" class="menu-btn">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+
+        <mat-menu #ownMenu="matMenu">
+          <button mat-menu-item (click)="onShareProfile()">
+            <mat-icon>share</mat-icon>
+            <span>Share Profile</span>
+          </button>
+        </mat-menu>
+
+        } @else {
+
+        <!-- Other User Profile Actions -->
+        @if (user()?.isFollowed) {
+        <button
+          mat-stroked-button
+          color="primary"
+          (click)="onFollowToggle()"
+          [disabled]="isLoading()"
+          class="action-btn following-btn"
+        >
+          <mat-icon>check</mat-icon>
+          Following
+        </button>
+        } @else {
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="onFollowToggle()"
+          [disabled]="isLoading()"
+          class="action-btn"
+        >
+          <mat-icon>person_add</mat-icon>
+          Follow
+        </button>
+        }
+
+        <button mat-icon-button [matMenuTriggerFor]="userMenu" class="menu-btn">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+
+        <mat-menu #userMenu="matMenu">
+          <button mat-menu-item (click)="onShareProfile()">
+            <mat-icon>share</mat-icon>
+            <span>Share Profile</span>
+          </button>
+          <mat-divider></mat-divider>
+          <button mat-menu-item (click)="onReportUser()" class="report-btn">
+            <mat-icon>flag</mat-icon>
+            <span>Report User</span>
+          </button>
+        </mat-menu>
+        }
+      </div>
+    </div>
+  </div>
+</div>

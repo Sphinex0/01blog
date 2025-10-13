@@ -10,7 +10,6 @@ import api.backend.model.post.Post;
 import api.backend.model.post.PostResponse;
 import api.backend.model.report.ReportRequest;
 import api.backend.model.report.ReportResponse;
-import api.backend.model.subscription.SubscribeRequest;
 import api.backend.model.user.User;
 import api.backend.model.user.UserResponse;
 import api.backend.service.NotificationService;
@@ -48,6 +47,12 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
+    @GetMapping("/username/{username}")
+    public ResponseEntity<UserResponse> getUser( @PathVariable String username) {
+        UserResponse user = userService.getUserByUsername(username);
+        return ResponseEntity.ok(user);
+    }
+
     @GetMapping("/notifications")
     public ResponseEntity<List<NotificationResponse>> getAllNotifications(@AuthenticationPrincipal User user,
             @RequestParam(defaultValue = "0") long cursor) {
@@ -58,13 +63,13 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    @GetMapping("/{userId}/posts")
-    public ResponseEntity<List<PostResponse>> getPostsByUserId(@RequestParam(defaultValue = "0") long cursor,
-            @PathVariable long userId) {
+    @GetMapping("/username/{username}/posts")
+    public ResponseEntity<List<PostResponse>> getPostsByUsername(@RequestParam(defaultValue = "0") long cursor,
+            @PathVariable String username) {
         if (cursor == 0) {
             cursor = Long.MAX_VALUE;
         }
-        List<PostResponse> posts = postService.getPostsByUserId(cursor, userId);
+        List<PostResponse> posts = postService.getPostsByUsername(cursor, username);
         return ResponseEntity.ok(posts);
     }
 
@@ -87,10 +92,9 @@ public class UserController {
     }
 
     @PostMapping("/subscribe/{subscribedTo}")
-    public ResponseEntity<Map<String,String>> subscribe(@Valid @PathVariable long subscribedTo,
+    public ResponseEntity<Map<String, String>> subscribe(@Valid @PathVariable long subscribedTo,
             @AuthenticationPrincipal User currentUser) {
 
-                
         return ResponseEntity.ok(Map.of("action", userService.subscribe(subscribedTo)));
     }
 

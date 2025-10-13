@@ -1,0 +1,299 @@
+.profile-header {
+  position: relative;
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-bottom: 2rem;
+}
+
+// Cover Image
+.cover-image {
+  height: 200px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+// Profile Content
+.profile-content {
+  position: relative;
+  padding: 0 2rem 2rem;
+}
+
+// Avatar
+.avatar-wrapper {
+  position: relative;
+//   top: -60px;
+//   left: 2rem;
+}
+
+.avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 5px solid white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.avatar-placeholder {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-size: 3rem;
+  font-weight: 700;
+  border: 5px solid white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+// User Info
+.user-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+//   margin-top: 70px;
+  gap: 2rem;
+}
+
+.user-details {
+  flex: 1;
+}
+
+.user-name {
+  margin: 0 0 0.25rem;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  letter-spacing: -0.02em;
+}
+
+.username {
+  margin: 0 0 1rem;
+  font-size: 1rem;
+  color: #6b7280;
+}
+
+.bio {
+  margin: 0 0 1.5rem;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #4b5563;
+  max-width: 600px;
+}
+
+// Stats
+.stats {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+
+  mat-divider {
+    height: 24px;
+  }
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  transition: color 0.2s ease;
+
+  &.clickable {
+    cursor: pointer;
+    text-decoration: none;
+
+    &:hover {
+      color: #667eea;
+
+      .stat-value,
+      .stat-label {
+        color: #667eea;
+      }
+    }
+  }
+}
+
+.stat-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  color: #6b7280;
+  text-transform: capitalize;
+}
+
+// Badges
+.badges {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.admin-badge {
+  background: #fee2e2;
+  color: #dc2626;
+  font-weight: 600;
+
+  mat-icon {
+    color: #dc2626;
+    margin-right: 0.25rem;
+  }
+}
+
+// Actions
+.actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.action-btn {
+  min-width: 140px;
+  font-weight: 600;
+
+  mat-icon {
+    margin-right: 0.5rem;
+  }
+
+  &.following-btn:hover {
+    background-color: #fee2e2;
+    border-color: #ef4444;
+    color: #ef4444;
+
+    mat-icon {
+      content: 'close';
+    }
+  }
+}
+
+.menu-btn {
+  color: #6b7280;
+}
+
+.report-btn {
+  color: #ef4444;
+
+  mat-icon {
+    color: #ef4444;
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .cover-image {
+    height: 150px;
+  }
+
+  .profile-content {
+    padding: 0 1rem 1.5rem;
+  }
+
+  .avatar-wrapper {
+    left: 1rem;
+    top: -50px;
+  }
+
+  .avatar,
+  .avatar-placeholder {
+    width: 100px;
+    height: 100px;
+    font-size: 2.5rem;
+  }
+
+  .user-info {
+    flex-direction: column;
+    margin-top: 60px;
+    gap: 1rem;
+  }
+
+  .user-name {
+    font-size: 1.5rem;
+  }
+
+  .username {
+    font-size: 0.9375rem;
+  }
+
+  .bio {
+    font-size: 0.9375rem;
+  }
+
+  .stats {
+    gap: 1rem;
+  }
+
+  .stat-value {
+    font-size: 1.125rem;
+  }
+
+  .stat-label {
+    font-size: 0.8125rem;
+  }
+
+  .actions {
+    width: 100%;
+    
+    .action-btn {
+      flex: 1;
+      min-width: 0;
+    }
+  }
+}
+
+// Dark Mode
+@media (prefers-color-scheme: dark) {
+  .profile-header {
+    background: #1e1e1e;
+  }
+
+  .avatar,
+  .avatar-placeholder {
+    border-color: #1e1e1e;
+  }
+
+  .user-name {
+    color: #e0e0e0;
+  }
+
+  .username,
+  .stat-label {
+    color: #9ca3af;
+  }
+
+  .bio {
+    color: #b0b0b0;
+  }
+
+  .stat-value {
+    color: #e0e0e0;
+  }
+
+  .menu-btn {
+    color: #9ca3af;
+  }
+}
+
+// Animations
+.profile-header {
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

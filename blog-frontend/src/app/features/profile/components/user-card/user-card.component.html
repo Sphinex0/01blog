@@ -1,8 +1,9 @@
     <mat-card class="user-card">
       <div class="card-header">
-        <a [routerLink]="['/profile', user().username]" class="avatar-link">
+        <a [routerLink]="['/users/profile', user().username]" class="avatar-link">
           @if (user().avatar) {
-            <img [src]="getAvatarUrl(user().avatar)" [alt]="user().fullName" class="avatar">
+            <img [src]="user().avatar" [alt]="user().fullName" class="avatar">
+            <!-- <img [src]="getAvatarUrl(user().avatar)" [alt]="user().fullName" class="avatar"> -->
           } @else {
             <div class="avatar-placeholder">
               {{ getInitials(user().fullName) }}
@@ -12,7 +13,7 @@
       </div>
 
       <mat-card-content class="card-content">
-        <a [routerLink]="['/profile', user().username]" class="user-name">
+        <a [routerLink]="['/users/profile', user().username]" class="user-name">
           {{ user().fullName }}
         </a>
         <p class="username">&#64;{{ user().username }}</p>
