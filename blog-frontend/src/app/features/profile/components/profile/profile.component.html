@@ -1,4 +1,20 @@
 @if (user()){
-    <app-profile-header [user]="user()"> </app-profile-header>
-    <app-feed [user]="user()"></app-feed>
+
+<app-profile-header
+  [user]="user()"
+  (followToggle)="onFollowToggle()"
+>
+</app-profile-header>
+
+<!-- <app-profile-header 
+  [user]="userData"
+  [isLoading]="isFollowLoading()"
+  (followToggle)="onFollowToggle()"
+  (editProfile)="onEditProfile()"
+  (shareProfile)="onShareProfile()"
+  (reportUser)="onReportUser()">
+</app-profile-header> -->
+
+<app-feed [user]="user()"></app-feed>
+
 }

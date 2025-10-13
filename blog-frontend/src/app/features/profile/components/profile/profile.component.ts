@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ProfileService } from '../../services/profile.service';
 import { UserProfile } from '../../../../core/models/user.interface';
 import { FeedComponent } from "../../../home/components/feed/feed.component";
+import { SubscriptionService } from '../../services/subscription.service';
 
 @Component({
   selector: 'app-profile',
@@ -15,9 +16,34 @@ export class ProfileComponent implements OnInit {
 
   private readonly route = inject(ActivatedRoute);
   private readonly profileService = inject(ProfileService);
+    private readonly subscriptionService = inject(SubscriptionService);
+  
 
   readonly user = signal<UserProfile | null>(null);
   
+  onFollowToggle(): void {
+    const userId = this.user()?.id;
+    if (!userId) return;
+
+    this.subscriptionService.TogglefollowUser(userId).subscribe({
+      next: (response) => {
+        const currentUser = this.user();
+        if (currentUser) {
+          if (response.action === 'subscribed') {
+            currentUser.followersCount += 1;
+            currentUser.isFollowed = true;
+          } else if (response.action === 'unsubscribed') {
+            currentUser.followersCount -= 1;
+            currentUser.isFollowed = false;
+          }
+          this.user.set({ ...currentUser });
+        }
+      },
+      error: (err) => {
+        console.error('Error toggling follow status:', err);
+      }
+    });
+  }
   
   ngOnInit(): void {
     // Fetch user profile based on route param
