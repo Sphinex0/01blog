@@ -5,7 +5,8 @@ export interface User {
   fullName: string;
   avatar?: string;
   bio?: string;
-  isAdmin: boolean;
+  // isAdmin: boolean;
+  role: 'USER' | 'ADMIN';
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;

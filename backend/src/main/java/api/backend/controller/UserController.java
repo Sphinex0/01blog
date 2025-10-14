@@ -73,7 +73,7 @@ public class UserController {
         return ResponseEntity.ok(posts);
     }
 
-    @GetMapping("/{userId}/subscribers")
+    @GetMapping("/subscribers/{userId}")
     public ResponseEntity<List<UserResponse>> getAllsubscribers(@PathVariable long userId,
             @RequestParam(defaultValue = "0") long cursor) {
         if (cursor == 0) {
@@ -82,7 +82,7 @@ public class UserController {
         return ResponseEntity.ok(userService.getSubscribers(userId, cursor));
     }
 
-    @GetMapping("/{userId}/subscribtions")
+    @GetMapping("/subscribtions/{userId}")
     public ResponseEntity<List<UserResponse>> getAllsubscribedTo(@PathVariable long userId,
             @RequestParam(defaultValue = "0") long cursor) {
         if (cursor == 0) {

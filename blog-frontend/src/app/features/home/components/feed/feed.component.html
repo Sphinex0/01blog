@@ -148,19 +148,7 @@
         </div>
       </div>
     </article>
-    @if (post == posts()[posts().length - 1]) {
-    <div #loadTrigger class="load-trigger"></div>
-    <!-- Intersection Observer Trigger with @defer -->
-    @defer (on viewport(loadTrigger)) {
-    <!-- <div #loadTrigger class="load-trigger"></div> -->
-    {{ onTriggerVisible() }}
-    } @placeholder {
-    <!-- <div style="height: 1px;"></div> -->
-    <div class="load-more-indicator">
-      <mat-spinner diameter="32"></mat-spinner>
-      <p>Loading more posts...</p>
-    </div>
-    } } }
+    }
   </div>
 
   <!-- Load More Indicator -->

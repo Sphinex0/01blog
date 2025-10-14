@@ -1,0 +1,380 @@
+.followers-container {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  min-height: calc(100vh - 64px);
+}
+
+// End of Feed
+.end-of-feed {
+  text-align: center;
+  padding: 2rem 1rem 3rem;
+  color: #9ca3af;
+
+  mat-icon {
+    font-size: 2rem;
+    width: 2rem;
+    height: 2rem;
+    margin-bottom: 0.5rem;
+    color: #10b981 !important;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.9375rem;
+    font-weight: 500;
+  }
+}
+
+// Header
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.back-btn {
+  color: #6b7280;
+
+  &:hover {
+    background: #f3f4f6;
+  }
+}
+
+.header-content {
+  flex: 1;
+}
+
+.page-title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.page-subtitle {
+  margin: 0.25rem 0 0;
+  font-size: 0.9375rem;
+  color: #6b7280;
+}
+
+// Loading State
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 1rem;
+
+  p {
+    margin-top: 1rem;
+    color: #6b7280;
+  }
+}
+
+// Error State
+.error-state {
+  text-align: center;
+  padding: 4rem 1rem;
+
+  .error-icon {
+    font-size: 4rem;
+    width: 4rem;
+    height: 4rem;
+    color: #ef4444;
+    margin-bottom: 1rem;
+  }
+
+  h2 {
+    margin: 0 0 0.5rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1a1a1a;
+  }
+
+  p {
+    margin: 0 0 1.5rem;
+    color: #6b7280;
+  }
+}
+
+// Empty State
+.empty-state {
+  text-align: center;
+  padding: 4rem 1rem;
+
+  .empty-icon {
+    font-size: 5rem;
+    width: 5rem;
+    height: 5rem;
+    color: #9ca3af;
+    margin-bottom: 1rem;
+  }
+
+  h2 {
+    margin: 0 0 0.5rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1a1a1a;
+  }
+
+  p {
+    margin: 0;
+    color: #6b7280;
+  }
+}
+
+// Followers List
+.followers-list {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #f0f0f0;
+}
+
+.follower-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem;
+  gap: 1rem;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: #f9fafb;
+  }
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+  min-width: 0;
+  text-decoration: none;
+  color: inherit;
+}
+
+.avatar-wrapper {
+  flex-shrink: 0;
+}
+
+.avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #f0f0f0;
+}
+
+.avatar-placeholder {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-weight: 700;
+  font-size: 1.25rem;
+  border: 2px solid #f0f0f0;
+}
+
+.user-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.user-name {
+  margin: 0 0 0.25rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  transition: color 0.2s ease;
+
+  .user-info:hover & {
+    color: #667eea;
+  }
+}
+
+.username {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.bio {
+  margin: 0.5rem 0 0;
+  font-size: 0.875rem;
+  color: #4b5563;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+// Actions
+.actions {
+  flex-shrink: 0;
+}
+
+.follow-btn {
+  min-width: 120px;
+  font-weight: 600;
+
+  mat-icon {
+    margin-right: 0.5rem;
+  }
+
+  &.following:hover {
+    background-color: #fee2e2;
+    border-color: #ef4444;
+    color: #ef4444;
+  }
+}
+
+.self-tag {
+  min-width: 100px;
+  cursor: default;
+}
+
+mat-divider {
+  margin: 0;
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .followers-container {
+    padding: 1rem;
+  }
+
+  .page-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .page-title {
+    font-size: 1.25rem;
+  }
+
+  .follower-item {
+    padding: 1rem;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .user-info {
+    width: 100%;
+  }
+
+  .actions {
+    width: 100%;
+
+    .follow-btn,
+    .self-tag {
+      width: 100%;
+    }
+  }
+}
+
+// Dark Mode
+@media (prefers-color-scheme: dark) {
+  .followers-container {
+    background: #121212;
+  }
+
+  .page-header {
+    border-bottom-color: #2a2a2a;
+  }
+
+  .page-title {
+    color: #e0e0e0;
+  }
+
+  .page-subtitle,
+  .username {
+    color: #9ca3af;
+  }
+
+  .back-btn {
+    color: #9ca3af;
+
+    &:hover {
+      background: #2a2a2a;
+    }
+  }
+
+  .followers-list {
+    background: #1e1e1e;
+    border-color: #2a2a2a;
+  }
+
+  .follower-item {
+    &:hover {
+      background: #252525;
+    }
+  }
+
+  .avatar,
+  .avatar-placeholder {
+    border-color: #2a2a2a;
+  }
+
+  .user-name {
+    color: #e0e0e0;
+
+    .user-info:hover & {
+      color: #667eea;
+    }
+  }
+
+  .bio {
+    color: #9ca3af;
+  }
+
+  .empty-state h2,
+  .error-state h2 {
+    color: #e0e0e0;
+  }
+}
+
+// Animations
+.followers-list {
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.follower-item {
+  animation: slideIn 0.3s ease-out backwards;
+}
+
+@for $i from 1 through 20 {
+  .follower-item:nth-child(#{$i * 2 - 1}) {
+    animation-delay: #{$i * 0.03}s;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

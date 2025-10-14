@@ -1,0 +1,117 @@
+<div class="followers-container">
+  <!-- Header -->
+  <div class="page-header">
+    <button mat-icon-button (click)="goBack()" class="back-btn">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <div class="header-content">
+      @if (isFollowers()) {
+      <h1 class="page-title">Followers</h1>
+      } @else {
+      <h1 class="page-title">Following</h1>
+      }
+      <p class="page-subtitle">&#64;{{ username() }}</p>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  @if (isLoading()) {
+  <div class="loading-state">
+    <mat-spinner diameter="48"></mat-spinner>
+    <p>Loading followers...</p>
+  </div>
+  }
+
+  <!-- Error State -->
+  @if (error() && !isLoading()) {
+  <div class="error-state">
+    <mat-icon class="error-icon">error_outline</mat-icon>
+    <h2>Oops! Something went wrong</h2>
+    <p>{{ error() }}</p>
+    <button mat-raised-button color="primary" (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon>
+      Go Back
+    </button>
+  </div>
+  }
+
+  <!-- Empty State -->
+  @if (!isLoading() && !error() && users().length === 0) {
+  <div class="empty-state">
+    <mat-icon class="empty-icon">people_outline</mat-icon>
+    <h2>No followers yet</h2>
+    <p>This user doesn't have any followers.</p>
+  </div>
+  }
+
+  <!-- Followers List -->
+  @if (users().length > 0) {
+  <div class="followers-list">
+    @for (user of users(); track user.id) {
+    <div class="follower-item">
+      <!-- User Info -->
+      <a [routerLink]="['/users/profile', user.username]" class="user-info">
+        <div class="avatar-wrapper">
+          @if (user.avatar) {
+          <img [src]="getAvatarUrl(user.avatar)" [alt]="user.fullName" class="avatar" />
+          } @else {
+          <div class="avatar-placeholder">
+            {{ getInitials(user.fullName) }}
+          </div>
+          }
+        </div>
+
+        <div class="user-details">
+          <h3 class="user-name">{{ user.fullName }}</h3>
+          <p class="username">&#64;{{ user.username }}</p>
+          @if (user.bio) {
+          <p class="bio">{{ user.bio }}</p>
+          }
+        </div>
+      </a>
+
+      <!-- Action Button -->
+      <div class="actions">
+        @if (!isCurrentUser(user.id)) { @if (user.isFollowed) {
+        <button
+          mat-stroked-button
+          color="primary"
+          (click)="onFollowToggle(user)"
+          class="follow-btn following"
+        >
+          <mat-icon>check</mat-icon>
+          Following
+        </button>
+        } @else {
+        <button mat-raised-button color="primary" (click)="onFollowToggle(user)" class="follow-btn">
+          <mat-icon>person_add</mat-icon>
+          Follow
+        </button>
+        } } @else {
+        <button mat-stroked-button disabled class="self-tag">You</button>
+        }
+      </div>
+    </div>
+    <mat-divider></mat-divider>
+    @if (user == users()[users().length - 1]) {
+    <div #loadTrigger class="load-trigger"></div>
+    <!-- Intersection Observer Trigger with @defer -->
+    @defer (on viewport(loadTrigger)) {
+    <!-- <div #loadTrigger class="load-trigger"></div> -->
+    {{ onTriggerVisible() }}
+    } @placeholder {
+    <!-- <div style="height: 1px;"></div> -->
+    <div class="load-more-indicator">
+      <mat-spinner diameter="32"></mat-spinner>
+      <p>Loading more posts...</p>
+    </div>
+    } } }
+        @if (!hasMore() && !isLoading()) {
+  <div class="end-of-feed">
+    <mat-icon>check_circle</mat-icon>
+    <p>You're all caught up!</p>
+  </div>
+  } 
+  </div>
+  }
+</div>

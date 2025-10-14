@@ -46,9 +46,8 @@ import { API_ENDPOINTS } from '../../../../core/constants/api.constants';
   templateUrl: './feed.component.html',
   styleUrl: './feed.component.scss',
 })
-export class FeedComponent implements OnInit, OnDestroy {
+export class FeedComponent implements OnInit {
   private readonly feedService = inject(FeedService);
-  private observer?: IntersectionObserver;
 
   @ViewChild('loadMoreTrigger') loadMoreTrigger?: ElementRef;
 
@@ -68,9 +67,7 @@ export class FeedComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadMore();
   }
-  ngOnDestroy(): void {
-    this.observer?.disconnect();
-  }
+
 
   onTriggerVisible(): void {
     if (this.hasMore() && !this.isLoading() && !this.isLoadingMore()) {

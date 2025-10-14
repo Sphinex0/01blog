@@ -24,7 +24,7 @@ export class AuthService {
   readonly currentUser = computed(() => this._currentUser());
   readonly isAuthenticated = computed(() => this._isAuthenticated());
   readonly isLoading = computed(() => this._isLoading());
-  readonly isAdmin = computed(() => this._currentUser()?.isAdmin || false);
+  readonly isAdmin = computed(() => this._currentUser()?.role === "ADMIN" || false);
 
   constructor() {
     this.initializeAuth();

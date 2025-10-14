@@ -4,3 +4,24 @@
 ::ng-deep input{
     color: white !important;
 }
+
+// End of Feed
+.end-of-feed {
+  text-align: center;
+  padding: 2rem 1rem 3rem;
+  color: #9ca3af;
+
+  mat-icon {
+    font-size: 2rem;
+    width: 2rem;
+    height: 2rem;
+    margin-bottom: 0.5rem;
+    color: #10b981 !important;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.9375rem;
+    font-weight: 500;
+  }
+}

@@ -62,13 +62,13 @@ public class UserService implements UserDetailsService {
     }
 
     public List<UserResponse> getSubscribers(long userId, long cursor) {
-        Pageable pageable = PageRequest.of(0, 10);// , Direction.DESC,"id"
+        Pageable pageable = PageRequest.of(0, 10, Direction.DESC,"id");
         return userRepository.findAllBySubscribedToIdAndIdLessThan(userId, cursor, pageable).stream()
                 .map(UserService::toUserResponse).toList();
     }
 
     public List<UserResponse> getSubscribtions(long userId, long cursor) {
-        Pageable pageable = PageRequest.of(0, 10);// , Direction.DESC,"id"
+        Pageable pageable = PageRequest.of(0, 10, Direction.DESC,"id");
         return userRepository.findAllBySubscribersIdAndIdLessThan(userId, cursor, pageable).stream()
                 .map(UserService::toUserResponse)
                 .toList();

@@ -14,8 +14,8 @@ export const API_ENDPOINTS = {
     UPDATE_PROFILE: '/users/profile',
     FOLLOW: '/users/subscribe', // '/users/follow',
     UNFOLLOW: '/users/unfollow',
-    FOLLOWERS: '/users/followers',
-    FOLLOWING: '/users/following',
+    FOLLOWERS: '/users/subscribers',
+    FOLLOWING: '/users/subscribtions',
     BY_USERNAME: '/users/username',
   },
   POSTS: {

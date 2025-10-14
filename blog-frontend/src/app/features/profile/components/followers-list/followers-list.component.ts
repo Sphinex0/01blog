@@ -1,11 +1,26 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatListModule } from '@angular/material/list';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ProfileService } from '../../services/profile.service';
+import { SubscriptionService } from '../../services/subscription.service';
+import { AuthService } from '../../../../core/services/auth.service';
+import { UserProfile } from '../../../../core/models/user.interface';
+import { ProfileUsersComponent } from '../profile-users/profile-users.component';
 
 @Component({
   selector: 'app-followers-list',
-  imports: [],
+  imports: [
+    ProfileUsersComponent,
+  ],
   templateUrl: './followers-list.component.html',
-  styleUrl: './followers-list.component.scss'
+  styleUrl: './followers-list.component.scss',
 })
 export class FollowersListComponent {
-
+  
 }

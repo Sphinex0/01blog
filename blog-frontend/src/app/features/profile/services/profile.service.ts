@@ -17,14 +17,7 @@ export class ProfileService {
 
 
 
-  /**
-   * Get current user profile
-   */
-  getCurrentUserProfile(): Observable<ApiResponse<UserProfile>> {
-    return this.http.get<ApiResponse<UserProfile>>(
-      `${this.baseUrl}${API_ENDPOINTS.USERS.PROFILE}`
-    );
-  }
+
 
   /**
    * Get user profile by username
@@ -72,18 +65,24 @@ export class ProfileService {
   /**
    * Get user's followers
    */
-  getFollowers(userId: number): Observable<ApiResponse<UserProfile[]>> {
-    return this.http.get<ApiResponse<UserProfile[]>>(
-      `${this.baseUrl}${API_ENDPOINTS.USERS.FOLLOWERS}/${userId}`
+  getFollowers(userId: number, cursor: number): Observable<UserProfile[]> {
+    const params = new HttpParams().set('cursor', cursor);
+
+    return this.http.get<UserProfile[]>(
+      `${this.baseUrl}${API_ENDPOINTS.USERS.FOLLOWERS}/${userId}`,
+      { params }
     );
   }
 
   /**
    * Get user's following
    */
-  getFollowing(userId: number): Observable<ApiResponse<UserProfile[]>> {
-    return this.http.get<ApiResponse<UserProfile[]>>(
-      `${this.baseUrl}${API_ENDPOINTS.USERS.FOLLOWING}/${userId}`
+  getFollowing(userId: number, cursor: number): Observable<UserProfile[]> {
+    const params = new HttpParams().set('cursor', cursor);
+
+    return this.http.get<UserProfile[]>(
+      `${this.baseUrl}${API_ENDPOINTS.USERS.FOLLOWING}/${userId}`,
+      { params }
     );
   }
 }

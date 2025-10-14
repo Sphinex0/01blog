@@ -81,7 +81,7 @@
       Settings
     </a>
 
-    @if (user.isAdmin) {
+    @if (user.role === 'ADMIN') {
     <mat-divider></mat-divider>
     <a mat-menu-item routerLink="/admin">
       <mat-icon>admin_panel_settings</mat-icon>

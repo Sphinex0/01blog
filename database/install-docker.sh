@@ -1,0 +1,1 @@
+curl -fsSL https://get.docker.com/rootless | FORCE=1 bash -s -- --skip-iptables

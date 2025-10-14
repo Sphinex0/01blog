@@ -1,20 +1,60 @@
-@if (user()){
+<div class="profile-container">
+  
+  <!-- Back Button -->
+  <div class="back-button-wrapper">
+    <button mat-icon-button (click)="goBack()" class="back-btn">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <span class="back-text">Back</span>
+  </div>
 
-<app-profile-header
-  [user]="user()"
-  (followToggle)="onFollowToggle()"
->
-</app-profile-header>
+  <!-- Loading State -->
+  @if (isLoadingProfile()) {
+    <div class="loading-state">
+      <mat-spinner diameter="48"></mat-spinner>
+      <p>Loading profile...</p>
+    </div>
+  }
 
-<!-- <app-profile-header 
-  [user]="userData"
-  [isLoading]="isFollowLoading()"
-  (followToggle)="onFollowToggle()"
-  (editProfile)="onEditProfile()"
-  (shareProfile)="onShareProfile()"
-  (reportUser)="onReportUser()">
-</app-profile-header> -->
+  <!-- Error State -->
+  @if (error() && !user()) {
+    <div class="error-state">
+      <mat-icon class="error-icon">person_off</mat-icon>
+      <h2>Profile Not Found</h2>
+      <p>{{ error() }}</p>
+      <button mat-raised-button color="primary" (click)="goBack()">
+        <mat-icon>home</mat-icon>
+        Go to Home
+      </button>
+    </div>
+  }
 
-<app-feed [user]="user()"></app-feed>
+  <!-- Profile Content -->
+  @if (user(); as userData) {
+    <div class="profile-content">
+      
+      <!-- Profile Header -->
+      <app-profile-header 
+        [user]="userData"
+        [isLoading]="isFollowLoading()"
+        (followToggle)="onFollowToggle()"
+        (editProfile)="onEditProfile()"
+        (shareProfile)="onShareProfile()"
+        (reportUser)="onReportUser()">
+      </app-profile-header>
 
-}
+      <!-- Profile Posts -->
+      <div class="posts-section">
+        <h2 class="section-title">Posts</h2>
+        <!-- <app-profile-posts 
+          [posts]="posts()"
+          [isLoading]="isLoadingPosts()"
+          [userId]="userData.id">
+        </app-profile-posts> -->
+        <app-feed [user]="user()"></app-feed>
+      </div>
+
+    </div>
+  }
+
+</div>

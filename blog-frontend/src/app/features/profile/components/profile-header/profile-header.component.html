@@ -36,19 +36,19 @@
             <span class="stat-label">Posts</span>
           </div>
           <mat-divider [vertical]="true"></mat-divider>
-          <a [routerLink]="['/profile', user()?.username, 'followers']" class="stat-item clickable">
+          <a [routerLink]="['/users/profile', user()?.username, 'followers']" class="stat-item clickable">
             <span class="stat-value">{{ user()?.followersCount || 0 }}</span>
             <span class="stat-label">Followers</span>
           </a>
           <mat-divider [vertical]="true"></mat-divider>
-          <a [routerLink]="['/profile', user()?.username, 'following']" class="stat-item clickable">
+          <a [routerLink]="['/users/profile', user()?.username, 'following']" class="stat-item clickable">
             <span class="stat-value">{{ user()?.followingCount || 0 }}</span>
             <span class="stat-label">Following</span>
           </a>
         </div>
 
         <!-- Badges -->
-        @if (user()?.isAdmin) {
+        @if (user()?.role === 'ADMIN') {
         <div class="badges">
           <mat-chip class="admin-badge">
             <mat-icon>admin_panel_settings</mat-icon>

@@ -1,0 +1,135 @@
+.profile-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  min-height: calc(100vh - 64px);
+}
+
+// Back Button
+.back-button-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.back-btn {
+  color: #6b7280;
+
+  &:hover {
+    background: #f3f4f6;
+  }
+}
+
+.back-text {
+  font-size: 0.9375rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+// Loading State
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 1rem;
+
+  p {
+    margin-top: 1rem;
+    color: #6b7280;
+  }
+}
+
+// Error State
+.error-state {
+  text-align: center;
+  padding: 4rem 1rem;
+
+  .error-icon {
+    font-size: 4rem;
+    width: 4rem;
+    height: 4rem;
+    color: #ef4444;
+    margin-bottom: 1rem;
+  }
+
+  h2 {
+    margin: 0 0 0.5rem;
+    font-size: 1.5rem;
+    color: #1a1a1a;
+  }
+
+  p {
+    margin: 0 0 1.5rem;
+    color: #6b7280;
+  }
+}
+
+// Profile Content
+.profile-content {
+  animation: fadeIn 0.4s ease-out;
+}
+
+// Posts Section
+.posts-section {
+  margin-top: 2rem;
+}
+
+.section-title {
+  margin: 0 0 1.5rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  padding: 0 0.5rem;
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .profile-container {
+    padding: 1rem;
+  }
+
+  .section-title {
+    font-size: 1.25rem;
+  }
+}
+
+// Dark Mode
+@media (prefers-color-scheme: dark) {
+  .profile-container {
+    background: #121212;
+  }
+
+  .back-text {
+    color: #9ca3af;
+  }
+
+  .back-btn {
+    color: #9ca3af;
+
+    &:hover {
+      background: #2a2a2a;
+    }
+  }
+
+  .section-title {
+    color: #e0e0e0;
+  }
+
+  .error-state h2 {
+    color: #e0e0e0;
+  }
+}
+
+// Animations
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
