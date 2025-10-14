@@ -8,15 +8,33 @@
     <!-- Avatar -->
     <div class="avatar-wrapper">
       @if (user()?.avatar) {
-      <h1 class="">hhhh</h1>
       <img [src]="getAvatarUrl(user()?.avatar)" [alt]="user()?.fullName" class="avatar" />
       } @else {
-      <h1 class="">ssss</h1>
-
       <div class="avatar-placeholder">
         {{ getInitials(user()?.fullName) }}
       </div>
       }
+
+      @if(currentUser() && currentUser()?.username === user()?.username) { 
+            <div class="avatar-edit">
+              <input
+                type="file"
+                #avatarInput
+                accept="image/*"
+                (change)="onAvatarSelected($event)"
+                hidden
+              />
+              <button
+                mat-icon-button
+                class="edit-avatar-btn"
+                (click)="avatarInput.click(); $event.stopPropagation()"
+                aria-label="Change avatar"
+                matTooltip="Change avatar"
+              >
+                <mat-icon>camera_alt</mat-icon>
+              </button>
+            </div>
+          }
     </div>
 
     <!-- User Info -->

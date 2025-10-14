@@ -11,17 +11,20 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import api.backend.service.CloudinaryService;
+import api.backend.service.UserService;
 
 @RestController
 @RequestMapping("/api/media")
 public class FileUploadController {
 
     private CloudinaryService cloudinaryService;
-    private List<String> ALLOWED_TYPES_IMAGES = List.of("jpg", "jpeg", "png", "gif", "bmp", "tiff", "webp", "svg");
+    private UserService userService;
+    private static List<String> ALLOWED_TYPES_IMAGES = List.of("jpg", "jpeg", "png", "gif", "bmp", "tiff", "webp", "svg");
     private List<String> ALLOWED_TYPES_VEDIOS = List.of("mp4", "avi", "mov", "wmv", "flv", "webm", "mkv", "m4v");
 
-    public FileUploadController(CloudinaryService cloudinaryService) {
+    public FileUploadController(CloudinaryService cloudinaryService, UserService userService) {
         this.cloudinaryService = cloudinaryService;
+        this.userService = userService;
     }
 
     @PostMapping("/upload")
@@ -39,5 +42,19 @@ public class FileUploadController {
             }
         }
         return ResponseEntity.ok(Map.of("url", cloudinaryService.uploadFile(file, "files", resourceType)));
+    }
+
+     @PostMapping("/local/upload")
+    public ResponseEntity<Map<String, String>> uploadLocalFile(@RequestParam("file") MultipartFile file) {
+        String fileName = file.getOriginalFilename();
+        String ext = "";
+        if (fileName != null) {
+            ext = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
+            if (!FileUploadController.ALLOWED_TYPES_IMAGES.contains(ext)) {
+                throw new IllegalArgumentException("type not allowed");
+            }
+        }
+        
+        return ResponseEntity.ok(Map.of("url", this.userService.updateProfile(file,ext)));
     }
 }

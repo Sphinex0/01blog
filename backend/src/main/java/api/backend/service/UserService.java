@@ -12,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import api.backend.model.user.BanRequest;
@@ -65,6 +66,24 @@ public class UserService implements UserDetailsService {
         Pageable pageable = PageRequest.of(0, 10, Direction.DESC,"id");
         return userRepository.findAllBySubscribedToIdAndIdLessThan(userId, cursor, pageable).stream()
                 .map(UserService::toUserResponse).toList();
+    }
+
+    public String updateProfile(MultipartFile file, String ext) {
+        long id = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("No authenticated user found"));
+        String avatarUrl = "/uploads/" + id + "." + ext;
+        // Save the file to the local filesystem (you can customize the path as needed)
+        try {
+            java.nio.file.Path path = java.nio.file.Paths.get("uploads/" + id + "." + ext);
+            java.nio.file.Files.createDirectories(path.getParent());
+            file.transferTo(path.toFile());
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to store file", e);
+        }
+        user.setAvatar(avatarUrl);
+        userRepository.save(user);
+        return avatarUrl;
     }
 
     public List<UserResponse> getSubscribtions(long userId, long cursor) {

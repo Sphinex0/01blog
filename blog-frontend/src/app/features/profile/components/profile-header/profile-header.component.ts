@@ -66,6 +66,15 @@ export class ProfileHeaderComponent {
     return `http://localhost:8080${avatar}`;
   }
 
+  onAvatarSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      // Handle avatar upload logic here
+      console.log('Selected avatar file:', file);
+    }
+  }
+
   getInitials(fullName: string=""): string {
     const names = fullName.split(' ');
     if (names.length >= 2) {

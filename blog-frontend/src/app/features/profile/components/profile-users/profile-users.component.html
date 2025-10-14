@@ -58,7 +58,7 @@
           <div class="avatar-placeholder">
             {{ getInitials(user.fullName) }}
           </div>
-          }
+          } 
         </div>
 
         <div class="user-details">
@@ -105,13 +105,12 @@
       <mat-spinner diameter="32"></mat-spinner>
       <p>Loading more posts...</p>
     </div>
-    } } }
-        @if (!hasMore() && !isLoading()) {
-  <div class="end-of-feed">
-    <mat-icon>check_circle</mat-icon>
-    <p>You're all caught up!</p>
-  </div>
-  } 
+    } } } @if (!hasMore() && !isLoading()) {
+    <div class="end-of-feed">
+      <mat-icon>check_circle</mat-icon>
+      <p>You're all caught up!</p>
+    </div>
+    }
   </div>
   }
 </div>
