@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -44,7 +45,7 @@ public class FileUploadController {
         return ResponseEntity.ok(Map.of("url", cloudinaryService.uploadFile(file, "files", resourceType)));
     }
 
-     @PostMapping("/local/upload")
+     @PatchMapping("/local/upload")
     public ResponseEntity<Map<String, String>> uploadLocalFile(@RequestParam("file") MultipartFile file) {
         String fileName = file.getOriginalFilename();
         String ext = "";
@@ -54,7 +55,9 @@ public class FileUploadController {
                 throw new IllegalArgumentException("type not allowed");
             }
         }
+
+        var res = this.userService.updateProfile(file,ext);
         
-        return ResponseEntity.ok(Map.of("url", this.userService.updateProfile(file,ext)));
+        return ResponseEntity.ok(Map.of("url", res ));
     }
 }

@@ -58,6 +58,7 @@ export const API_ENDPOINTS = {
   },
   MEDIA: {
     UPLOAD: '/media/upload',
+    LOCAL_UPLOAD: '/media/local/upload',
     DELETE: '/media/delete',
   }
 } as const;

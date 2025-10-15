@@ -6,17 +6,13 @@ import { ApiResponse } from '../../../core/models/api-response.interface';
 import { API_BASE_URL, API_ENDPOINTS } from '../../../core/constants/api.constants';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ProfileService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = API_BASE_URL;
 
-
   // private readonly __currentCursor = signal<number>(0);
-
-
-
 
 
   /**
@@ -31,23 +27,26 @@ export class ProfileService {
   /**
    * Update current user profile
    */
-  updateProfile(data: UpdateUserRequest): Observable<ApiResponse<UserProfile>> {
-    return this.http.put<ApiResponse<UserProfile>>(
-      `${this.baseUrl}${API_ENDPOINTS.USERS.UPDATE_PROFILE}`,
-      data
-    );
-  }
+
+  updateAvatar(file: File) {
+        const formData = new FormData();
+        formData.append('file', file)
+        return this.http.patch<{ url: string }>(`${this.baseUrl}${API_ENDPOINTS.MEDIA.LOCAL_UPLOAD}`, formData)
+    }
+  // updateAvatar(data: UpdateUserRequest): Observable<ApiResponse<UserProfile>> {
+  //   return this.http.put<ApiResponse<UserProfile>>(
+  //     `${this.baseUrl}${API_ENDPOINTS.USERS.UPDATE_PROFILE}`,
+  //     data
+  //   );
+  // }
 
   /**
    * Get all users (for discover page)
    */
-  getAllUsers( cursor: number): Observable<UserProfile[]> {
+  getAllUsers(cursor: number): Observable<UserProfile[]> {
     const params = new HttpParams().set('cursor', cursor);
 
-    return this.http.get<UserProfile[]>(
-      `${this.baseUrl}/users`,
-      { params }
-    );
+    return this.http.get<UserProfile[]>(`${this.baseUrl}/users`, { params });
   }
 
   /**
@@ -55,11 +54,8 @@ export class ProfileService {
    */
   searchUsers(query: string): Observable<ApiResponse<UserProfile[]>> {
     const params = new HttpParams().set('q', query);
-    
-    return this.http.get<ApiResponse<UserProfile[]>>(
-      `${this.baseUrl}/users/search`,
-      { params }
-    );
+
+    return this.http.get<ApiResponse<UserProfile[]>>(`${this.baseUrl}/users/search`, { params });
   }
 
   /**

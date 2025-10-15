@@ -38,9 +38,9 @@
         [user]="userData"
         [isLoading]="isFollowLoading()"
         (followToggle)="onFollowToggle()"
-        (editProfile)="onEditProfile()"
         (shareProfile)="onShareProfile()"
-        (reportUser)="onReportUser()">
+        (reportUser)="onReportUser()"
+        (editAvatar)="onEditAvatar($event)">
       </app-profile-header>
 
       <!-- Profile Posts -->

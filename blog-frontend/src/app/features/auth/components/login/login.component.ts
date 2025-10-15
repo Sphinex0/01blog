@@ -77,7 +77,7 @@ export class LoginComponent {
           if (response) {
             this.snackBar.open('Login successful! Welcome to 01Blog!', 'Close', {
               duration: 5000,
-              panelClass: ['success-snackbar']
+              panelClass: ['success-snackbar'],
             });
           }
         },

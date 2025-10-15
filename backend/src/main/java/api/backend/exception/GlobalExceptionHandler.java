@@ -38,8 +38,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
     }
 
-
-
     @ExceptionHandler(InternalAuthenticationServiceException.class)
     public ResponseEntity<String> handleInternalAuthenticationServiceException(
             InternalAuthenticationServiceException ex) {
@@ -54,15 +52,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(ex.getMessage());
     }
 
-    // @ExceptionHandler(ExpiredJwtException.class)
-    // public ResponseEntity<String> handleExpiredJwt(ExpiredJwtException ex) {
-    //     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww: " + ex.getMessage());
-    // }
-
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleGenericException(Exception ex) {
-        // System.out.println("Authentication ##### failed: " + ex.getClass().getName() + ": " + ex.getMessage());
-
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + ex.getMessage());
     }
 }

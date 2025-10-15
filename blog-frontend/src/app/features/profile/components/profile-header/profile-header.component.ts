@@ -32,7 +32,7 @@ export class ProfileHeaderComponent {
 
   // Outputs
   readonly followToggle = output<void>();
-  readonly editProfile = output<void>();
+  readonly editAvatar = output<File>();
   readonly shareProfile = output<void>();
   readonly reportUser = output<void>();
 
@@ -48,9 +48,9 @@ export class ProfileHeaderComponent {
     this.followToggle.emit();
   }
 
-  onEditProfile(): void {
-    this.editProfile.emit();
-  }
+  // onEditProfile(): void {
+  //   this.editAvatar.emit();
+  // }
 
   onShareProfile(): void {
     this.shareProfile.emit();
@@ -63,7 +63,7 @@ export class ProfileHeaderComponent {
   getAvatarUrl(avatar: string | undefined): string {
     if (!avatar) return '';
     if (avatar.startsWith('http')) return avatar;
-    return `http://localhost:8080${avatar}`;
+    return `http://localhost:8080/api/${avatar}`;
   }
 
   onAvatarSelected(event: Event): void {
@@ -71,9 +71,12 @@ export class ProfileHeaderComponent {
     if (input.files && input.files[0]) {
       const file = input.files[0];
       // Handle avatar upload logic here
-      console.log('Selected avatar file:', file);
+      this.editAvatar.emit(file);
+      
     }
   }
+
+  
 
   getInitials(fullName: string=""): string {
     const names = fullName.split(' ');

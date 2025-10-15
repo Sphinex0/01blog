@@ -22,10 +22,10 @@ import { FeedComponent } from '../../../home/components/feed/feed.component';
     MatButtonModule,
     MatIconModule,
     ProfileHeaderComponent,
-    FeedComponent
+    FeedComponent,
   ],
   templateUrl: './profile.component.html',
-  styleUrl: './profile.component.scss'
+  styleUrl: './profile.component.scss',
 })
 export class ProfileComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
@@ -44,7 +44,7 @@ export class ProfileComponent implements OnInit {
   readonly error = signal<string | null>(null);
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
+    this.route.params.subscribe((params) => {
       const username = params['username'];
       this.loadProfile(username);
     });
@@ -67,13 +67,11 @@ export class ProfileComponent implements OnInit {
         this.isLoadingProfile.set(false);
         this.snackBar.open('Failed to load profile', 'Close', {
           duration: 3000,
-          panelClass: ['error-snackbar']
+          panelClass: ['error-snackbar'],
         });
-      }
+      },
     });
   }
-
-
 
   loadUserPosts(userId: number): void {
     this.isLoadingPosts.set(true);
@@ -88,7 +86,7 @@ export class ProfileComponent implements OnInit {
       error: (err) => {
         console.error('Failed to load posts:', err);
         this.isLoadingPosts.set(false);
-      }
+      },
     });
   }
 
@@ -104,14 +102,14 @@ export class ProfileComponent implements OnInit {
     action.subscribe({
       next: () => {
         // Update user locally
-        this.user.update(user => {
+        this.user.update((user) => {
           if (!user) return user;
           return {
             ...user,
             isFollowed: !isFollowed,
-            followersCount: isFollowed 
+            followersCount: isFollowed
               ? Math.max(0, user.followersCount! - 1)
-              : (user.followersCount || 0) + 1
+              : (user.followersCount || 0) + 1,
           };
         });
 
@@ -125,15 +123,31 @@ export class ProfileComponent implements OnInit {
       error: () => {
         this.snackBar.open('Action failed', 'Close', {
           duration: 3000,
-          panelClass: ['error-snackbar']
+          panelClass: ['error-snackbar'],
         });
         this.isFollowLoading.set(false);
-      }
+      },
     });
   }
 
-  onEditProfile(): void {
-    this.router.navigate(['/profile/edit']);
+  onEditAvatar(file: File): void {
+    this.profileService.updateAvatar( file ).subscribe({
+      next: (response) => {
+        if (response) {
+          this.user.update(user=> {
+            if (!user) return user;
+            return {
+              ...user,
+              avatar: response.url,
+            };
+          });
+          this.snackBar.open('Avatar updated successfully', 'Close', {
+            duration: 2000,
+            panelClass: ['success-snackbar'],
+          });
+        }
+      },
+    });
   }
 
   onShareProfile(): void {
@@ -141,13 +155,15 @@ export class ProfileComponent implements OnInit {
     if (!currentUser) return;
 
     const url = `${window.location.origin}/profile/${currentUser.username}`;
-    
+
     if (navigator.share) {
-      navigator.share({
-        title: `${currentUser.fullName}'s Profile`,
-        text: `Check out ${currentUser.fullName}'s profile on 01Blog`,
-        url: url
-      }).catch(() => this.copyProfileLink(url));
+      navigator
+        .share({
+          title: `${currentUser.fullName}'s Profile`,
+          text: `Check out ${currentUser.fullName}'s profile on 01Blog`,
+          url: url,
+        })
+        .catch(() => this.copyProfileLink(url));
     } else {
       this.copyProfileLink(url);
     }
@@ -156,7 +172,7 @@ export class ProfileComponent implements OnInit {
   onReportUser(): void {
     // TODO: Implement report dialog
     this.snackBar.open('Report feature coming soon', 'Close', {
-      duration: 2000
+      duration: 2000,
     });
   }
 
@@ -164,7 +180,7 @@ export class ProfileComponent implements OnInit {
     navigator.clipboard.writeText(url).then(() => {
       this.snackBar.open('Profile link copied to clipboard!', 'Close', {
         duration: 2000,
-        panelClass: ['success-snackbar']
+        panelClass: ['success-snackbar'],
       });
     });
   }

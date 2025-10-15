@@ -1,5 +1,6 @@
 package api.backend.service;
 
+import java.io.FileOutputStream;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -63,7 +64,7 @@ public class UserService implements UserDetailsService {
     }
 
     public List<UserResponse> getSubscribers(long userId, long cursor) {
-        Pageable pageable = PageRequest.of(0, 10, Direction.DESC,"id");
+        Pageable pageable = PageRequest.of(0, 10, Direction.DESC, "id");
         return userRepository.findAllBySubscribedToIdAndIdLessThan(userId, cursor, pageable).stream()
                 .map(UserService::toUserResponse).toList();
     }
@@ -72,22 +73,40 @@ public class UserService implements UserDetailsService {
         long id = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("No authenticated user found"));
-        String avatarUrl = "/uploads/" + id + "." + ext;
+        String avatarUrl = "images/" + id + "." + ext;
         // Save the file to the local filesystem (you can customize the path as needed)
-        try {
-            java.nio.file.Path path = java.nio.file.Paths.get("uploads/" + id + "." + ext);
-            java.nio.file.Files.createDirectories(path.getParent());
-            file.transferTo(path.toFile());
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to store file", e);
+        String imagesDir = "images";
+        java.io.File dir = new java.io.File(imagesDir);
+        if (dir.exists() && dir.isDirectory()) {
+            String idStr = String.valueOf(id);
+            String prefix = idStr + ".";
+            java.io.File[] toDelete = dir.listFiles((d, name) -> name.equals(idStr) || name.startsWith(prefix));
+            if (toDelete != null) {
+                for (java.io.File f : toDelete) {
+                    try {
+                        if (!f.delete()) {
+                            System.out.println("Failed to delete old avatar: " + f.getAbsolutePath());
+                        }
+                    } catch (Exception e) {
+                        System.out.println("Error deleting old avatar: " + e.getMessage());
+                    }
+                }
+            }
         }
-        user.setAvatar(avatarUrl);
+        try (FileOutputStream fos = new FileOutputStream(avatarUrl)) {
+            byte[] bytes = file.getBytes();
+            fos.write(bytes);
+            user.setAvatar(avatarUrl);
+            System.out.println("Data successfully written to the file.");
+        } catch (Exception e) {
+            System.out.println("An error occurred: " + e.getMessage());
+        }
         userRepository.save(user);
         return avatarUrl;
     }
 
     public List<UserResponse> getSubscribtions(long userId, long cursor) {
-        Pageable pageable = PageRequest.of(0, 10, Direction.DESC,"id");
+        Pageable pageable = PageRequest.of(0, 10, Direction.DESC, "id");
         return userRepository.findAllBySubscribersIdAndIdLessThan(userId, cursor, pageable).stream()
                 .map(UserService::toUserResponse)
                 .toList();
