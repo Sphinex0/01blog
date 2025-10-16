@@ -2,8 +2,7 @@
       <div class="card-header">
         <a [routerLink]="['/users/profile', user().username]" class="avatar-link">
           @if (user().avatar) {
-            <img [src]="user().avatar" [alt]="user().fullName" class="avatar">
-            <!-- <img [src]="getAvatarUrl(user().avatar)" [alt]="user().fullName" class="avatar"> -->
+            <img [src]="getAvatarUrl(user().avatar)" [alt]="user().fullName" class="avatar">
           } @else {
             <div class="avatar-placeholder">
               {{ getInitials(user().fullName) }}

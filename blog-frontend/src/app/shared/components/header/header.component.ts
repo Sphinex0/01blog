@@ -9,6 +9,7 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { MatDividerModule } from '@angular/material/divider';
 import { User } from '../../../core/models/user.interface';
 import { AuthService } from '../../../core/services/auth.service';
+import { NotificationBadgeComponent } from '../../../features/notifications/components/notification-badge/notification-badge.component';
 
 @Component({
   selector: 'app-header',
@@ -21,6 +22,7 @@ import { AuthService } from '../../../core/services/auth.service';
     MatMenuModule,
     MatBadgeModule,
     MatDividerModule,
+    NotificationBadgeComponent
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'

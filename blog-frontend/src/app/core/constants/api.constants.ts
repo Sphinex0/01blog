@@ -36,7 +36,7 @@ export const API_ENDPOINTS = {
     DELETE: '/posts/comments',
   },
   NOTIFICATIONS: {
-    GET_ALL: '/notifications',
+    GET_ALL: '/users/notifications',
     MARK_AS_READ: '/notifications/read',
     MARK_ALL_AS_READ: '/notifications/read-all',
     UNREAD_COUNT: '/notifications/unread-count',

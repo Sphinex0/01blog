@@ -5,13 +5,11 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import api.backend.model.comment.Comment;
+import api.backend.model.notification.Notification;
 import api.backend.model.post.Post;
 import api.backend.model.report.Report;
 import api.backend.model.user.User;
-import api.backend.repository.CommentRepository;
-import api.backend.repository.PostRepository;
-import api.backend.repository.ReportRepository;
-import api.backend.repository.UserRepository;
+import api.backend.repository.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,29 +18,32 @@ import java.util.stream.IntStream;
 @Component
 public class DataLoader implements CommandLineRunner {
 
+    private final NotificationRepository notificationRepository;
+
     private final UserRepository userRepository;
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
     private final ReportRepository reportRepository;
 
     public DataLoader(UserRepository userRepository, PostRepository postRepository,
-            CommentRepository commentRepository, ReportRepository reportRepository) {
+            CommentRepository commentRepository, ReportRepository reportRepository,
+            NotificationRepository notificationRepository) {
         this.userRepository = userRepository;
         this.postRepository = postRepository;
         this.commentRepository = commentRepository;
         this.reportRepository = reportRepository;
+        this.notificationRepository = notificationRepository;
     }
 
     @Override
     public void run(String... args) {
 
-        if (userRepository.count() >= 10){
+        if (userRepository.count() >= 10) {
             return; // Prevent reseeding if users already exist
         }
         User adminUser = new User("admin", "admin", "admin@gmail.com",
                 "$2a$10$gLOE1XiudLgmuyvhiWl9WOXXEEvqOofpkN9wbXkUynZzAahmq6oV2", "ADMIN", LocalDateTime.now());
         userRepository.save(adminUser);
-
 
         // password: test123
         User testUser = new User("test", "test", "test@gmail.com",
@@ -80,6 +81,8 @@ public class DataLoader implements CommandLineRunner {
                 String title = faker.leagueOfLegends().quote();
                 Post post = new Post(user, title, content, LocalDateTime.now());
                 postRepository.save(post);
+                Notification notification = new Notification(adminUser, post);
+                notificationRepository.save(notification);
             });
         });
         IntStream.range(0, faker.number().numberBetween(1, 5)).forEach(i -> {
