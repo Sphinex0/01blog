@@ -29,7 +29,16 @@ import { TimeAgoPipe } from '../../../../shared/pipes/time-ago-pipe';
       
       <!-- Icon -->
       <div class="notification-icon" [class]="getNotificationType()">
-        <mat-icon>{{ getNotificationIcon() }}</mat-icon>
+        <!-- <mat-icon>{{ getNotificationIcon() }}</mat-icon> -->
+
+          @if (notification().sender.avatar) {
+            <img class="notification-icon" [src]="getMediaUrl(notification().sender.avatar)" [alt]="notification().sender.fullName" />
+            } @else {
+            <div class="avatar-placeholder">
+              {{ getAuthorInitials(notification().sender.fullName) }}
+            </div>
+            }
+        <!-- <img src="{{ notification().sender.avatar }}" alt=""> -->
       </div>
 
       <!-- Content -->
@@ -229,5 +238,20 @@ export class NotificationItemComponent {
       new_post: 'article'
     };
     return iconMap[type] || 'notifications';
+  }
+
+
+    getMediaUrl(url: string | undefined): string {
+    if (!url) return '';
+    if (url.startsWith('http')) return url;
+    return `http://localhost:8080${url}`;
+  }
+
+  getAuthorInitials(fullName: string): string {
+    const names = fullName.split(' ');
+    if (names.length >= 2) {
+      return `${names[0][0]}${names[1][0]}`.toUpperCase();
+    }
+    return fullName[0]?.toUpperCase() || 'U';
   }
 }
