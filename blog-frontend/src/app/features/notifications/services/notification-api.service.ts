@@ -25,15 +25,16 @@ export class NotificationApiService {
   /**
    * Get all notifications
    */
-  getNotifications(): Observable<ApiResponse<Notification[]>> {
+  getNotifications(): Observable<Notification[]> {
     this._isLoading.set(true);
 
-    return this.http.get<ApiResponse<Notification[]>>(
+    return this.http.get<Notification[]>(
       `${this.baseUrl}${API_ENDPOINTS.NOTIFICATIONS.GET_ALL}`
     ).pipe(
       tap((response) => {
-        if (response.success && response.data) {
-          this._notifications.set(response.data);
+        if (response) {
+          
+          this._notifications.set(response);
           // this.updateUnreadCount(response.data);
         }
         this._isLoading.set(false);
@@ -122,7 +123,7 @@ export class NotificationApiService {
    * Update unread count from notifications list
    */
   private updateUnreadCount(notifications: Notification[]): void {
-    const unreadCount = notifications.filter(n => !n.isRead).length;
+    const unreadCount = notifications.filter(n => !n.read).length;
     this._unreadCount.set(unreadCount);
   }
 
@@ -131,7 +132,7 @@ export class NotificationApiService {
    */
   addNotification(notification: Notification): void {
     this._notifications.update(notifications => [notification, ...notifications]);
-    if (!notification.isRead) {
+    if (!notification.read) {
       this._unreadCount.update(count => count + 1);
     }
   }

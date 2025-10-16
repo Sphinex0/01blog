@@ -1,0 +1,40 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Database",
+      "type": "shell",
+      "command": "cd database && docker-compose up",
+      "isBackground": true,
+      "presentation": {
+        "panel": "dedicated",
+        "echo": true
+      }
+    },
+    {
+      "label": "Backend",
+      "type": "shell",
+      "command": "cd backend && ./mvnw spring-boot:run",
+      "isBackground": true,
+      "presentation": {
+        "panel": "dedicated",
+        "echo": true
+      }
+    },
+    {
+      "label": "Frontend",
+      "type": "shell",
+      "command": "cd blog-frontend && ng serve",
+      "isBackground": true,
+      "presentation": {
+        "panel": "dedicated",
+        "echo": true
+      }
+    },
+    {
+      "label": "Start All",
+      "dependsOn": ["Database", "Backend", "Frontend"],
+      "dependsOrder": "parallel"
+    }
+  ]
+}

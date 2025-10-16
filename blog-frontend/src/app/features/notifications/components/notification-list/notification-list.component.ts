@@ -41,11 +41,11 @@ export class NotificationListComponent implements OnInit {
 
   // Filtered notifications
   readonly unreadNotifications = computed(() => 
-    this.notifications().filter(n => !n.isRead)
+    this.notifications().filter(n => !n.read)
   );
 
   readonly readNotifications = computed(() => 
-    this.notifications().filter(n => n.isRead)
+    this.notifications().filter(n => n.read)
   );
 
   ngOnInit(): void {
@@ -66,18 +66,11 @@ export class NotificationListComponent implements OnInit {
   }
 
   onNotificationClick(notification: Notification): void {
-    // Mark as read if unread
-    if (!notification.isRead) {
-      this.notificationService.markAsRead(notification.id).subscribe();
-    }
 
     // Navigate based on notification type
-    if (notification.relatedPostId) {
-      this.router.navigate(['/posts', notification.relatedPostId]);
-    } else if (notification.relatedUserId) {
-      // Get username somehow or navigate to profile
-      this.router.navigate(['/profile', notification.relatedUserId]);
-    }
+    if (notification.postId) {
+      this.router.navigate(['/posts', notification.postId]);
+    } 
   }
 
   onMarkAsRead(notificationId: number): void {

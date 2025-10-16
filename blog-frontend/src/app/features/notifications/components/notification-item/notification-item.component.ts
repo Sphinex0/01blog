@@ -23,7 +23,7 @@ import { TimeAgoPipe } from '../../../../shared/pipes/time-ago-pipe';
   template: `
     <div 
       class="notification-item"
-      [class.unread]="!notification().isRead"
+      [class.unread]="!notification().read"
       (click)="onNotificationClick()"
       matRipple>
       
@@ -34,12 +34,13 @@ import { TimeAgoPipe } from '../../../../shared/pipes/time-ago-pipe';
 
       <!-- Content -->
       <div class="notification-content">
-        <p class="notification-message">{{ notification().message }}</p>
+        <p class="notification-message"> new post created by @{{ notification().sender.username }}</p>
+         <!-- notification().message -->
         <span class="notification-time">{{ notification().createdAt | timeAgo }}</span>
       </div>
 
       <!-- Unread Indicator -->
-      @if (!notification().isRead) {
+      @if (!notification().read) {
         <div class="unread-dot"></div>
       }
 
@@ -53,7 +54,7 @@ import { TimeAgoPipe } from '../../../../shared/pipes/time-ago-pipe';
       </button>
 
       <mat-menu #menu="matMenu">
-        @if (!notification().isRead) {
+        @if (!notification().read) {
           <button mat-menu-item (click)="onMarkAsRead()">
             <mat-icon>done</mat-icon>
             <span>Mark as read</span>
@@ -214,11 +215,13 @@ export class NotificationItemComponent {
   }
 
   getNotificationType(): string {
-    return this.notification().type;
+    // return this.notification().type;
+    return 'new_post';
   }
 
   getNotificationIcon(): string {
-    const type = this.notification().type;
+    // const type = this.notification().type;
+    const type = 'new_post';
     const iconMap: Record<string, string> = {
       like: 'favorite',
       comment: 'comment',
