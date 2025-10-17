@@ -16,7 +16,7 @@ html {
     density: 0,
   ));
 }
-
+/*
 body {
   // Default the application to a light color theme. This can be changed to
   // `dark` to enable the dark color theme, or to `light dark` to defer to the
@@ -33,7 +33,397 @@ body {
   // Reset the user agent margin.
   margin: 0;
 }
+*/
 /* You can add global styles to this file, and also import other style files */
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+// html, body { height: 100%; }
+// body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+
+// Import Press Start 2P font for pixel aesthetic
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+// Light Theme Variables
+.light-theme {
+  --pixel-primary: #dd8448;
+  --pixel-primary-dark: #b86c39;
+  --pixel-secondary: #4ecdc4;
+  --pixel-accent: #ffe66d;
+  
+  --pixel-bg-primary: #f0f0f0;
+  --pixel-bg-secondary: #ffffff;
+  --pixel-bg-tertiary: #e8e8e8;
+  
+  --pixel-text-primary: #2d2d2d;
+  --pixel-text-secondary: #666666;
+  --pixel-text-muted: #999999;
+  
+  --pixel-border: #2d2d2d;
+  --pixel-border-light: #cccccc;
+  --pixel-shadow: rgba(0, 0, 0, 0.3);
+  --pixel-shadow-inner: rgba(0, 0, 0, 0.1);
+  
+  --pixel-success: #51cf66;
+  --pixel-warning: #ffd43b;
+  --pixel-error: #ff6b6b;
+  --pixel-info: #4dabf7;
+}
+
+// Dark Theme Variables
+.dark-theme {
+  --pixel-primary: #dd8448;
+  --pixel-primary-dark: #b86c39;
+  --pixel-secondary: #63e6e0;
+  --pixel-accent: #fff3a3;
+  
+  --pixel-bg-primary: #1a1a1a;
+  --pixel-bg-secondary: #2d2d2d;
+  --pixel-bg-tertiary: #3d3d3d;
+  
+  --pixel-text-primary: #f0f0f0;
+  --pixel-text-secondary: #b8b8b8;
+  --pixel-text-muted: #808080;
+  
+  --pixel-border: #f0f0f0;
+  --pixel-border-light: #4d4d4d;
+  --pixel-shadow: rgba(0, 0, 0, 0.6);
+  --pixel-shadow-inner: rgba(255, 255, 255, 0.05);
+  
+  --pixel-success: #69db7c;
+  --pixel-warning: #ffe066;
+  --pixel-error: #ff8787;
+  --pixel-info: #74c0fc;
+}
+
+// Global Reset & Base Styles
+* {
+  box-sizing: border-box;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: 'Press Start 2P', monospace, cursive;
+  font-size: 10px;
+  line-height: 1.6;
+  color: var(--pixel-text-primary);
+  background-color: var(--pixel-bg-primary);
+  background-image: url('https://www.transparenttextures.com/patterns/random-grey-variations.png');
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// Pixel Typography
+h1, h2, h3, h4, h5, h6 {
+  margin: 0 0 16px;
+  font-family: 'Press Start 2P', cursive;
+  font-weight: normal;
+  line-height: 1.4;
+  color: var(--pixel-text-primary);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+h1 { font-size: 20px; margin-bottom: 24px; }
+h2 { font-size: 16px; margin-bottom: 20px; }
+h3 { font-size: 14px; margin-bottom: 16px; }
+h4 { font-size: 12px; margin-bottom: 12px; }
+h5, h6 { font-size: 10px; margin-bottom: 8px; }
+
+p {
+  margin: 0 0 16px;
+  color: var(--pixel-text-secondary);
+  line-height: 1.8;
+}
+
+a {
+  color: var(--pixel-primary);
+  text-decoration: none;
+  transition: color 0.1s ease;
+  
+  &:hover {
+    color: var(--pixel-primary-dark);
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+  }
+}
+
+// Pixel Buttons
+.pixel-btn {
+  display: inline-block;
+  padding: 12px 24px;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 10px;
+  text-transform: uppercase;
+  color: var(--pixel-text-primary);
+  background: var(--pixel-bg-secondary);
+  border: 3px solid var(--pixel-border);
+  cursor: pointer;
+  position: relative;
+  transition: all 0.1s ease;
+  box-shadow: 
+    4px 4px 0 var(--pixel-shadow),
+    inset -2px -2px 0 var(--pixel-shadow-inner);
+
+  &:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 
+      2px 2px 0 var(--pixel-shadow),
+      inset -2px -2px 0 var(--pixel-shadow-inner);
+  }
+
+  &:active {
+    transform: translate(4px, 4px);
+    box-shadow: none;
+  }
+
+  &.primary {
+    background: var(--pixel-primary);
+    color: white;
+    border-color: var(--pixel-primary-dark);
+  }
+
+  &.secondary {
+    background: var(--pixel-secondary);
+    color: var(--pixel-text-primary);
+    border-color: var(--pixel-text-primary);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+// Pixel Cards
+.pixel-card {
+  background: var(--pixel-bg-secondary);
+  border: 3px solid var(--pixel-border);
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 
+    6px 6px 0 var(--pixel-shadow),
+    inset -2px -2px 0 var(--pixel-shadow-inner);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+    border: 1px solid var(--pixel-border-light);
+    pointer-events: none;
+  }
+}
+
+// Pixel Inputs
+.pixel-input {
+  width: 100%;
+  padding: 12px 16px;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 10px;
+  color: var(--pixel-text-primary);
+  background: var(--pixel-bg-primary);
+  border: 3px solid var(--pixel-border);
+  box-shadow: inset 2px 2px 0 var(--pixel-shadow-inner);
+  transition: all 0.1s ease;
+
+  &:focus {
+    outline: none;
+    border-color: var(--pixel-primary);
+    box-shadow: 
+      inset 2px 2px 0 var(--pixel-shadow-inner),
+      0 0 0 3px var(--pixel-primary);
+  }
+
+  &::placeholder {
+    color: var(--pixel-text-muted);
+  }
+}
+
+// Pixel Badges
+.pixel-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 8px;
+  text-transform: uppercase;
+  background: var(--pixel-accent);
+  border: 2px solid var(--pixel-border);
+  box-shadow: 2px 2px 0 var(--pixel-shadow);
+}
+
+// Pixel Divider
+.pixel-divider {
+  height: 3px;
+  background: var(--pixel-border);
+  margin: 24px 0;
+  box-shadow: 0 2px 0 var(--pixel-shadow);
+}
+
+// Pixel Avatar
+.pixel-avatar {
+  border: 3px solid var(--pixel-border);
+  box-shadow: 
+    4px 4px 0 var(--pixel-shadow),
+    inset -2px -2px 0 var(--pixel-shadow-inner);
+  image-rendering: pixelated;
+}
+
+// Custom Scrollbar
+::-webkit-scrollbar {
+  width: 16px;
+  height: 16px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--pixel-bg-primary);
+  border: 2px solid var(--pixel-border);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--pixel-primary);
+  border: 2px solid var(--pixel-border);
+  box-shadow: inset -2px -2px 0 var(--pixel-shadow-inner);
+
+  &:hover {
+    background: var(--pixel-primary-dark);
+  }
+}
+
+::-webkit-scrollbar-corner {
+  background: var(--pixel-bg-primary);
+  border: 2px solid var(--pixel-border);
+}
+
+// Material Design Overrides for Pixel Theme
+:root {
+  .mat-mdc-button,
+  .mat-mdc-raised-button,
+  .mat-mdc-outlined-button {
+    font-family: 'Press Start 2P', cursive !important;
+    font-size: 10px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    border-radius: 0 !important;
+  }
+
+  .mat-mdc-raised-button {
+    border: 3px solid var(--pixel-border) !important;
+    box-shadow: 4px 4px 0 var(--pixel-shadow) !important;
+
+    &:hover {
+      box-shadow: 2px 2px 0 var(--pixel-shadow) !important;
+    }
+
+    &:active {
+      box-shadow: none !important;
+    }
+  }
+
+  .mat-mdc-card {
+    border: 3px solid var(--pixel-border) !important;
+    border-radius: 0 !important;
+    box-shadow: 6px 6px 0 var(--pixel-shadow) !important;
+  }
+
+  .mat-mdc-form-field {
+    font-family: 'Press Start 2P', cursive !important;
+    font-size: 10px !important;
+
+    .mat-mdc-text-field-wrapper {
+      border-radius: 0 !important;
+    }
+
+    .mat-mdc-form-field-infix {
+      font-family: 'Press Start 2P', cursive !important;
+    }
+  }
+
+  .mat-mdc-tab {
+    font-family: 'Press Start 2P', cursive !important;
+    font-size: 10px !important;
+    text-transform: uppercase !important;
+  }
+
+  .mat-mdc-snack-bar-container {
+    border: 3px solid var(--pixel-border) !important;
+    border-radius: 0 !important;
+    box-shadow: 4px 4px 0 var(--pixel-shadow) !important;
+    font-family: 'Press Start 2P', cursive !important;
+    font-size: 10px !important;
+  }
+}
+
+// Pixel Animations
+@keyframes pixelPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes pixelBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes pixelShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+// Utility Classes
+.pixel-pulse { animation: pixelPulse 2s infinite; }
+.pixel-bounce { animation: pixelBounce 1s infinite; }
+.pixel-shake { animation: pixelShake 0.5s; }
+
+// Responsive Text
+@media (max-width: 768px) {
+  body { font-size: 9px; }
+  h1 { font-size: 16px; }
+  h2 { font-size: 14px; }
+  h3 { font-size: 12px; }
+  h4, h5, h6 { font-size: 10px; }
+}
+
+// Selection
+::selection {
+  background: var(--pixel-primary);
+  color: white;
+  text-shadow: 2px 2px 0 var(--pixel-shadow);
+}
+
+::-moz-selection {
+  background: var(--pixel-primary);
+  color: white;
+  text-shadow: 2px 2px 0 var(--pixel-shadow);
+}
+
+// Focus Styles
+:focus-visible {
+  outline: 3px solid var(--pixel-primary);
+  outline-offset: 4px;
+}
+
+// Loading Spinner Pixel Style
+.pixel-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--pixel-border);
+  border-top-color: var(--pixel-primary);
+  animation: spin 1s steps(8) infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

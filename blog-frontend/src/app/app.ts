@@ -1,12 +1,19 @@
-import { Component, signal } from '@angular/core';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { Component, OnInit, inject } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { ThemeService } from './features/settings/services/theme.service';
 
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet],
-  templateUrl: './app.html',
+  template: '<router-outlet></router-outlet>',
   styleUrl: './app.scss'
 })
-export class App {
-  protected readonly title = signal('blog-frontend');
+export class App implements OnInit {
+  private readonly themeService = inject(ThemeService);
+  
+  title = 'Pixel Blog';
+
+  ngOnInit(): void {
+    // Theme service will auto-initialize
+  }
 }

@@ -51,7 +51,7 @@ export class NotificationListComponent implements OnInit {
   ngOnInit(): void {
     this.loadNotifications();
     // Also update unread count
-    this.notificationService.getUnreadCount().subscribe();
+    // this.notificationService.getUnreadCount().subscribe();
   }
 
   loadNotifications(): void {

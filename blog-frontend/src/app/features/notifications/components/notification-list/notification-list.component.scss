@@ -12,6 +12,10 @@
   align-items: center;
   margin-bottom: 2rem;
   gap: 1rem;
+  padding: 1.5rem;
+  background: var(--pixel-bg-secondary);
+  border: 3px solid var(--pixel-border);
+  box-shadow: 6px 6px 0 var(--pixel-shadow);
 }
 
 .header-content {
@@ -22,9 +26,11 @@
 
 .page-title {
   margin: 0;
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: #1a1a1a;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 16px;
+  color: var(--pixel-text-primary);
+  text-transform: uppercase;
+  letter-spacing: 2px;
 }
 
 .unread-badge {
@@ -34,11 +40,12 @@
   min-width: 24px;
   height: 24px;
   padding: 0 0.5rem;
-  border-radius: 12px;
-  background: #3b82f6;
+  background: var(--pixel-primary);
+  border: 2px solid var(--pixel-border);
   color: white;
-  font-size: 0.8125rem;
-  font-weight: 600;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 8px;
+  box-shadow: 2px 2px 0 var(--pixel-shadow);
 }
 
 .header-actions {
@@ -48,10 +55,28 @@
 }
 
 .mark-all-btn {
-  font-weight: 600;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 9px;
+  padding: 8px 16px;
+  background: var(--pixel-secondary);
+  border: 2px solid var(--pixel-border);
+  color: var(--pixel-text-primary);
+  box-shadow: 3px 3px 0 var(--pixel-shadow);
+  text-transform: uppercase;
+  transition: all 0.1s ease;
 
   mat-icon {
     margin-right: 0.5rem;
+  }
+
+  &:hover {
+    transform: translate(1px, 1px);
+    box-shadow: 2px 2px 0 var(--pixel-shadow);
+  }
+
+  &:active {
+    transform: translate(3px, 3px);
+    box-shadow: none;
   }
 }
 
@@ -65,7 +90,10 @@
 
   p {
     margin-top: 1rem;
-    color: #6b7280;
+    color: var(--pixel-text-secondary);
+    font-family: 'Press Start 2P', cursive;
+    font-size: 10px;
+    text-transform: uppercase;
   }
 }
 
@@ -73,43 +101,57 @@
 .empty-state {
   text-align: center;
   padding: 4rem 1rem;
+}
+
+.empty-icon-wrapper {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid var(--pixel-border);
+  background: var(--pixel-bg-tertiary);
+  box-shadow: 4px 4px 0 var(--pixel-shadow);
 
   .empty-icon {
-    font-size: 5rem;
-    width: 5rem;
-    height: 5rem;
-    color: #9ca3af;
-    margin-bottom: 1rem;
+    font-size: 4rem;
+    width: 4rem;
+    height: 4rem;
+    color: var(--pixel-text-muted);
   }
+}
 
-  h2 {
-    margin: 0 0 0.5rem;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #1a1a1a;
-  }
+.empty-state h2 {
+  margin: 0 0 1rem;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 14px;
+  color: var(--pixel-text-primary);
+  text-transform: uppercase;
+}
 
-  p {
-    margin: 0;
-    color: #6b7280;
-  }
+.empty-state p {
+  margin: 0;
+  color: var(--pixel-text-secondary);
+  font-family: 'Press Start 2P', cursive;
+  font-size: 9px;
+  line-height: 1.8;
 }
 
 // Notifications Content
 .notifications-content {
-  background: white;
-  border-radius: 16px;
+  background: var(--pixel-bg-secondary);
+  border: 3px solid var(--pixel-border);
   overflow: hidden;
-  border: 1px solid #f0f0f0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  box-shadow: 6px 6px 0 var(--pixel-shadow);
 }
 
 // Tabs
 :host ::ng-deep {
   .notifications-tabs {
     .mat-mdc-tab-header {
-      border-bottom: 1px solid #f0f0f0;
-      background: white;
+      border-bottom: 3px solid var(--pixel-border);
+      background: var(--pixel-bg-secondary);
     }
 
     .mat-mdc-tab-labels {
@@ -126,11 +168,13 @@
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      font-family: 'Press Start 2P', cursive;
     }
 
     .tab-label {
-      font-weight: 600;
-      font-size: 0.9375rem;
+      font-family: 'Press Start 2P', cursive;
+      font-size: 9px;
+      text-transform: uppercase;
     }
 
     .tab-count {
@@ -140,21 +184,23 @@
       min-width: 20px;
       height: 20px;
       padding: 0 0.375rem;
-      border-radius: 10px;
-      background: #e5e7eb;
-      color: #6b7280;
-      font-size: 0.75rem;
-      font-weight: 600;
+      background: var(--pixel-bg-tertiary);
+      border: 2px solid var(--pixel-border);
+      color: var(--pixel-text-secondary);
+      font-family: 'Press Start 2P', cursive;
+      font-size: 7px;
+      box-shadow: 1px 1px 0 var(--pixel-shadow);
 
       &.unread {
-        background: #3b82f6;
+        background: var(--pixel-primary);
         color: white;
+        border-color: var(--pixel-primary-dark);
       }
     }
 
     .mat-ink-bar {
-      background-color: #3b82f6;
-      height: 3px;
+      background-color: var(--pixel-primary);
+      height: 4px;
     }
   }
 }
@@ -166,6 +212,7 @@
 
   mat-divider {
     margin: 0;
+    border-color: var(--pixel-border-light);
   }
 }
 
@@ -176,7 +223,7 @@
   align-items: center;
   justify-content: center;
   padding: 3rem 1rem;
-  color: #9ca3af;
+  color: var(--pixel-text-muted);
 
   mat-icon {
     font-size: 3rem;
@@ -187,7 +234,9 @@
 
   p {
     margin: 0;
-    font-size: 0.9375rem;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 9px;
+    text-transform: uppercase;
   }
 }
 
@@ -200,6 +249,7 @@
   .notifications-header {
     flex-direction: column;
     align-items: flex-start;
+    padding: 1rem;
   }
 
   .header-content {
@@ -212,11 +262,12 @@
   }
 
   .page-title {
-    font-size: 1.5rem;
+    font-size: 14px;
   }
 
   .mark-all-btn {
-    font-size: 0.875rem;
+    font-size: 8px;
+    padding: 6px 12px;
   }
 
   :host ::ng-deep {
@@ -231,61 +282,18 @@
       }
 
       .tab-label {
-        font-size: 0.875rem;
+        font-size: 8px;
       }
     }
   }
 }
 
-// Dark Mode
-@media (prefers-color-scheme: dark) {
-  .notifications-container {
-    background: #121212;
-  }
-
-  .page-title {
-    color: #e0e0e0;
-  }
-
-  .notifications-content {
-    background: #1e1e1e;
-    border-color: #2a2a2a;
-  }
-
-  :host ::ng-deep {
-    .notifications-tabs {
-      .mat-mdc-tab-header {
-        background: #1e1e1e;
-        border-bottom-color: #2a2a2a;
-      }
-
-      .tab-count {
-        background: #2a2a2a;
-        color: #9ca3af;
-
-        &.unread {
-          background: #3b82f6;
-          color: white;
-        }
-      }
-    }
-  }
-
-  .empty-state h2 {
-    color: #e0e0e0;
-  }
-
-  .empty-tab-state {
-    color: #6b7280;
-  }
-}
-
-// Animations
+// Animations - Pixel style
 .notifications-content {
-  animation: fadeIn 0.4s ease-out;
+  animation: pixelFadeIn 0.4s steps(8) backwards;
 }
 
-@keyframes fadeIn {
+@keyframes pixelFadeIn {
   from {
     opacity: 0;
     transform: translateY(20px);
@@ -296,25 +304,29 @@
   }
 }
 
-// Custom scrollbar
+// Custom scrollbar - Pixel style
 .notifications-list {
-  scrollbar-width: thin;
-  scrollbar-color: #cbd5e1 transparent;
-
   &::-webkit-scrollbar {
-    width: 6px;
+    width: 16px;
   }
 
   &::-webkit-scrollbar-track {
-    background: transparent;
+    background: var(--pixel-bg-primary);
+    border: 2px solid var(--pixel-border);
   }
 
   &::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
-    border-radius: 3px;
+    background: var(--pixel-primary);
+    border: 2px solid var(--pixel-border);
+    box-shadow: inset -2px -2px 0 var(--pixel-shadow-inner);
 
     &:hover {
-      background: #94a3b8;
+      background: var(--pixel-primary-dark);
     }
+  }
+
+  &::-webkit-scrollbar-corner {
+    background: var(--pixel-bg-primary);
+    border: 2px solid var(--pixel-border);
   }
 }

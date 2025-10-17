@@ -10,6 +10,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { User } from '../../../core/models/user.interface';
 import { AuthService } from '../../../core/services/auth.service';
 import { NotificationBadgeComponent } from '../../../features/notifications/components/notification-badge/notification-badge.component';
+import { ThemeToggleComponent } from '../../../features/settings/components/theme-toggle/theme-toggle.component';
 
 @Component({
   selector: 'app-header',
@@ -22,10 +23,11 @@ import { NotificationBadgeComponent } from '../../../features/notifications/comp
     MatMenuModule,
     MatBadgeModule,
     MatDividerModule,
-    NotificationBadgeComponent
+    NotificationBadgeComponent,
+    ThemeToggleComponent,
   ],
   templateUrl: './header.component.html',
-  styleUrl: './header.component.scss'
+  styleUrl: './header.component.scss',
 })
 export class HeaderComponent {
   private readonly authService = inject(AuthService);
@@ -42,5 +44,19 @@ export class HeaderComponent {
 
   onMobileMenuToggle(): void {
     this.mobileMenuToggle.emit();
+  }
+
+  getAvatarUrl(avatar: string | undefined): string {
+    if (!avatar) return '';
+    if (avatar.startsWith('http')) return avatar;
+    return `http://localhost:8080/api/${avatar}?t=${new Date().getTime()}`;
+  }
+
+  getInitials(fullName: string = ''): string {
+    const names = fullName.split(' ');
+    if (names.length >= 2) {
+      return `${names[0][0]}${names[1][0]}`.toUpperCase();
+    }
+    return fullName[0]?.toUpperCase() || 'U';
   }
 }

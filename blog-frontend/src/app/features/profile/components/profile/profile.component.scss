@@ -1,30 +1,8 @@
 .profile-container {
-  max-width: 900px;
+  max-width: 1000px;
   margin: 0 auto;
   padding: 2rem 1rem;
   min-height: calc(100vh - 64px);
-}
-
-// Back Button
-.back-button-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 2rem;
-}
-
-.back-btn {
-  color: #6b7280;
-
-  &:hover {
-    background: #f3f4f6;
-  }
-}
-
-.back-text {
-  font-size: 0.9375rem;
-  color: #6b7280;
-  font-weight: 500;
 }
 
 // Loading State
@@ -34,102 +12,253 @@
   align-items: center;
   justify-content: center;
   padding: 4rem 1rem;
+  min-height: 400px;
+
+  mat-spinner {
+    margin-bottom: 1.5rem;
+
+    ::ng-deep circle {
+      stroke: var(--pixel-primary);
+    }
+  }
 
   p {
-    margin-top: 1rem;
-    color: #6b7280;
+    margin: 0;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 10px;
+    color: var(--pixel-text-secondary);
+    text-transform: uppercase;
+    animation: pixelPulse 2s steps(4) infinite;
   }
 }
 
 // Error State
 .error-state {
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   padding: 4rem 1rem;
+  text-align: center;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.error-icon-wrapper {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid var(--pixel-border);
+  background: var(--pixel-bg-tertiary);
+  box-shadow: 4px 4px 0 var(--pixel-shadow);
 
   .error-icon {
     font-size: 4rem;
     width: 4rem;
     height: 4rem;
-    color: #ef4444;
-    margin-bottom: 1rem;
+    color: var(--pixel-error);
+  }
+}
+
+.error-state h2 {
+  margin: 0 0 1rem;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 16px;
+  color: var(--pixel-text-primary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.error-state p {
+  margin: 0 0 2rem;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 9px;
+  line-height: 1.8;
+  color: var(--pixel-text-secondary);
+}
+
+.error-state button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 12px 24px;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 10px;
+  text-transform: uppercase;
+  background: var(--pixel-primary);
+  color: white;
+  border: 3px solid var(--pixel-primary-dark);
+  cursor: pointer;
+  transition: all 0.1s ease;
+  box-shadow: 4px 4px 0 var(--pixel-shadow);
+
+  mat-icon {
+    margin-right: 0.5rem;
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
   }
 
-  h2 {
-    margin: 0 0 0.5rem;
-    font-size: 1.5rem;
-    color: #1a1a1a;
+  &:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 var(--pixel-shadow);
   }
 
-  p {
-    margin: 0 0 1.5rem;
-    color: #6b7280;
+  &:active {
+    transform: translate(4px, 4px);
+    box-shadow: none;
   }
 }
 
 // Profile Content
 .profile-content {
-  animation: fadeIn 0.4s ease-out;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  animation: pixelFadeIn 0.4s steps(8) backwards;
 }
 
 // Posts Section
 .posts-section {
-  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
 .section-title {
-  margin: 0 0 1.5rem;
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #1a1a1a;
-  padding: 0 0.5rem;
+  margin: 0;
+  padding: 1rem 1.5rem;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 14px;
+  color: var(--pixel-text-primary);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  background: var(--pixel-bg-secondary);
+  border: 3px solid var(--pixel-border);
+  box-shadow: 4px 4px 0 var(--pixel-shadow);
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 1.5rem;
+    right: 1.5rem;
+    height: 2px;
+    background: var(--pixel-primary);
+  }
 }
 
-// Responsive
+// Responsive Design
 @media (max-width: 768px) {
   .profile-container {
     padding: 1rem;
   }
 
-  .section-title {
-    font-size: 1.25rem;
-  }
-}
-
-// Dark Mode
-@media (prefers-color-scheme: dark) {
-  .profile-container {
-    background: #121212;
+  .loading-state p {
+    font-size: 9px;
   }
 
-  .back-text {
-    color: #9ca3af;
+  .error-state h2 {
+    font-size: 14px;
   }
 
-  .back-btn {
-    color: #9ca3af;
+  .error-state p {
+    font-size: 8px;
+  }
 
-    &:hover {
-      background: #2a2a2a;
+  .error-state button {
+    font-size: 9px;
+    padding: 10px 20px;
+
+    mat-icon {
+      width: 18px;
+      height: 18px;
+      font-size: 18px;
     }
   }
 
   .section-title {
-    color: #e0e0e0;
+    font-size: 12px;
+    padding: 0.75rem 1rem;
+
+    &::after {
+      left: 1rem;
+      right: 1rem;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-container {
+    padding: 0.75rem;
   }
 
-  .error-state h2 {
-    color: #e0e0e0;
+  .profile-content {
+    gap: 1.5rem;
+  }
+
+  .posts-section {
+    gap: 1rem;
+  }
+
+  .section-title {
+    font-size: 11px;
+    padding: 0.75rem;
+  }
+
+  .error-state button {
+    width: 100%;
+    justify-content: center;
   }
 }
 
 // Animations
-@keyframes fadeIn {
+@keyframes pixelFadeIn {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(30px);
   }
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes pixelPulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+// Loading spinner customization
+::ng-deep {
+  .loading-state mat-spinner {
+    svg circle {
+      stroke: var(--pixel-primary) !important;
+      stroke-width: 8px;
+      stroke-linecap: square;
+    }
+  }
+}
+
+// Material button overrides
+::ng-deep {
+  .error-state {
+    .mat-mdc-raised-button {
+      border-radius: 0 !important;
+      font-family: 'Press Start 2P', cursive !important;
+    }
+
+    .mat-mdc-button-persistent-ripple,
+    .mat-mdc-button-ripple {
+      display: none;
+    }
   }
 }

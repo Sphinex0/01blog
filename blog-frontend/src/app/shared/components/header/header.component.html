@@ -1,18 +1,16 @@
-<mat-toolbar color="primary" class="header-toolbar">
+<mat-toolbar color="primary" class="pixel-header">
+  
   <!-- Mobile menu button -->
-  <button
-    mat-icon-button
-    class="mobile-menu-button"
-    (click)="onMobileMenuToggle()"
-    aria-label="Open menu"
-  >
-    <mat-icon>menu</mat-icon>
-  </button>
+
+    <span (click)="onMobileMenuToggle()" class="pixel-icon">
+      <svg width="20" viewBox="0 0 20 20" class="hover:text-blue transition-colors duration-500 hover:scale-98"><g class="fill-icon"><path d="M17 1H3V3H17V1Z"></path><path d="M19 3H17V17H19V3Z"></path><path d="M17 17H3V19H17V17Z"></path><path d="M3 3H1V17H3V3Z"></path><path d="M8 3H6V17H8V3Z"></path></g><g class="fill-icon-secondary"><path d="M10 9H12V11H10V9Z"></path><path d="M12 11H14V13H12V11Z"></path><path d="M12 7H14V9H12V7Z"></path></g></svg>
+    </span>
+
 
   <!-- Logo -->
-  <a routerLink="/" class="logo">
-    <mat-icon class="logo-icon">book</mat-icon>
-    <span class="logo-text">01Blog</span>
+  <a routerLink="/" class="pixel-logo">
+    
+    <span class="logo-text">/PIXEL BLOG</span>
   </a>
 
   <!-- Spacer -->
@@ -20,83 +18,73 @@
 
   <!-- Desktop Navigation -->
   <nav class="desktop-nav">
-    <a mat-button routerLink="/" routerLinkActive="active-link">
-      <mat-icon>home</mat-icon>
-      Home
+    <a mat-button routerLink="/" routerLinkActive="active-link" class="pixel-nav-btn">
+      <!-- <span class="nav-icon">🏠</span> -->
+      <span>HOME</span>
     </a>
-    <a mat-button routerLink="/users" >
-      <mat-icon>group</mat-icon>
-      Users
+    <a mat-button routerLink="/users" routerLinkActive="active-link" class="pixel-nav-btn">
+      <!-- <span class="nav-icon">🔍</span> -->
+      <span>USERS</span>
     </a>
-    <a mat-button routerLink="/posts/create" routerLinkActive="active-link">
-      <mat-icon>add</mat-icon>
-      Create
+    <a mat-button routerLink="/posts/create" routerLinkActive="active-link" class="pixel-nav-btn">
+      <!-- <span class="nav-icon">➕</span> -->
+      <span>CREATE</span>
     </a>
-    <!-- <a mat-button routerLink="/notifications" routerLinkActive="active-link">
-      <mat-icon matBadge="3" matBadgeColor="warn" matBadgeSize="small">notifications</mat-icon>
-      Notifications
-    </a> -->
-    <!-- Replace the existing notifications button with -->
-    <app-notification-badge></app-notification-badge>
   </nav>
 
-  <!-- <mat-tab-group 
-        [(selectedIndex)]="selectedTabIndex"
-        (selectedIndexChange)="onTabChange($event)"
-        class="feed-tabs"
-        animationDuration="300ms">
-        
-        <mat-tab label="Following">
-          <ng-template matTabContent>
-            <app-feed></app-feed>
-          </ng-template>
-        </mat-tab>
+  <!-- Theme Toggle -->
+  <app-theme-toggle></app-theme-toggle>
 
-        <mat-tab label="Explore">
-          <ng-template matTabContent>
-            <app-public-feed></app-public-feed>
-          </ng-template>
-        </mat-tab>
-
-      </mat-tab-group> -->
+  <!-- Notifications -->
+  <app-notification-badge></app-notification-badge>
 
   <!-- User Menu -->
   @if (currentUser(); as user) {
-  <button mat-icon-button [matMenuTriggerFor]="userMenu" class="user-menu-trigger">
-    <mat-icon>account_circle</mat-icon>
-  </button>
-
-  <mat-menu #userMenu="matMenu">
-    <div class="user-info">
-      <div class="user-name">{{ user.fullName }}</div>
-      <div class="user-username">@{{ user.username }}</div>
-    </div>
-    <mat-divider></mat-divider>
-
-    <a mat-menu-item routerLink="/profile/me">
-      <mat-icon>person</mat-icon>
-      My Profile
-    </a>
-
-    <a mat-menu-item routerLink="/settings">
-      <mat-icon>settings</mat-icon>
-      Settings
-    </a>
-
-    @if (user.role === 'ADMIN') {
-    <mat-divider></mat-divider>
-    <a mat-menu-item routerLink="/admin">
-      <mat-icon>admin_panel_settings</mat-icon>
-      Admin Panel
-    </a>
-    }
-
-    <mat-divider></mat-divider>
-
-    <button mat-menu-item (click)="onLogout()">
-      <mat-icon>logout</mat-icon>
-      Logout
-    </button>
-  </mat-menu>
+    <span [matMenuTriggerFor]="userMenu" class="pixel-user-btn">
+       @if (user.avatar) {
+            <img [src]="getAvatarUrl(user.avatar)" [alt]="user.fullName" class="avatar">
+          } @else {
+            <!-- https://picsum.photos/200/300.jpg -->
+            <img src="https://picsum.photos/200/300.jpg" [alt]="user.fullName" class="avatar">
+<!-- 
+            <div class="avatar-placeholder">
+              {{ getInitials(user.fullName) }}
+            </div> -->
+          }
+        </span>
+    
+    <mat-menu #userMenu="matMenu" class="pixel-menu">
+      <div class="pixel-user-info">
+        <div class="user-name">{{ user.fullName }}</div>
+        <div class="user-username">@{{ user.username }}</div>
+      </div>
+      <mat-divider></mat-divider>
+      
+      <a mat-menu-item [routerLink]="'/users/profile/'+user.username" class="pixel-menu-item">
+        <span class="menu-icon">👤</span>
+        MY PROFILE
+      </a>
+      
+      <a mat-menu-item routerLink="/settings" class="pixel-menu-item">
+        <span class="menu-icon">⚙️</span>
+        SETTINGS
+      </a>
+      
+      @if (user.role === 'ADMIN') {
+        <mat-divider></mat-divider>
+        <a mat-menu-item routerLink="/admin" class="pixel-menu-item">
+          <span class="menu-icon">👑</span>
+          ADMIN PANEL
+        </a>
+      }
+      
+      <mat-divider></mat-divider>
+      
+      <button mat-menu-item (click)="onLogout()" class="pixel-menu-item logout">
+        <span class="menu-icon">🚪</span>
+        LOGOUT
+      </button>
+    </mat-menu>
   }
+
 </mat-toolbar>

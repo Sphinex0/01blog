@@ -1,0 +1,134 @@
+.pixel-theme-toggle {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  background: var(--pixel-bg-tertiary);
+  border: 3px solid var(--pixel-border);
+  cursor: pointer;
+  transition: all 0.1s ease;
+  box-shadow: 3px 3px 0 var(--pixel-shadow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    transform: translate(1px, 1px);
+    box-shadow: 2px 2px 0 var(--pixel-shadow);
+    background: var(--pixel-primary);
+
+    .pixel-icon svg {
+      fill: white;
+      color: white;
+    }
+  }
+
+  &:active {
+    transform: translate(3px, 3px);
+    box-shadow: none;
+  }
+
+  // Disable Material ripple for pixel aesthetic
+  ::ng-deep .mat-mdc-button-persistent-ripple,
+  ::ng-deep .mat-mdc-button-ripple {
+    display: none;
+  }
+
+  // Mobile sizing
+  @media (max-width: 768px) {
+    width: 36px;
+    height: 36px;
+  }
+
+  @media (max-width: 480px) {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+.pixel-icon {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+
+  svg {
+    width: 100%;
+    height: 100%;
+    fill: var(--pixel-text-primary);
+    color: var(--pixel-text-primary);
+    transition: all 0.1s ease;
+  }
+
+  // Responsive icon sizing
+  @media (max-width: 768px) {
+    width: 18px;
+    height: 18px;
+  }
+
+  @media (max-width: 480px) {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+// Theme-specific enhancements
+:host-context(.dark-theme) .pixel-theme-toggle {
+  &:hover {
+    box-shadow: 2px 2px 0 var(--pixel-shadow), 0 0 8px var(--pixel-accent);
+  }
+}
+
+:host-context(.light-theme) .pixel-theme-toggle {
+  &:hover {
+    box-shadow: 2px 2px 0 var(--pixel-shadow), 0 0 8px rgba(255, 230, 109, 0.5);
+  }
+}
+
+// Animations
+@keyframes pixelPulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+@keyframes pixelRotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.pixel-theme-toggle.toggling {
+  animation: pixelPulse 0.3s steps(4);
+}
+
+// Optional: Icon rotation animation when toggling
+.pixel-icon.rotating {
+  animation: pixelRotate 0.4s steps(8);
+}
+
+// Tooltip styling override for pixel theme
+::ng-deep {
+  .mat-mdc-tooltip {
+    font-family: 'Press Start 2P', cursive !important;
+    font-size: 8px !important;
+    text-transform: uppercase !important;
+    background: var(--pixel-bg-secondary) !important;
+    color: var(--pixel-text-primary) !important;
+    border: 2px solid var(--pixel-border) !important;
+    border-radius: 0 !important;
+    padding: 8px 12px !important;
+    box-shadow: 3px 3px 0 var(--pixel-shadow) !important;
+  }
+}

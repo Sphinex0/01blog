@@ -9,20 +9,21 @@
 .end-of-feed {
   text-align: center;
   padding: 2rem 1rem 3rem;
-  color: #9ca3af;
+  color: var(--pixel-text-muted);
 
   mat-icon {
     font-size: 2rem;
     width: 2rem;
     height: 2rem;
     margin-bottom: 0.5rem;
-    color: #10b981 !important;
+    color: var(--pixel-success) !important;
   }
 
   p {
     margin: 0;
-    font-size: 0.9375rem;
-    font-weight: 500;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 10px;
+    text-transform: uppercase;
   }
 }
 
@@ -30,20 +31,27 @@
 .discover-header {
   text-align: center;
   margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: var(--pixel-bg-secondary);
+  border: 3px solid var(--pixel-border);
+  box-shadow: 6px 6px 0 var(--pixel-shadow);
 }
 
 .page-title {
-  margin: 0 0 0.5rem;
-  font-size: 2rem;
-  font-weight: 700;
-  color: #1a1a1a;
-  letter-spacing: -0.02em;
+  margin: 0 0 1rem;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 20px;
+  color: var(--pixel-text-primary);
+  text-transform: uppercase;
+  letter-spacing: 2px;
 }
 
 .page-subtitle {
   margin: 0;
-  font-size: 1rem;
-  color: #6b7280;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 10px;
+  color: var(--pixel-text-secondary);
+  text-transform: uppercase;
 }
 
 // Search Section
@@ -57,16 +65,37 @@
 
   ::ng-deep {
     .mat-mdc-text-field-wrapper {
-      background: white;
-      border-radius: 50px;
+      background: var(--pixel-bg-secondary);
+      border: 3px solid var(--pixel-border);
+      border-radius: 0;
+      box-shadow: inset 2px 2px 0 var(--pixel-shadow-inner);
     }
 
     .mat-mdc-form-field-infix {
       padding: 0.75rem 0;
+      font-family: 'Press Start 2P', cursive;
+      font-size: 10px;
     }
 
     .mat-mdc-form-field-icon-prefix {
       padding-left: 1rem;
+    }
+
+    input {
+      font-family: 'Press Start 2P', cursive;
+      font-size: 10px;
+      color: var(--pixel-text-primary);
+
+      &::placeholder {
+        color: var(--pixel-text-muted);
+      }
+    }
+
+    .mat-mdc-text-field-wrapper:focus-within {
+      border-color: var(--pixel-primary);
+      box-shadow: 
+        inset 2px 2px 0 var(--pixel-shadow-inner),
+        0 0 0 3px var(--pixel-primary);
     }
   }
 }
@@ -89,8 +118,10 @@
 
   p {
     margin-top: 1rem;
-    color: #6b7280;
-    font-size: 0.9375rem;
+    color: var(--pixel-text-secondary);
+    font-family: 'Press Start 2P', cursive;
+    font-size: 10px;
+    text-transform: uppercase;
   }
 }
 
@@ -104,31 +135,72 @@
 .error-state {
   text-align: center;
   padding: 4rem 1rem;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.error-icon-wrapper {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid var(--pixel-border);
+  background: var(--pixel-bg-tertiary);
+  box-shadow: 4px 4px 0 var(--pixel-shadow);
 
   .error-icon {
-    font-size: 4rem;
-    width: 4rem;
-    height: 4rem;
-    color: #ef4444;
-    margin-bottom: 1rem;
+    font-size: 3rem;
+    width: 3rem;
+    height: 3rem;
+    color: var(--pixel-error);
+  }
+}
+
+.error-state h2 {
+  margin: 0 0 1rem;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 14px;
+  color: var(--pixel-text-primary);
+  text-transform: uppercase;
+}
+
+.error-state p {
+  margin: 0 0 1.5rem;
+  color: var(--pixel-text-secondary);
+  font-family: 'Press Start 2P', cursive;
+  font-size: 9px;
+  line-height: 1.8;
+}
+
+.error-state button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 12px 24px;
+  border: 3px solid var(--pixel-border);
+  background: var(--pixel-primary);
+  color: white;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 10px;
+  cursor: pointer;
+  transition: all 0.1s ease;
+  box-shadow: 4px 4px 0 var(--pixel-shadow);
+  text-transform: uppercase;
+
+  mat-icon {
+    margin-right: 0.5rem;
   }
 
-  h2 {
-    margin: 0 0 0.5rem;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #1a1a1a;
+  &:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 var(--pixel-shadow);
   }
 
-  p {
-    margin: 0 0 1.5rem;
-    color: #6b7280;
-  }
-
-  button {
-    mat-icon {
-      margin-right: 0.5rem;
-    }
+  &:active {
+    transform: translate(4px, 4px);
+    box-shadow: none;
   }
 }
 
@@ -136,32 +208,72 @@
 .empty-state {
   text-align: center;
   padding: 4rem 1rem;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.empty-icon-wrapper {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid var(--pixel-border);
+  background: var(--pixel-bg-tertiary);
+  box-shadow: 4px 4px 0 var(--pixel-shadow);
 
   .empty-icon {
-    font-size: 5rem;
-    width: 5rem;
-    height: 5rem;
-    color: #9ca3af;
-    margin-bottom: 1rem;
+    font-size: 4rem;
+    width: 4rem;
+    height: 4rem;
+    color: var(--pixel-text-muted);
+  }
+}
+
+.empty-state h2 {
+  margin: 0 0 1rem;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 16px;
+  color: var(--pixel-text-primary);
+  text-transform: uppercase;
+}
+
+.empty-state p {
+  margin: 0 0 1.5rem;
+  color: var(--pixel-text-secondary);
+  font-family: 'Press Start 2P', cursive;
+  font-size: 9px;
+  line-height: 1.8;
+}
+
+.empty-state button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 12px 24px;
+  border: 3px solid var(--pixel-border);
+  background: var(--pixel-secondary);
+  color: var(--pixel-text-primary);
+  font-family: 'Press Start 2P', cursive;
+  font-size: 10px;
+  cursor: pointer;
+  transition: all 0.1s ease;
+  box-shadow: 4px 4px 0 var(--pixel-shadow);
+  text-transform: uppercase;
+
+  mat-icon {
+    margin-right: 0.5rem;
   }
 
-  h2 {
-    margin: 0 0 0.75rem;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #1a1a1a;
+  &:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 var(--pixel-shadow);
   }
 
-  p {
-    margin: 0 0 1.5rem;
-    color: #6b7280;
-    font-size: 1rem;
-  }
-
-  button {
-    mat-icon {
-      margin-right: 0.5rem;
-    }
+  &:active {
+    transform: translate(4px, 4px);
+    box-shadow: none;
   }
 }
 
@@ -179,11 +291,11 @@
   }
 
   .page-title {
-    font-size: 1.5rem;
+    font-size: 16px;
   }
 
   .page-subtitle {
-    font-size: 0.9375rem;
+    font-size: 9px;
   }
 
   .users-grid {
@@ -194,57 +306,30 @@
   .search-section {
     margin-bottom: 2rem;
   }
+
+  .error-state button,
+  .empty-state button {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 @media (max-width: 480px) {
   .users-grid {
     grid-template-columns: 1fr;
   }
-}
-
-// Dark Mode Support
-@media (prefers-color-scheme: dark) {
-  .discover-container {
-    background: #121212;
-  }
 
   .page-title {
-    color: #e0e0e0;
-  }
-
-  .page-subtitle {
-    color: #9ca3af;
-  }
-
-  .search-field {
-    ::ng-deep {
-      .mat-mdc-text-field-wrapper {
-        background: #1e1e1e;
-      }
-    }
-  }
-
-  .error-state h2,
-  .empty-state h2 {
-    color: #e0e0e0;
-  }
-
-  .error-state p,
-  .empty-state p {
-    color: #9ca3af;
-  }
-
-  .loading-state p {
-    color: #9ca3af;
+    font-size: 14px;
   }
 }
 
-// Animations
+// Animations - Pixel style with steps
 .users-grid {
-  animation: fadeIn 0.4s ease-out;
+  animation: pixelFadeIn 0.4s steps(8) backwards;
 }
 
-@keyframes fadeIn {
+@keyframes pixelFadeIn {
   from {
     opacity: 0;
     transform: translateY(20px);
@@ -257,7 +342,7 @@
 
 // Staggered animation for cards
 .users-grid app-user-card {
-  animation: slideUp 0.4s ease-out backwards;
+  animation: pixelSlideUp 0.4s steps(6) backwards;
 }
 
 @for $i from 1 through 12 {
@@ -266,7 +351,7 @@
   }
 }
 
-@keyframes slideUp {
+@keyframes pixelSlideUp {
   from {
     opacity: 0;
     transform: translateY(30px);

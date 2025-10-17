@@ -2,7 +2,7 @@
   display: grid;
   grid-template-columns: 280px 1fr;
   min-height: calc(100vh - 64px); // Subtract header height
-  background: #fafafa;
+  // background: #fafafa;
   gap: 0;
 }
 
@@ -24,7 +24,7 @@
 }
 
 .home-main {
-  background: #fafafa;
+  // background: #fafafa;
   overflow-y: auto;
 }
 
@@ -52,7 +52,7 @@
 // Dark mode support
 @media (prefers-color-scheme: dark) {
   .home-layout {
-    background: #121212;
+    // background: #121212;
   }
 
   .home-sidebar {
@@ -61,7 +61,7 @@
   }
 
   .home-main {
-    background: #121212;
+    // background: #121212;
   }
 }
 
