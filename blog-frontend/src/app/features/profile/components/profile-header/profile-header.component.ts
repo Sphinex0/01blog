@@ -1,4 +1,4 @@
-import { Component, input, output, computed, inject, Input } from '@angular/core';
+import { Component, input, output, computed, inject, Input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -44,6 +44,7 @@ export class ProfileHeaderComponent {
     return current?.id === profile?.id;
   });
 
+
   onFollowToggle(): void {
     this.followToggle.emit();
   }
@@ -63,7 +64,7 @@ export class ProfileHeaderComponent {
   getAvatarUrl(avatar: string | undefined): string {
     if (!avatar) return '';
     if (avatar.startsWith('http')) return avatar;
-    return `http://localhost:8080/api/${avatar}?t=${new Date().getTime()}`;
+    return `http://localhost:8080/api/${avatar}`;
   }
 
   onAvatarSelected(event: Event): void {
@@ -71,6 +72,7 @@ export class ProfileHeaderComponent {
     if (input.files && input.files[0]) {
       const file = input.files[0];
       // Handle avatar upload logic here
+      
       this.editAvatar.emit(file);
       
     }

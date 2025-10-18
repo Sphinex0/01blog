@@ -14,6 +14,8 @@ import {
   EventEmitter,
   input,
   Input,
+  OnChanges,
+  SimpleChanges,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
@@ -28,6 +30,7 @@ import { TimeAgoPipe } from '../../../../shared/pipes/time-ago-pipe';
 import { FeedService } from '../../services/feed.service';
 import { UserProfile } from '../../../../core/models/user.interface';
 import { API_ENDPOINTS } from '../../../../core/constants/api.constants';
+import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-feed',
@@ -48,6 +51,7 @@ import { API_ENDPOINTS } from '../../../../core/constants/api.constants';
 })
 export class FeedComponent implements OnInit {
   private readonly feedService = inject(FeedService);
+  private readonly authService = inject(AuthService);
 
   @ViewChild('loadMoreTrigger') loadMoreTrigger?: ElementRef;
 
@@ -55,6 +59,8 @@ export class FeedComponent implements OnInit {
 
   // Computed signals from service
   readonly posts = this.feedService.posts;
+  readonly connectedUser = this.authService.currentUser;
+
   readonly isLoading = this.feedService.isLoading;
   readonly hasMore = this.feedService.hasMore;
   readonly error = this.feedService.error;
@@ -63,10 +69,12 @@ export class FeedComponent implements OnInit {
   readonly isRefreshing = signal(false);
   readonly isLoadingMore = signal(false);
 
-
   ngOnInit(): void {
+    console.log('FeedComponent initialized');
+    this.feedService.clearFeed();
     this.loadMore();
   }
+
 
 
   onTriggerVisible(): void {
@@ -77,33 +85,27 @@ export class FeedComponent implements OnInit {
     }
   }
 
-
-
-
   refreshFeed(): void {
     this.isRefreshing.set(true);
 
     this.feedService.refreshFeed();
     this.isRefreshing.set(false);
-
   }
 
   // readonly user = input.required<UserProfile>();
-  @Input() user :UserProfile | null = null;
-
-
+  @Input() user: UserProfile | null = null;
 
   loadMore(): void {
     if (this.isLoadingMore()) return;
     console.log('Loading more posts...');
     this.isLoadingMore.set(true);
-    if (this.user != null){
+    if (this.user != null) {
       console.log('Loading posts for user:', this.user);
-      this.feedService.getFeed(`${API_ENDPOINTS.USERS.BY_USERNAME}/${this.user.username}${API_ENDPOINTS.POSTS.GET_ALL}`);
-
-    }else{
+      this.feedService.getFeed(
+        `${API_ENDPOINTS.USERS.BY_USERNAME}/${this.user.username}${API_ENDPOINTS.POSTS.GET_ALL}`
+      );
+    } else {
       this.feedService.getFeed();
-
     }
 
     // Reset loading state after a delay
@@ -124,7 +126,7 @@ export class FeedComponent implements OnInit {
   getMediaUrl(url: string | undefined): string {
     if (!url) return '';
     if (url.startsWith('http')) return url;
-    return `http://localhost:8080${url}`;
+    return `http://localhost:8080/api/${url}`;
   }
 
   getAuthorInitials(fullName: string): string {

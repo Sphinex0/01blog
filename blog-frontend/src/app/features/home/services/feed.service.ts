@@ -142,7 +142,7 @@ export class FeedService {
    */
   clearFeed(): void {
     this._posts.set([]);
-    this.__currentCursor.set(1);
+    this.__currentCursor.set(0);
     this._hasMore.set(true);
     this._error.set(null);
   }

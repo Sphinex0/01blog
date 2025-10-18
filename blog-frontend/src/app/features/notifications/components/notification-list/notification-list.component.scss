@@ -209,7 +209,7 @@
 .notifications-list {
   max-height: calc(100vh - 300px);
   overflow-y: auto;
-
+  overflow-x: hidden;
   mat-divider {
     margin: 0;
     border-color: var(--pixel-border-light);

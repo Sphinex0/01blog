@@ -295,7 +295,7 @@ export class PostDetailComponent implements OnInit {
   getMediaUrl(url: string | undefined): string {
     if (!url) return '';
     if (url.startsWith('http')) return url;
-    return `http://localhost:8080${url}`;
+    return `http://localhost:8080/api/${url}`;
   }
 
   getAuthorInitials(fullName: string): string {

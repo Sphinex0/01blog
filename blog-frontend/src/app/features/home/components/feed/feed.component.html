@@ -92,7 +92,12 @@
             (click)="$event.stopPropagation()"
           >
             @if (post.user.avatar) {
-            <img [src]="getMediaUrl(post.user.avatar)" [alt]="post.user.fullName" />
+              @if (post.user.id ===  connectedUser()?.id) {
+                <img [src]="getMediaUrl(connectedUser()?.avatar)" [alt]="post.user.fullName" />
+              }
+              @else {
+                <img [src]="getMediaUrl(post.user.avatar)" [alt]="post.user.fullName" />
+              }
             } @else {
             <div class="avatar-placeholder">
               {{ getAuthorInitials(post.user.fullName) }}

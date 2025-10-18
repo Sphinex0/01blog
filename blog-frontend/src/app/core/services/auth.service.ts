@@ -159,4 +159,10 @@ export class AuthService {
       return true;
     }
   }
+
+  refreshCurrentUser(user : User): void {
+      this.storage.setUserData(user);
+      this._currentUser.set(user);
+    
+  }
 }

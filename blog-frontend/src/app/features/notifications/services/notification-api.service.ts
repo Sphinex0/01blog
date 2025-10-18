@@ -45,13 +45,13 @@ export class NotificationApiService {
   /**
    * Get unread notifications count
    */
-  getUnreadCount(): Observable<ApiResponse<{ count: number }>> {
-    return this.http.get<ApiResponse<{ count: number }>>(
+  getUnreadCount(): Observable<{ count: number }> {
+    return this.http.get<{ count: number }>(
       `${this.baseUrl}${API_ENDPOINTS.NOTIFICATIONS.UNREAD_COUNT}`
     ).pipe(
       tap((response) => {
-        if (response.success && response.data) {
-          this._unreadCount.set(response.data.count);
+        if (response.count) {
+          this._unreadCount.set(response.count);
         }
       })
     );

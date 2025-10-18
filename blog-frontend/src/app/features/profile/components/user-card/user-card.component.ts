@@ -41,7 +41,7 @@ export class UserCardComponent {
   getAvatarUrl(avatar: string | undefined): string {
     if (!avatar) return '';
     if (avatar.startsWith('http')) return avatar;
-    return `http://localhost:8080${avatar}`;
+    return `http://localhost:8080/api/${avatar}`;
   }
 
   getInitials(fullName: string): string {

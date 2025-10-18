@@ -21,11 +21,26 @@ public class NotificationService {
         this.notificationRepository = notificationRepository;
     }
 
-    public List<NotificationResponse> getNotificationByUserId(long userID, long cursor) {
+    public long getUnreadCountByUserId(long userID) {
+        return notificationRepository.countByReceiverIdAndReadFalse(userID);
+    }
 
+    public void markAsRead(Long id, long userId) {
+        Notification notification = notificationRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Notification not found"));
+
+        if (notification.getReceiver().getId() != userId) {
+            throw new IllegalArgumentException("You are not authorized to mark this notification as read");
+        }
+
+        notification.setRead(true);
+        notificationRepository.save(notification);
+    }
+
+    public List<NotificationResponse> getNotificationByUserId(long userID, long cursor) {
         Pageable pageable = PageRequest.of(0, 10, Direction.DESC, "id");
-        
-        return notificationRepository.findByReceiverIdAndIdLessThan(userID, cursor, pageable).map(this::toNotificationResponse).toList();
+        return notificationRepository.findByReceiverIdAndIdLessThan(userID, cursor, pageable)
+                .map(this::toNotificationResponse).toList();
     }
 
     public boolean markAsRead(Long id) {
@@ -55,7 +70,6 @@ public class NotificationService {
                 user.getRole(),
                 user.getAvatar(),
                 user.getCreatedAt(),
-                0,0,0,false);
+                0, 0, 0, false);
     }
 }
-

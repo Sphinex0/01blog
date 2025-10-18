@@ -8,10 +8,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { ProfileService } from '../../services/profile.service';
 import { SubscriptionService } from '../../services/subscription.service';
 import { PostService } from '../../../posts/services/post.service';
-import { UserProfile } from '../../../../core/models/user.interface';
+import { User, UserProfile } from '../../../../core/models/user.interface';
 import { Post } from '../../../../core/models/post.interface';
 import { ProfileHeaderComponent } from '../profile-header/profile-header.component';
 import { FeedComponent } from '../../../home/components/feed/feed.component';
+import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-profile',
@@ -29,6 +30,7 @@ import { FeedComponent } from '../../../home/components/feed/feed.component';
 })
 export class ProfileComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
+  private readonly authservice = inject(AuthService);
   private readonly router = inject(Router);
   private readonly profileService = inject(ProfileService);
   private readonly subscriptionService = inject(SubscriptionService);
@@ -37,6 +39,7 @@ export class ProfileComponent implements OnInit {
 
   // Signals
   readonly user = signal<UserProfile | null>(null);
+  readonly connectedUser = this.authservice.currentUser;
   readonly posts = signal<Post[]>([]);
   readonly isLoadingProfile = signal(false);
   readonly isLoadingPosts = signal(false);
@@ -131,16 +134,21 @@ export class ProfileComponent implements OnInit {
   }
 
   onEditAvatar(file: File): void {
-    this.profileService.updateAvatar( file ).subscribe({
+    this.profileService.updateAvatar(file).subscribe({
       next: (response) => {
         if (response) {
-          this.user.update(user=> {
+          this.user.update((user) => {
             if (!user) return user;
             return {
               ...user,
-              avatar: response.url,
+              avatar: response.url + `?t=${new Date().getTime()}`,
             };
           });
+          
+          if (this.connectedUser()?.id == this.user()?.id) {
+            this.authservice.refreshCurrentUser(this.user() as User);
+          }
+
           this.snackBar.open('Avatar updated successfully', 'Close', {
             duration: 2000,
             panelClass: ['success-snackbar'],

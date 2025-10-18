@@ -35,6 +35,7 @@ export class NotificationItemComponent {
 
   onMarkAsRead(): void {
     this.markAsRead.emit(this.notification().id);
+    this.notification().read = true;
   }
 
   onDelete(): void {
@@ -62,7 +63,7 @@ export class NotificationItemComponent {
     getMediaUrl(url: string | undefined): string {
     if (!url) return '';
     if (url.startsWith('http')) return url;
-    return `http://localhost:8080${url}`;
+    return `http://localhost:8080/api/${url}`;
   }
 
   getAuthorInitials(fullName: string): string {
