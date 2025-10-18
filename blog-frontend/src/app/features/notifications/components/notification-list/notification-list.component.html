@@ -4,9 +4,7 @@
   <div class="notifications-header">
     <div class="header-content">
       <h1 class="page-title">Notifications</h1>
-      @if (unreadCount() > 0) {
         <span class="unread-badge">{{ unreadCount() }}</span>
-      }
     </div>
 
     <div class="header-actions">
@@ -17,15 +15,19 @@
         <mat-icon>refresh</mat-icon>
       </button>
 
-      @if (unreadCount() > 0) {
         <button 
           mat-button 
           (click)="onMarkAllAsRead()"
-          class="mark-all-btn">
+          class="mark-all-btn"
+          [disabled]="unreadCount() === 0"
+          
+        >
+          
           <mat-icon>done_all</mat-icon>
-          Mark all as read
+          {{ unreadCount() === 0 ? 'All read' : 'Mark all as read' }}
+          <!-- Mark all as read -->
         </button>
-      }
+      
     </div>
   </div>
 

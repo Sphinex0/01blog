@@ -1,55 +1,65 @@
+<div
+  class="notification-item"
+  [class.unread]="!notification().read"
+  (click)="onNotificationClick()"
+  matRipple
+>
+  <!-- Icon -->
+  <div class="notification-icon" [class]="getNotificationType()">
+    <!-- <mat-icon>{{ getNotificationIcon() }}</mat-icon> -->
 
-    <div 
-      class="notification-item"
-      [class.unread]="!notification().read"
-      (click)="onNotificationClick()"
-      matRipple>
-      
-      <!-- Icon -->
-      <div class="notification-icon" [class]="getNotificationType()">
-        <!-- <mat-icon>{{ getNotificationIcon() }}</mat-icon> -->
+    @if (notification().sender.avatar) {
+    <img
+      class="notification-icon"
+      [src]="getMediaUrl(notification().sender.avatar)"
+      [alt]="notification().sender.fullName"
+    />
+    } @else {
+    <div class="avatar-placeholder">
+      {{ getAuthorInitials(notification().sender.fullName) }}
+    </div>
+    }
+    <!-- <img src="{{ notification().sender.avatar }}" alt=""> -->
+  </div>
 
-          @if (notification().sender.avatar) {
-            <img class="notification-icon" [src]="getMediaUrl(notification().sender.avatar)" [alt]="notification().sender.fullName" />
-            } @else {
-            <div class="avatar-placeholder">
-              {{ getAuthorInitials(notification().sender.fullName) }}
-            </div>
-            }
-        <!-- <img src="{{ notification().sender.avatar }}" alt=""> -->
-      </div>
+  <!-- Content -->
+  <div class="notification-content">
+    <p class="notification-message">new post created by @{{ notification().sender.username }}</p>
+    <!-- notification().message -->
+    <span class="notification-time">{{ notification().createdAt | timeAgo }}</span>
+  </div>
 
-      <!-- Content -->
-      <div class="notification-content">
-        <p class="notification-message"> new post created by @{{ notification().sender.username }}</p>
-         <!-- notification().message -->
-        <span class="notification-time">{{ notification().createdAt | timeAgo }}</span>
-      </div>
+  <!-- Unread Indicator -->
+  @if (!notification().read) {
+  <div class="unread-dot"></div>
+  }
 
-      <!-- Unread Indicator -->
-      @if (!notification().read) {
-        <div class="unread-dot"></div>
-      }
-
-      <!-- Menu -->
-      <button 
+  <!-- Menu -->
+  <!-- <button 
         mat-icon-button 
         [matMenuTriggerFor]="menu" 
         class="menu-btn"
         (click)="$event.stopPropagation()">
         <mat-icon>more_vert</mat-icon>
-      </button>
+      </button> -->
 
-      <mat-menu #menu="matMenu">
-        @if (!notification().read) {
-          <button mat-menu-item (click)="onMarkAsRead()">
-            <mat-icon>done</mat-icon>
-            <span>Mark as read</span>
-          </button>
-        }
-        <button mat-menu-item (click)="onDelete()" class="delete-item">
+
+  <!-- <mat-menu #menu="matMenu"> -->
+  @if (!notification().read) {
+  <button
+    mat-icon-button
+    (click)="onMarkAsRead(); $event.stopPropagation()"
+    matTooltip="Mark as read"
+    class="mark-as-read-btn menu-btn"
+  >
+    <mat-icon>done</mat-icon>
+    <!-- <span>Mark as read</span> -->
+  </button>
+  }
+  <!-- <button mat-menu-item (click)="onDelete()" class="delete-item">
           <mat-icon>delete</mat-icon>
           <span>Delete</span>
         </button>
-      </mat-menu>
-    </div>
+      </mat-menu> -->
+</div>
+

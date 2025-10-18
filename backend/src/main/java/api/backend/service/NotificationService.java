@@ -5,6 +5,8 @@ import api.backend.model.notification.NotificationResponse;
 import api.backend.model.user.User;
 import api.backend.model.user.UserResponse;
 import api.backend.repository.NotificationRepository;
+import api.backend.repository.UserRepository;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
@@ -16,9 +18,11 @@ import java.util.List;
 public class NotificationService {
 
     private final NotificationRepository notificationRepository;
+    private final UserRepository userRepository;
 
-    public NotificationService(NotificationRepository notificationRepository) {
+    public NotificationService(NotificationRepository notificationRepository, UserRepository userRepository) {
         this.notificationRepository = notificationRepository;
+        this.userRepository = userRepository;
     }
 
     public long getUnreadCountByUserId(long userID) {
@@ -59,6 +63,18 @@ public class NotificationService {
                 notification.getPost().getId(),
                 notification.isRead(),
                 notification.getCreatedAt());
+    }
+
+    public void markAllAsRead(long userId) {
+        // List<Notification> notifications = notificationRepository.findByReceiverIdAndReadFalse(userId);
+        // for (Notification notification : notifications) {
+        //     notification.setRead(true);
+        // }
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                user.getNotifications().forEach(notification -> notification.setRead(true));
+                userRepository.save(user);
+        // notificationRepository.saveAll(notifications);
     }
 
     public static UserResponse toUserResponse(User user) {
