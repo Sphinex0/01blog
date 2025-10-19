@@ -68,13 +68,13 @@
           <mat-icon>delete</mat-icon>
           <span>Delete Post</span>
         </button>
-      }@else {
-        <button mat-menu-item class="report-btn"> 
+        }@else {
+        <button mat-menu-item class="report-btn">
           <!-- (click)="onReportPost()"  -->
           <mat-icon>flag</mat-icon>
           <span>Report Post</span>
         </button>
-      }
+        }
       </mat-menu>
     </div>
 
@@ -136,115 +136,19 @@
     <mat-divider></mat-divider>
 
     <!-- Comments Section -->
-    <div class="comments-section">
-      <h2 class="comments-title">Comments ({{ postData.commentsCount }})</h2>
-
-      <!-- Add Comment Form -->
-      @if (currentUser()) {
-      <form [formGroup]="commentForm" (ngSubmit)="onSubmitComment()" class="comment-form">
-        <div class="form-avatar">
-          @if (currentUser()!.avatar) {
-          <img [src]="getMediaUrl(currentUser()!.avatar)" [alt]="currentUser()!.fullName" />
-          } @else {
-          <div class="avatar-placeholder">
-            {{ getAuthorInitials(currentUser()!.fullName) }}
-          </div>
-          }
-        </div>
-
-        <div class="form-content">
-          <mat-form-field appearance="outline" class="comment-input">
-            <mat-label>Add a comment</mat-label>
-            <textarea
-              matInput
-              formControlName="content"
-              placeholder="Share your thoughts..."
-              rows="3"
-              maxlength="500"
-            ></textarea>
-            @if (commentForm.get('content')?.hasError('required') &&
-            commentForm.get('content')?.touched) {
-            <mat-error>Comment is required</mat-error>
-            } @if (commentForm.get('content')?.hasError('maxlength')) {
-            <mat-error>Comment must be less than 500 characters</mat-error>
-            }
-            <mat-hint align="end">
-              {{ commentForm.get('content')?.value?.length || 0 }} / 500
-            </mat-hint>
-          </mat-form-field>
-
-          <div class="form-actions">
-            <button
-              mat-raised-button
-              color="primary"
-              type="submit"
-              [disabled]="commentForm.invalid || isSubmittingComment()"
-            >
-              @if (isSubmittingComment()) {
-              <mat-spinner diameter="20" class="button-spinner"></mat-spinner>
-              Posting... } @else { Post Comment }
-            </button>
-          </div>
-        </div>
-      </form>
-      }
-
-      <mat-divider class="comments-divider"></mat-divider>
-
-      <!-- Comments List -->
-      @if (isLoadingComments()) {
-      <div class="comments-loading">
-        <mat-spinner diameter="32"></mat-spinner>
-        <p>Loading comments...</p>
-      </div>
-      } @if (!isLoadingComments() && comments().length === 0) {
-      <div class="no-comments">
-        <mat-icon>chat_bubble_outline</mat-icon>
-        <p>No comments yet. Be the first to comment!</p>
-      </div>
-      } @if (comments().length > 0) {
-      <div class="comments-list">
-        @for (comment of comments(); track comment.id) {
-        <div class="comment-item">
-          <a [routerLink]="['/profile', comment.user.username]" class="comment-avatar">
-            @if (comment.user.avatar) {
-            <img [src]="getMediaUrl(comment.user.avatar)" [alt]="comment.user.fullName" />
-            } @else {
-            <div class="avatar-placeholder">
-              {{ getAuthorInitials(comment.user.fullName) }}
-            </div>
-            }
-          </a>
-
-          <div class="comment-content">
-            <div class="comment-header">
-              <div class="comment-author-info">
-                <a [routerLink]="['/profile', comment.user.username]" class="comment-author-name">
-                  {{ comment.user.fullName }}
-                </a>
-                <span class="comment-time">{{ comment.createdAt | timeAgo }}</span>
-              </div>
-
-              @if (isCommentAuthor(comment)) {
-              <button mat-icon-button [matMenuTriggerFor]="commentMenu" class="comment-menu-btn">
-                <mat-icon>more_vert</mat-icon>
-              </button>
-              <mat-menu #commentMenu="matMenu">
-                <button mat-menu-item (click)="onDeleteComment(comment)" class="delete-btn">
-                  <mat-icon>delete</mat-icon>
-                  <span>Delete</span>
-                </button>
-              </mat-menu>
-              }
-            </div>
-
-            <p class="comment-text">{{ comment.content }}</p>
-          </div>
-        </div>
-        }
-      </div>
-      }
-    </div>
+    <app-comments-section
+      [comments]="comments()"
+      [totalCount]="post()?.commentsCount || 0"
+      [isLoading]="isLoadingComments()"
+      [isSubmitting]="isSubmittingComment()"
+      [currentUserId]="currentUser()?.id || null"
+      [currentUserAvatar]="currentUser()?.avatar || null"
+      (submitComment)="onSubmitComment($event)"
+      (likeComment)="onLikeComment($event)"
+      (deleteComment)="onDeleteComment($event)"
+      (replyToComment)="onReplyToComment($event)"
+      (editComment)="onEditComment($event)"
+    />
   </article>
   }
 </div>

@@ -1,0 +1,414 @@
+.comment-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: var(--pixel-bg-tertiary);
+  border: 2px solid var(--pixel-border);
+  box-shadow: 2px 2px 0 var(--pixel-shadow);
+  transition: all 0.1s ease;
+  margin-bottom: 1rem;
+
+  &:hover {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0 var(--pixel-shadow);
+  }
+
+  // Nested styling with indentation
+  &.nested {
+    margin-left: calc(var(--depth) * 2rem);
+    border-left: 3px solid var(--pixel-primary);
+    background: var(--pixel-bg-secondary);
+
+    @media (max-width: 768px) {
+      margin-left: calc(var(--depth) * 1rem);
+    }
+  }
+}
+
+.comment-main {
+  display: flex;
+  gap: 1rem;
+}
+
+.comment-avatar {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border: 2px solid var(--pixel-border);
+  overflow: hidden;
+  text-decoration: none;
+  box-shadow: 2px 2px 0 var(--pixel-shadow);
+  transition: all 0.1s ease;
+
+  &:hover {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0 var(--pixel-shadow);
+    border-color: var(--pixel-primary);
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    image-rendering: pixelated;
+  }
+
+  .avatar-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--pixel-secondary);
+    color: white;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 14px;
+  }
+}
+
+.comment-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.comment-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.comment-author-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.comment-author-name {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 10px;
+  color: var(--pixel-text-primary);
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color 0.1s ease;
+
+  &:hover {
+    color: var(--pixel-primary);
+  }
+}
+
+.comment-time {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 7px;
+  color: var(--pixel-text-muted);
+  text-transform: uppercase;
+}
+
+.comment-menu-btn {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: transparent;
+  border: 2px solid transparent;
+  transition: all 0.1s ease;
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: var(--pixel-text-muted);
+  }
+
+  &:hover {
+    background: var(--pixel-bg-primary);
+    border-color: var(--pixel-border);
+
+    mat-icon {
+      color: var(--pixel-text-primary);
+    }
+  }
+
+  ::ng-deep .mat-mdc-button-persistent-ripple,
+  ::ng-deep .mat-mdc-button-ripple {
+    display: none;
+  }
+}
+
+.comment-text {
+  margin: 0 0 0.75rem;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 9px;
+  line-height: 1.6;
+  color: var(--pixel-text-secondary);
+  word-break: break-word;
+}
+
+// Edit Form
+.edit-form {
+  margin: 0.5rem 0;
+
+  .edit-input {
+    width: 100%;
+    margin-bottom: 0.5rem;
+
+    ::ng-deep {
+      .mat-mdc-text-field-wrapper {
+        background: var(--pixel-bg-primary);
+        border: 2px solid var(--pixel-border);
+        border-radius: 0;
+        box-shadow: inset 2px 2px 0 var(--pixel-shadow-inner);
+      }
+
+      textarea {
+        font-family: 'Press Start 2P', cursive;
+        font-size: 9px;
+        line-height: 1.6;
+        color: var(--pixel-text-primary);
+      }
+    }
+  }
+
+  .edit-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+  }
+}
+
+// Comment Actions
+.comment-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 6px 10px;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 7px;
+  text-transform: uppercase;
+  background: var(--pixel-bg-primary);
+  border: 2px solid var(--pixel-border);
+  color: var(--pixel-text-secondary);
+  cursor: pointer;
+  transition: all 0.1s ease;
+  box-shadow: 2px 2px 0 var(--pixel-shadow);
+
+  mat-icon {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+  }
+
+  &:hover {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0 var(--pixel-shadow);
+    background: var(--pixel-secondary);
+    color: var(--pixel-text-primary);
+  }
+
+  &:active {
+    transform: translate(2px, 2px);
+    box-shadow: none;
+  }
+
+  &.liked {
+    background: var(--pixel-error);
+    color: white;
+    border-color: var(--pixel-error);
+
+    mat-icon {
+      color: white;
+    }
+
+    &:hover {
+      background: var(--pixel-error);
+      opacity: 0.9;
+    }
+  }
+}
+
+// Reply Form
+.reply-form {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  padding: 1rem;
+  background: var(--pixel-bg-primary);
+  border: 2px solid var(--pixel-border);
+  box-shadow: inset 1px 1px 0 var(--pixel-shadow-inner);
+
+  .form-avatar {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    border: 2px solid var(--pixel-border);
+    overflow: hidden;
+    box-shadow: 2px 2px 0 var(--pixel-shadow);
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      image-rendering: pixelated;
+    }
+
+    .avatar-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--pixel-primary);
+      color: white;
+      font-family: 'Press Start 2P', cursive;
+      font-size: 12px;
+    }
+  }
+
+  .form-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .reply-input {
+    width: 100%;
+
+    ::ng-deep {
+      .mat-mdc-text-field-wrapper {
+        background: var(--pixel-bg-secondary);
+        border: 2px solid var(--pixel-border);
+        border-radius: 0;
+      }
+
+      textarea {
+        font-family: 'Press Start 2P', cursive;
+        font-size: 8px;
+        line-height: 1.6;
+        color: var(--pixel-text-primary);
+      }
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+  }
+}
+
+// Replies Container
+.replies-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.show-more-btn,
+.open-sidebar-btn {
+  width: 100%;
+  padding: 10px;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 8px;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.1s ease;
+
+  mat-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.show-more-btn {
+  background: var(--pixel-bg-tertiary);
+  border: 2px solid var(--pixel-border);
+  color: var(--pixel-text-primary);
+  box-shadow: 2px 2px 0 var(--pixel-shadow);
+
+  &:hover {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0 var(--pixel-shadow);
+    background: var(--pixel-bg-primary);
+  }
+}
+
+.open-sidebar-btn {
+  background: var(--pixel-secondary);
+  border: 2px solid var(--pixel-border);
+  color: var(--pixel-text-primary);
+  box-shadow: 3px 3px 0 var(--pixel-shadow);
+
+  &:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0 var(--pixel-shadow);
+  }
+}
+
+// Pixel Buttons
+.pixel-btn,
+.pixel-btn-secondary {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 8px;
+  text-transform: uppercase;
+  padding: 8px 16px;
+  border: 2px solid var(--pixel-border);
+  cursor: pointer;
+  transition: all 0.1s ease;
+  box-shadow: 2px 2px 0 var(--pixel-shadow);
+
+  &:hover:not(:disabled) {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0 var(--pixel-shadow);
+  }
+
+  &:active:not(:disabled) {
+    transform: translate(2px, 2px);
+    box-shadow: none;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.pixel-btn {
+  background: var(--pixel-primary);
+  color: white;
+  border-color: var(--pixel-primary-dark);
+}
+
+.pixel-btn-secondary {
+  background: var(--pixel-bg-secondary);
+  color: var(--pixel-text-primary);
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .comment-item.nested {
+    margin-left: calc(var(--depth) * 1rem);
+  }
+
+  .reply-form {
+    flex-direction: column;
+
+    .form-avatar {
+      display: none;
+    }
+  }
+}

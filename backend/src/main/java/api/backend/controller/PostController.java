@@ -101,12 +101,8 @@ public class PostController {
     @PostMapping("/{id}/comments")
     public ResponseEntity<CommentResponse> addComment(@PathVariable Long id, @RequestBody CommentRequest request,
             @AuthenticationPrincipal User currentUser) {
-        try {
             CommentResponse comment = commentService.addComment(id, currentUser, request);
             return ResponseEntity.ok(comment);
-        } catch (IllegalStateException e) {
-            return ResponseEntity.badRequest().body(null);
-        }
     }
 
     @DeleteMapping("/comments/{commentId}")
