@@ -24,123 +24,7 @@ import { CommentItemComponent } from '../comment-item/comment-item.component';
     MatDividerModule,
     CommentItemComponent
   ],
-  template: `
-    <div class="comments-section">
-      <h2 class="comments-title">COMMENTS ({{ totalCount() }})</h2>
-
-      <!-- Add Comment Form -->
-      @if (currentUserId()) {
-        <form [formGroup]="commentForm" (ngSubmit)="onSubmit()" class="comment-form">
-          <div class="form-avatar">
-            @if (currentUserAvatar()) {
-              <img [src]="getAvatarUrl(currentUserAvatar()!)" alt="Your avatar" />
-            } @else {
-              <div class="avatar-placeholder">U</div>
-            }
-          </div>
-
-          <div class="form-content">
-            <mat-form-field appearance="outline" class="comment-input">
-              <mat-label>ADD A COMMENT</mat-label>
-              <textarea
-                matInput
-                formControlName="content"
-                placeholder="Share your thoughts..."
-                rows="3"
-                maxlength="500"
-              ></textarea>
-              <mat-hint align="end">
-                {{ commentForm.get('content')?.value?.length || 0 }} / 500
-              </mat-hint>
-            </mat-form-field>
-
-            <div class="form-actions">
-              <button
-                mat-raised-button
-                type="submit"
-                class="pixel-btn"
-                [disabled]="commentForm.invalid || isSubmitting()"
-              >
-                @if (isSubmitting()) {
-                  <mat-spinner diameter="20"></mat-spinner>
-                  POSTING...
-                } @else {
-                  POST COMMENT
-                }
-              </button>
-            </div>
-          </div>
-        </form>
-      }
-
-      <mat-divider class="comments-divider"></mat-divider>
-
-      <!-- Loading State -->
-      @if (isLoading()) {
-        <div class="comments-loading">
-          <mat-spinner diameter="32"></mat-spinner>
-          <p>LOADING COMMENTS...</p>
-        </div>
-      }
-
-      <!-- Empty State -->
-      @if (!isLoading() && comments().length === 0) {
-        <div class="no-comments">
-          <mat-icon>chat_bubble_outline</mat-icon>
-          <p>NO COMMENTS YET. BE THE FIRST!</p>
-        </div>
-      }
-
-      <!-- Comments List -->
-      @if (comments().length > 0) {
-        <div class="comments-list">
-          @for (comment of comments(); track comment.id) {
-            <app-comment-item
-              [comment]="comment"
-              [depth]="0"
-              [maxDepth]="3"
-              [currentUserId]="currentUserId()"
-              [currentUserAvatar]="currentUserAvatar()"
-              (likeComment)="likeComment.emit($event)"
-              (deleteComment)="deleteComment.emit($event)"
-              (replyToComment)="replyToComment.emit($event)"
-              (editComment)="editComment.emit($event)"
-              (openSidebar)="openSidebar.emit($event)"
-            />
-          }
-        </div>
-      }
-    </div>
-
-    <!-- Sidebar for Deep Threads -->
-    @if (sidebarComment()) {
-      <div class="thread-sidebar" (click)="closeSidebar()">
-        <div class="sidebar-content" (click)="$event.stopPropagation()">
-          <div class="sidebar-header">
-            <h3>THREAD</h3>
-            <button mat-icon-button (click)="closeSidebar()" class="close-btn">
-              <mat-icon>close</mat-icon>
-            </button>
-          </div>
-          
-          <div class="sidebar-thread">
-            <app-comment-item
-              [comment]="sidebarComment()!"
-              [depth]="0"
-              [maxDepth]="3"
-              [currentUserId]="currentUserId()"
-              [currentUserAvatar]="currentUserAvatar()"
-              (likeComment)="likeComment.emit($event)"
-              (deleteComment)="deleteComment.emit($event)"
-              (replyToComment)="replyToComment.emit($event)"
-              (editComment)="editComment.emit($event)"
-              (openSidebar)="onNestedSidebar($event)"
-            />
-          </div>
-        </div>
-      </div>
-    }
-  `,
+  templateUrl: './comments-section.component.html',
   styleUrl: './comments-section.component.scss'
 })
 export class CommentsSectionComponent {
@@ -192,6 +76,6 @@ export class CommentsSectionComponent {
 
   getAvatarUrl(url: string): string {
     if (url.startsWith('http')) return url;
-    return `http://localhost:8080/api/images${url}`;
+    return `http://localhost:8080/api/${url}`;
   }
 }

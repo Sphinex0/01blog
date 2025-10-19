@@ -12,6 +12,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Data
 @Table(name = "comments")
@@ -43,10 +45,17 @@ public class Comment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
-    private Comment parent; 
+    private Comment parent;
 
     @OneToMany(mappedBy = "parent", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    private List<Comment> replies = new ArrayList<>(); 
+    private List<Comment> replies = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(name = "comment_likes", joinColumns = @JoinColumn(name = "comment_id"), inverseJoinColumns = @JoinColumn(name = "user_id"), uniqueConstraints = {
+            @UniqueConstraint(columnNames = { "comment_id", "user_id" })
+    })
+    @JsonIgnore
+    private List<User> likedBy = new ArrayList<>();
 
     // Default constructor for JPA
     public Comment() {
@@ -60,7 +69,7 @@ public class Comment {
         this.createdAt = LocalDateTime.now();
         this.parent = parent;
         if (parent != null) {
-            parent.getReplies().add(this); 
+            parent.getReplies().add(this);
         }
     }
 }

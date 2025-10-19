@@ -20,7 +20,7 @@ export class CommentService {
     //   `${this.baseUrl}${API_ENDPOINTS.POSTS.GET_BY_ID}/${postId}/comments`
     // );
 
-    return this.http.get<Comment[]>(`${this.baseUrl}${API_ENDPOINTS.POSTS.GET_BY_ID}/${postId}/comments`).pipe(
+    return this.http.get<Comment[]>(`${this.baseUrl}${API_ENDPOINTS.COMMENTS.GET_BY_POST}/${postId}`).pipe(
       tap(comments => this.buildCommentTree(comments))
     );
   }
@@ -30,7 +30,7 @@ export class CommentService {
    */
   createComment(postId: number,data: CreateCommentRequest): Observable<Comment> {
     return this.http.post<Comment>(
-      `${this.baseUrl}${API_ENDPOINTS.POSTS.GET_BY_ID}/${postId}/comments`,
+      `${this.baseUrl}${API_ENDPOINTS.COMMENTS.CREATE}/${postId}`,
       data
     );
   }
@@ -38,8 +38,8 @@ export class CommentService {
   /**
    * Update comment
    */
-  updateComment(commentId: number, content: string): Observable<ApiResponse<Comment>> {
-    return this.http.put<ApiResponse<Comment>>(
+  updateComment(commentId: number, content: string): Observable<Comment> {
+    return this.http.put<Comment>(
       `${this.baseUrl}${API_ENDPOINTS.COMMENTS.UPDATE}/${commentId}`,
       { content }
     );
@@ -58,7 +58,7 @@ export class CommentService {
    * Like/unlike a comment
    */
   likeComment(commentId: number): Observable<void> {
-    return this.http.post<void>(`${this.baseUrl}${API_ENDPOINTS.COMMENTS.DELETE}/${commentId}`, {});
+    return this.http.patch<void>(`${this.baseUrl}${API_ENDPOINTS.COMMENTS.LIKE}/${commentId}`, {});
   }
 
   /**

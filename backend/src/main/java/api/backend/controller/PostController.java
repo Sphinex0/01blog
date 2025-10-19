@@ -87,41 +87,41 @@ public class PostController {
         return ResponseEntity.ok(postService.hidePost(id));
     }
 
-    @GetMapping("/{id}/comments")
-    public ResponseEntity<List<CommentResponse>> getTopLevelComments(@PathVariable Long id,
-            @RequestParam(defaultValue = "0") long cursor) {
+    // @GetMapping("/{id}/comments")
+    // public ResponseEntity<List<CommentResponse>> getTopLevelComments(@PathVariable Long id,
+    //         @RequestParam(defaultValue = "0") long cursor) {
 
-                //System.out.println("Fetching comments for post ID: " + id + " with cursor: " + cursor);
-        if (cursor == 0) {
-            cursor = Long.MAX_VALUE;
-        }
-        return ResponseEntity.ok(commentService.getTopLevelComments(id, cursor));
-    }
+    //             //System.out.println("Fetching comments for post ID: " + id + " with cursor: " + cursor);
+    //     if (cursor == 0) {
+    //         cursor = Long.MAX_VALUE;
+    //     }
+    //     return ResponseEntity.ok(commentService.getTopLevelComments(id, cursor));
+    // }
 
-    @PostMapping("/{id}/comments")
-    public ResponseEntity<CommentResponse> addComment(@PathVariable Long id, @RequestBody CommentRequest request,
-            @AuthenticationPrincipal User currentUser) {
-            CommentResponse comment = commentService.addComment(id, currentUser, request);
-            return ResponseEntity.ok(comment);
-    }
+    // @PostMapping("/{id}/comments")
+    // public ResponseEntity<CommentResponse> addComment(@PathVariable Long id, @RequestBody CommentRequest request,
+    //         @AuthenticationPrincipal User currentUser) {
+    //         CommentResponse comment = commentService.addComment(id, currentUser, request);
+    //         return ResponseEntity.ok(comment);
+    // }
 
-    @DeleteMapping("/comments/{commentId}")
-    @PreAuthorize("hasRole('ADMIN') or @commentService.getcommentById(#id).user.id == authentication.principal.id")
-    public ResponseEntity<Void> deleteComment(@PathVariable Long commentId, @AuthenticationPrincipal User currentUser) {
-        return commentService.deleteComment(commentId, currentUser)
-                ? ResponseEntity.noContent().build()
-                : ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-    }
+    // @DeleteMapping("/comments/{commentId}")
+    // @PreAuthorize("hasRole('ADMIN') or @commentService.getcommentById(#id).user.id == authentication.principal.id")
+    // public ResponseEntity<Void> deleteComment(@PathVariable Long commentId, @AuthenticationPrincipal User currentUser) {
+    //     return commentService.deleteComment(commentId, currentUser)
+    //             ? ResponseEntity.noContent().build()
+    //             : ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+    // }
 
-    @GetMapping("/comments/{commentId}/replies")
-    public ResponseEntity<List<CommentResponse>> getReplies(@PathVariable Long commentId,
-            @RequestParam(defaultValue = "0") long cursor) {
-        if (cursor == 0) {
-            cursor = Long.MAX_VALUE;
-        }
+    // @GetMapping("/comments/{commentId}/replies")
+    // public ResponseEntity<List<CommentResponse>> getReplies(@PathVariable Long commentId,
+    //         @RequestParam(defaultValue = "0") long cursor) {
+    //     if (cursor == 0) {
+    //         cursor = Long.MAX_VALUE;
+    //     }
 
-        List<CommentResponse> replies = commentService.getReplies(commentId, cursor);
-        return ResponseEntity.ok(replies);
-    }
+    //     List<CommentResponse> replies = commentService.getReplies(commentId, cursor);
+    //     return ResponseEntity.ok(replies);
+    // }
 
 }

@@ -11,5 +11,7 @@ public record CommentResponse(
                 Long postId,
                 LocalDateTime createdAt,
                 Long parentId,
-                Integer replyCount) {
+                int likesCount,
+                Integer replyCount,
+                boolean isLiked) {
 }
