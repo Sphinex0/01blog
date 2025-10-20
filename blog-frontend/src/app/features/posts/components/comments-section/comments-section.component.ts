@@ -41,6 +41,8 @@ export class CommentsSectionComponent {
   // Outputs
   readonly submitComment = output<string>();
   readonly likeComment = output<Comment>();
+  readonly getReplies = output<Comment>();
+  readonly getComments = output<Comment>();
   readonly deleteComment = output<Comment>();
   readonly replyToComment = output<{ parentId: number; content: string }>();
   readonly editComment = output<{ commentId: number; content: string }>();
@@ -56,6 +58,12 @@ export class CommentsSectionComponent {
     this.commentForm = this.fb.group({
       content: ['', [Validators.required, Validators.maxLength(500)]]
     });
+  }
+  onTriggerVisible(): void {
+    if (!this.isLoading() && this.comments().length < this.totalCount()) {
+      const lastComment = this.comments()[this.comments().length - 1];
+      this.getComments.emit(lastComment);
+    }
   }
 
   onSubmit(): void {

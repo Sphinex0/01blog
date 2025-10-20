@@ -35,6 +35,7 @@ export const API_ENDPOINTS = {
     UPDATE: '/comments',
     DELETE: '/comments',
     LIKE: '/comments/like',
+    REPLIES: '/comments/replies',
   },
   NOTIFICATIONS: {
     GET_ALL: '/users/notifications',

@@ -11,6 +11,7 @@ import api.backend.repository.UserRepository;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -61,9 +62,7 @@ public class CommentService {
                 request.parentId(),
                 0,
                 0,
-                false
-        );
-
+                false);
 
         return commentResponse;
     }
@@ -78,13 +77,10 @@ public class CommentService {
                 }).get();
     }
 
-
     // likeComment
     public boolean likeComment(Long commentId, long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("No authenticated user found"));
-
-                
 
         return commentRepository.findById(commentId)
                 .map(comment -> {
@@ -122,7 +118,7 @@ public class CommentService {
     }
 
     public List<CommentResponse> getReplies(Long commentId, long cursor) {
-        Pageable pageable = PageRequest.of(0, 10);// , Direction.DESC,"id"
+        Pageable pageable = PageRequest.of(0, 10, Direction.DESC,"id");
 
         return commentRepository.findByParentIdAndIdLessThan(commentId, cursor, pageable).map(comment -> {
             int replyCount = commentRepository.findByParentId(comment.getId()).size();
@@ -145,18 +141,17 @@ public class CommentService {
     }
 
     public List<CommentResponse> getTopLevelComments(Long postId, long cursor) {
-        Pageable pageable = PageRequest.of(0, 10);// , Direction.DESC,"id"
+        Pageable pageable = PageRequest.of(0, 10, Direction.DESC, "id");
         // , cursor
-        return commentRepository.findByPostIdAndParentIsNull(postId, pageable).map(comment -> {
+        return commentRepository.findByPostIdAndParentIsNullAndIdLessThan(postId,cursor, pageable).map(comment -> {
             int replyCount = commentRepository.findByParentId(comment.getId())
                     .size();
 
+            long user_id = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+            User user = userRepository.findById(user_id)
+                    .orElseThrow(() -> new IllegalArgumentException("No authenticated user found"));
+            boolean likedByCurrentUser = comment.getLikedBy().contains(user);
 
-                    long user_id = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
-        User user = userRepository.findById(user_id)
-                .orElseThrow(() -> new IllegalArgumentException("No authenticated user found"));
-        boolean likedByCurrentUser = comment.getLikedBy().contains(user);
-            
             return new CommentResponse(
                     comment.getId(),
                     comment.getContent(),
@@ -166,8 +161,7 @@ public class CommentService {
                     null, // Top-level comments have no parent
                     comment.getLikedBy().size(),
                     replyCount,
-                    likedByCurrentUser
-                    );
+                    likedByCurrentUser);
         }).toList();
     }
 

@@ -30,13 +30,20 @@ public class CommentController {
         this.postService = postService;
         this.commentService = commentService;
     }
+    
+    @GetMapping("/replies/{commentId}")
+    public ResponseEntity<List<CommentResponse>> getReplies(@PathVariable Long commentId,
+            @RequestParam(defaultValue = "0") long cursor) {
+        if (cursor == 0) {
+            cursor = Long.MAX_VALUE;
+        }
 
+        List<CommentResponse> replies = commentService.getReplies(commentId, cursor);
+        return ResponseEntity.ok(replies);
+    }
     @GetMapping("/post/{id}")
     public ResponseEntity<List<CommentResponse>> getTopLevelComments(@PathVariable Long id,
             @RequestParam(defaultValue = "0") long cursor) {
-
-        // System.out.println("Fetching comments for post ID: " + id + " with cursor: "
-        // + cursor);
         if (cursor == 0) {
             cursor = Long.MAX_VALUE;
         }
@@ -70,15 +77,5 @@ public class CommentController {
         return ResponseEntity.ok(commentService.likeComment(id, user.getId()));
     }
 
-    @GetMapping("/comments/{commentId}/replies")
-    public ResponseEntity<List<CommentResponse>> getReplies(@PathVariable Long commentId,
-            @RequestParam(defaultValue = "0") long cursor) {
-        if (cursor == 0) {
-            cursor = Long.MAX_VALUE;
-        }
-
-        List<CommentResponse> replies = commentService.getReplies(commentId, cursor);
-        return ResponseEntity.ok(replies);
-    }
 
 }

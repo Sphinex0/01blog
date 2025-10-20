@@ -1,12 +1,12 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, take, tap } from 'rxjs';
 import { Comment, CreateCommentRequest } from '../../../core/models/comment.interface';
 import { ApiResponse } from '../../../core/models/api-response.interface';
 import { API_BASE_URL, API_ENDPOINTS } from '../../../core/constants/api.constants';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CommentService {
   private readonly http = inject(HttpClient);
@@ -15,20 +15,33 @@ export class CommentService {
   /**
    * Get comments by post ID
    */
-  getCommentsByPost(postId: number): Observable<Comment[]> {
-    // return this.http.get<Comment[]>(
-    //   `${this.baseUrl}${API_ENDPOINTS.POSTS.GET_BY_ID}/${postId}/comments`
-    // );
+  // getCommentsByPost(postId: number): Observable<Comment[]> {
+  //   return this.http.get<Comment[]>(
+  //     `${this.baseUrl}${API_ENDPOINTS.COMMENTS.GET_BY_POST}/${postId}`
+  //   );
+  // }
 
-    return this.http.get<Comment[]>(`${this.baseUrl}${API_ENDPOINTS.COMMENTS.GET_BY_POST}/${postId}`).pipe(
-      tap(comments => this.buildCommentTree(comments))
+  /**
+   * Get top-level comments for a post with cursor pagination
+   */
+  getCommentsByPost(postId: number, cursor: number = 0): Observable<Comment[]> {
+    const params = new HttpParams().set('cursor', cursor.toString());
+    return this.http.get<Comment[]>(`${this.baseUrl}${API_ENDPOINTS.COMMENTS.GET_BY_POST}/${postId}`, { params });
+  }
+
+  /**
+   * Get replies for a specific comment
+   */
+  getReplies(commentId: number): Observable<Comment[]> {
+    return this.http.get<Comment[]>(
+      `${this.baseUrl}${API_ENDPOINTS.COMMENTS.REPLIES}/${commentId}`
     );
   }
 
   /**
    * Create new comment
    */
-  createComment(postId: number,data: CreateCommentRequest): Observable<Comment> {
+  createComment(postId: number, data: CreateCommentRequest): Observable<Comment> {
     return this.http.post<Comment>(
       `${this.baseUrl}${API_ENDPOINTS.COMMENTS.CREATE}/${postId}`,
       data
@@ -39,22 +52,19 @@ export class CommentService {
    * Update comment
    */
   updateComment(commentId: number, content: string): Observable<Comment> {
-    return this.http.put<Comment>(
-      `${this.baseUrl}${API_ENDPOINTS.COMMENTS.UPDATE}/${commentId}`,
-      { content }
-    );
+    return this.http.put<Comment>(`${this.baseUrl}${API_ENDPOINTS.COMMENTS.UPDATE}/${commentId}`, {
+      content,
+    });
   }
 
   /**
    * Delete comment
    */
   deleteComment(commentId: number): Observable<void> {
-    return this.http.delete<void>(
-      `${this.baseUrl}${API_ENDPOINTS.COMMENTS.DELETE}/${commentId}`
-    );
+    return this.http.delete<void>(`${this.baseUrl}${API_ENDPOINTS.COMMENTS.DELETE}/${commentId}`);
   }
 
- /**
+  /**
    * Like/unlike a comment
    */
   likeComment(commentId: number): Observable<void> {
@@ -62,13 +72,6 @@ export class CommentService {
   }
 
   /**
-   * Get replies for a specific comment
-   */
-  getReplies(commentId: number): Observable<Comment[]> {
-    return this.http.get<Comment[]>(`${this.baseUrl}${API_ENDPOINTS.COMMENTS.DELETE}/${commentId}`);
-  }
-
-   /**
    * Build a tree structure from flat comment list
    * Organizes comments by parent-child relationships
    */
@@ -77,12 +80,12 @@ export class CommentService {
     const rootComments: Comment[] = [];
 
     // First pass: Create a map of all comments
-    comments.forEach(comment => {
+    comments.forEach((comment) => {
       commentMap.set(comment.id, { ...comment, replies: [], depth: 0 });
     });
 
     // Second pass: Build the tree structure
-    comments.forEach(comment => {
+    comments.forEach((comment) => {
       const commentNode = commentMap.get(comment.id)!;
 
       if (comment.parentId && commentMap.has(comment.parentId)) {
@@ -98,9 +101,7 @@ export class CommentService {
     });
 
     // Sort root comments by date (newest first)
-    rootComments.sort((a, b) => 
-      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    );
+    rootComments.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
     // Sort replies within each comment (oldest first for conversation flow)
     this.sortRepliesRecursively(rootComments);
@@ -112,10 +113,10 @@ export class CommentService {
    * Recursively sort replies within comment tree
    */
   private sortRepliesRecursively(comments: Comment[]): void {
-    comments.forEach(comment => {
+    comments.forEach((comment) => {
       if (comment.replies && comment.replies.length > 0) {
-        comment.replies.sort((a, b) => 
-          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+        comment.replies.sort(
+          (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
         );
         this.sortRepliesRecursively(comment.replies);
       }
@@ -129,7 +130,7 @@ export class CommentService {
     const flattened: Comment[] = [];
 
     const flatten = (commentList: Comment[]) => {
-      commentList.forEach(comment => {
+      commentList.forEach((comment) => {
         flattened.push(comment);
         if (comment.replies && comment.replies.length > 0) {
           flatten(comment.replies);
@@ -166,7 +167,7 @@ export class CommentService {
     const findPath = (commentList: Comment[], targetId: number): boolean => {
       for (const comment of commentList) {
         path.push(comment);
-        
+
         if (comment.id === targetId) {
           return true;
         }
@@ -185,5 +186,4 @@ export class CommentService {
     findPath(comments, commentId);
     return path;
   }
-
 }

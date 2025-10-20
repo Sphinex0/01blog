@@ -179,7 +179,8 @@ public class UserService implements UserDetailsService {
         String currentUsername = currentUser.getUsername();
         boolean currentInSubscribersByUsername = currentUsername != null && user.getSubscribers().stream()
                 .anyMatch(sub -> currentUsername.equals(sub.getUsername()));
-
+        System.out.println("User avatar: " + user.getId());
+        System.out.println("User avatar: " + user.getAvatar());
         return new UserResponse(
                 user.getId(),
                 user.getFullName(),

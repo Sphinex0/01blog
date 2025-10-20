@@ -9,12 +9,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
-
     Page<Comment> findByParentIdAndIdLessThan(Long parentId, Long cursor, Pageable pageable);
     List<Comment> findByParentId(Long parentId);
-
-
+    
+    
     // , Long cursor
-    Page<Comment> findByPostIdAndParentIsNull(Long postId, Pageable pageable);
+    // findByPostIdAndParentIsNullAndIdLessThan
+    Page<Comment> findByPostIdAndParentIsNullAndIdLessThan(Long postId, Long cursor, Pageable pageable);
 
 }

@@ -132,6 +132,7 @@
               [currentUserId]="currentUserId()"
               [currentUserAvatar]="currentUserAvatar()"
               (likeComment)="likeComment.emit($event)"
+              (getReplies)="getReplies.emit($event)"
               (deleteComment)="deleteComment.emit($event)"
               (replyToComment)="replyToComment.emit($event)"
               (editComment)="editComment.emit($event)"
@@ -139,6 +140,8 @@
             />
           }
 
+
+          
           <!-- Show More Button or Open Sidebar -->
           @if (hasMoreReplies()) {
             @if (depth() + 1 < maxDepth()) {

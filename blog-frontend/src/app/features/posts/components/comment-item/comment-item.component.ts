@@ -39,6 +39,7 @@ export class CommentItemComponent {
 
   // Outputs
   readonly likeComment = output<Comment>();
+  readonly getReplies = output<Comment>();
   readonly deleteComment = output<Comment>();
   readonly replyToComment = output<{ parentId: number; content: string }>();
   readonly editComment = output<{ commentId: number; content: string }>();
@@ -87,6 +88,7 @@ export class CommentItemComponent {
   }
 
   toggleReplies(): void {
+    this.getReplies.emit(this.comment());
     this.showReplies.update(v => !v);
   }
 

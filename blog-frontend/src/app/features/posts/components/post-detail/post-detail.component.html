@@ -145,6 +145,8 @@
       [currentUserAvatar]="currentUser()?.avatar || null"
       (submitComment)="onSubmitComment($event)"
       (likeComment)="onLikeComment($event)"
+      (getReplies)="onGetReplies($event)"
+      (getComments)="loadComments()"
       (deleteComment)="onDeleteComment($event)"
       (replyToComment)="onReplyToComment($event)"
       (editComment)="onEditComment($event)"

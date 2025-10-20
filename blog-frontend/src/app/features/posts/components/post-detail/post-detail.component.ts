@@ -54,6 +54,8 @@ export class PostDetailComponent implements OnInit {
   private readonly snackBar = inject(MatSnackBar);
   private readonly dialog = inject(MatDialog);
 
+
+
   // Signals
   readonly post = signal<Post | null>(null);
   readonly comments = signal<Comment[]>([]);
@@ -61,6 +63,8 @@ export class PostDetailComponent implements OnInit {
   readonly isLoadingComments = signal(false);
   readonly isSubmittingComment = signal(false);
   readonly error = signal<string | null>(null);
+  readonly commentCursor = signal(0);
+  readonly hasMoreComments = signal(true);
 
   // Computed
   readonly currentUser = this.authService.currentUser;
@@ -83,7 +87,7 @@ export class PostDetailComponent implements OnInit {
     const postId = this.route.snapshot.params['id'];
     if (postId) {
       this.loadPost(+postId);
-      this.loadComments(+postId);
+      this.loadComments();
     }
   }
 
@@ -111,13 +115,27 @@ export class PostDetailComponent implements OnInit {
     console.log('Loading post with ID:', this.post());
   }
 
-  loadComments(postId: number): void {
+  loadComments(): void {
+    if (!this.hasMoreComments()) return;
+    let postId = this.route.snapshot.params['id'];
     this.isLoadingComments.set(true);
 
-    this.commentService.getCommentsByPost(postId).subscribe({
+    this.commentService.getCommentsByPost(postId, this.commentCursor()).subscribe({
       next: (response) => {
         if (response) {
-          this.comments.set(response);
+          if (this.commentCursor() > 0) {
+            // Append new comments for pagination
+            this.comments.update((current) => [...current, ...response]);
+          } else {
+            // Initial load
+            this.comments.set(response);
+          }
+          // this.comments.set(response);
+          if (response.length > 0) {
+            this.commentCursor.set(response[response.length - 1]?.id);
+          } else {
+            this.hasMoreComments.set(false);
+          }
         }
         this.isLoadingComments.set(false);
       },
@@ -127,6 +145,26 @@ export class PostDetailComponent implements OnInit {
       },
     });
   }
+
+  onGetReplies(comment: Comment): void {
+    // Handle getting replies for a specific comment
+    if (comment.replies) return;
+    this.getReplies(comment);
+
+  }
+
+
+  getReplies(comment: Comment): void {
+    this.commentService.getReplies(comment.id).subscribe({
+      next: (replies) => {
+        comment.replies = replies;
+      },
+      error: (err) => {
+        console.error('Failed to get replies:', err);
+      },
+    });
+  }
+
 
   onLikePost(): void {
     const post = this.post();
@@ -243,46 +281,6 @@ export class PostDetailComponent implements OnInit {
     });
   }
 
-  onDeleteComment(comment: Comment): void {
-    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-      width: '400px',
-      data: {
-        title: 'Delete Comment',
-        message: 'Are you sure you want to delete this comment?',
-        confirmText: 'Delete',
-        cancelText: 'Cancel',
-      },
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        this.commentService.deleteComment(comment.id).subscribe({
-          next: () => {
-            // Remove comment from list
-            this.comments.update((current) => current.filter((c) => c.id !== comment.id));
-
-            // Update post comment count
-            this.post.update((current) => {
-              if (!current) return current;
-              return { ...current, commentsCount: Math.max(0, current.commentsCount - 1) };
-            });
-
-            this.snackBar.open('Comment deleted successfully', 'Close', {
-              duration: 2000,
-              panelClass: ['success-snackbar'],
-            });
-          },
-          error: () => {
-            this.snackBar.open('Failed to delete comment', 'Close', {
-              duration: 3000,
-              panelClass: ['error-snackbar'],
-            });
-          },
-        });
-      }
-    });
-  }
-
   isCommentAuthor(comment: Comment): boolean {
     const user = this.currentUser();
     return user ? comment.user.id === user.id : false;
@@ -346,48 +344,6 @@ export class PostDetailComponent implements OnInit {
     });
   }
 
-  onReplyToComment(data: { parentId: number; content: string }): void {
-    const post = this.post();
-    if (!post) return;
-
-    const request: CreateCommentRequest = {
-      content: data.content,
-      postId: post.id,
-      parentId: data.parentId,
-    };
-
-    this.commentService.createComment(post.id, request).subscribe({
-      next: (response) => {
-        if (response) {
-          this.addReplyToTree(data.parentId, response);
-          this.post.update((current) =>
-            current ? { ...current, commentsCount: current.commentsCount + 1 } : current
-          );
-          this.snackBar.open('Reply added!', 'Close', { duration: 2000 });
-        }
-      },
-      error: () => {
-        this.snackBar.open('Failed to add reply', 'Close', { duration: 3000 });
-      },
-    });
-  }
-
-  onEditComment(data: { commentId: number; content: string }): void {
-    this.commentService.updateComment(data.commentId, data.content).subscribe({
-      next: () => {
-        this.updateCommentInTree(data.commentId, (c) => ({
-          ...c,
-          content: data.content,
-          updatedAt: new Date().toISOString(),
-        }));
-        this.snackBar.open('Comment updated!', 'Close', { duration: 2000 });
-      },
-      error: () => {
-        this.snackBar.open('Failed to update comment', 'Close', { duration: 3000 });
-      },
-    });
-  }
-
   // Helper methods for tree manipulation
   private updateCommentInTree(id: number, updateFn: (comment: Comment) => Comment): void {
     this.comments.update((comments) => this.updateCommentRecursive(comments, id, updateFn));
@@ -433,5 +389,111 @@ export class PostDetailComponent implements OnInit {
       }
       return comment;
     });
+  }
+
+  private removeCommentFromTree(commentId: number): void {
+    this.comments.update((comments) => this.removeCommentRecursive(comments, commentId));
+  }
+
+  private removeCommentRecursive(comments: Comment[], id: number): Comment[] {
+    return comments
+      .filter((comment) => comment.id !== id)
+      .map((comment) => {
+        if (comment.replies && comment.replies.length > 0) {
+          return {
+            ...comment,
+            replies: this.removeCommentRecursive(comment.replies, id),
+            repliesCount: Math.max(0, (comment.repliesCount || 1) - 1),
+          };
+        }
+        return comment;
+      });
+  }
+
+  onReplyToComment(data: { parentId: number; content: string }): void {
+    const post = this.post();
+    if (!post) return;
+
+    const request: CreateCommentRequest = {
+      content: data.content,
+      postId: post.id,
+      parentId: data.parentId,
+    };
+
+    this.commentService.createComment(post.id, request).subscribe({
+      next: (response) => {
+        if (response) {
+          this.addReplyToTree(data.parentId, response);
+          this.post.update((current) =>
+            current ? { ...current, commentsCount: current.commentsCount + 1 } : current
+          );
+          this.snackBar.open('Reply added!', 'Close', { duration: 2000 });
+        }
+      },
+      error: () => {
+        this.snackBar.open('Failed to add reply', 'Close', { duration: 3000 });
+      },
+    });
+  }
+
+  onEditComment(data: { commentId: number; content: string }): void {
+    this.commentService.updateComment(data.commentId,  data.content ).subscribe({
+      next: () => {
+        this.updateCommentInTree(data.commentId, (c) => ({
+          ...c,
+          content: data.content,
+          updatedAt: new Date().toISOString(),
+        }));
+        this.snackBar.open('Comment updated!', 'Close', { duration: 2000 });
+      },
+      error: () => {
+        this.snackBar.open('Failed to update comment', 'Close', { duration: 3000 });
+      },
+    });
+  }
+
+  onDeleteComment(comment: Comment): void {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      width: '400px',
+      data: {
+        title: 'Delete Comment',
+        message: 'Are you sure you want to delete this comment? All replies will also be deleted.',
+        confirmText: 'Delete',
+        cancelText: 'Cancel',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.commentService.deleteComment(comment.id).subscribe({
+          next: () => {
+            this.removeCommentFromTree(comment.id);
+
+            // Update post comment count (including all nested replies)
+            const deletedCount = this.countCommentAndReplies(comment);
+            this.post.update((current) =>
+              current
+                ? { ...current, commentsCount: Math.max(0, current.commentsCount - deletedCount) }
+                : current
+            );
+
+            this.snackBar.open('Comment deleted successfully', 'Close', { duration: 2000 });
+          },
+          error: () => {
+            this.snackBar.open('Failed to delete comment', 'Close', { duration: 3000 });
+          },
+        });
+      }
+    });
+  }
+
+  private countCommentAndReplies(comment: Comment): number {
+    let count = 1; // Count the comment itself
+    if (comment.replies && comment.replies.length > 0) {
+      comment.replies.forEach((reply) => {
+        count += this.countCommentAndReplies(reply);
+      });
+    }
+    return count;
   }
 }
