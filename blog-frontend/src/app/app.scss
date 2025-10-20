@@ -3,9 +3,9 @@
     height: 100%;
     object-fit:fill;
 }
-::ng-deep input{
-    color: white !important;
-}
+// ::ng-deep input{
+//     color: white !important;
+// }
 
 // End of Feed
 .end-of-feed {
@@ -25,5 +25,31 @@
     margin: 0;
     font-size: 0.9375rem;
     font-weight: 500;
+  }
+}
+
+.success-snackbar {
+  .mat-mdc-snack-bar-container {
+    background: var(--pixel-success);
+    color: white;
+    border: 3px solid var(--pixel-border);
+    border-radius: 0;
+    box-shadow: 4px 4px 0 var(--pixel-shadow);
+    font-family: 'Press Start 2P', cursive;
+    font-size: 10px;
+    text-transform: uppercase;
+  }
+}
+
+.error-snackbar {
+  .mat-mdc-snack-bar-container {
+    background: var(--pixel-error);
+    color: white;
+    border: 3px solid var(--pixel-border);
+    border-radius: 0;
+    box-shadow: 4px 4px 0 var(--pixel-shadow);
+    font-family: 'Press Start 2P', cursive;
+    font-size: 10px;
+    text-transform: uppercase;
   }
 }

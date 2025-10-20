@@ -1,149 +1,164 @@
-<div class="register-container">
-  <mat-card class="register-card">
-    <mat-card-header>
-      <mat-card-title class="register-title">
-        <mat-icon class="register-icon">account_circle</mat-icon>
-        Join 01Blog
-      </mat-card-title>
-      <mat-card-subtitle>
-        Start your learning journey and share your discoveries
-      </mat-card-subtitle>
-    </mat-card-header>
+<div class="auth-form-container">
+  <div class="form-header">
+    <div class="header-icon">🎮</div>
+    <h2 class="form-title">JOIN 01BLOG</h2>
+    <p class="form-subtitle">START YOUR JOURNEY</p>
+  </div>
 
-    <mat-card-content>
-      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
-        
-        <!-- Full Name Field -->
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Full Name</mat-label>
-          <input 
-            matInput 
-            formControlName="fullName" 
-            placeholder="Enter your full name"
-            autocomplete="name">
-          <mat-icon matSuffix>person</mat-icon>
-          @if (hasFieldError('fullName')) {
-            <mat-error>{{ getFieldErrorMessage('fullName') }}</mat-error>
-          }
-        </mat-form-field>
-
-        <!-- Username Field -->
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Username</mat-label>
-          <input 
-            matInput 
-            formControlName="username" 
-            placeholder="Choose a unique username"
-            autocomplete="username">
-          <mat-icon matSuffix>alternate_email</mat-icon>
-          @if (hasFieldError('username')) {
-            <mat-error>{{ getFieldErrorMessage('username') }}</mat-error>
-          }
-        </mat-form-field>
-
-        <!-- Email Field -->
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Email</mat-label>
-          <input 
-            matInput 
-            type="email" 
-            formControlName="email" 
-            placeholder="Enter your email address"
-            autocomplete="email">
-          <mat-icon matSuffix>email</mat-icon>
-          @if (hasFieldError('email')) {
-            <mat-error>{{ getFieldErrorMessage('email') }}</mat-error>
-          }
-        </mat-form-field>
-
-        <!-- Password Field -->
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Password</mat-label>
-          <input 
-            matInput 
-            [type]="hidePassword() ? 'password' : 'text'" 
-            formControlName="password" 
-            placeholder="Create a strong password"
-            autocomplete="new-password">
-          <button 
-            mat-icon-button 
-            matSuffix 
-            type="button"
-            (click)="togglePasswordVisibility()"
-            [attr.aria-label]="'Hide password'"
-            [attr.aria-pressed]="hidePassword()">
-            <mat-icon>{{ hidePassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
-          </button>
-          @if (hasFieldError('password')) {
-            <mat-error>{{ getFieldErrorMessage('password') }}</mat-error>
-          }
-        </mat-form-field>
-
-        <!-- Confirm Password Field -->
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Confirm Password</mat-label>
-          <input 
-            matInput 
-            [type]="hideConfirmPassword() ? 'password' : 'text'" 
-            formControlName="confirmPassword" 
-            placeholder="Confirm your password"
-            autocomplete="new-password">
-          <button 
-            mat-icon-button 
-            matSuffix 
-            type="button"
-            (click)="toggleConfirmPasswordVisibility()"
-            [attr.aria-label]="'Hide confirm password'"
-            [attr.aria-pressed]="hideConfirmPassword()">
-            <mat-icon>{{ hideConfirmPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
-          </button>
-          @if (hasFieldError('confirmPassword')) {
-            <mat-error>{{ getFieldErrorMessage('confirmPassword') }}</mat-error>
-          }
-        </mat-form-field>
-
-        <!-- Password Requirements -->
-        <div class="password-requirements">
-          <p class="requirements-title">Password must contain:</p>
-          <ul class="requirements-list">
-            <li>At least 8 characters</li>
-            <li>One uppercase letter (A-Z)</li>
-            <li>One lowercase letter (a-z)</li>
-            <li>One number (0-9)</li>
-            <li>One special character (#?!@$%^&*-)</li>
-          </ul>
-        </div>
-
-        <!-- Submit Button -->
-        <button 
-          mat-raised-button 
-          color="primary" 
-          type="submit" 
-          class="submit-button full-width"
-          [disabled]="registerForm.invalid || isLoading()">
-          
-          @if (isLoading()) {
-            <ng-container>
-              <mat-spinner diameter="20" class="button-spinner"></mat-spinner>
-              Creating Account...
-            </ng-container>
-          } @else {
-            <ng-container>
-              <mat-icon>person_add</mat-icon>
-              Create Account
-            </ng-container>
-          }
-        </button>
-
-      </form>
-    </mat-card-content>
-
-    <mat-card-actions class="card-actions">
-      <div class="login-link">
-        Already have an account? 
-        <a [routerLink]="loginRoute" class="link">Sign in here</a>
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="pixel-form">
+    
+    <!-- Full Name Field -->
+    <div class="pixel-field">
+      <label class="pixel-label">FULL NAME</label>
+      <div class="input-wrapper">
+        <input 
+          type="text"
+          formControlName="fullName" 
+          placeholder="ENTER YOUR FULL NAME"
+          class="pixel-input"
+          autocomplete="name">
+        <span class="input-icon">👤</span>
       </div>
-    </mat-card-actions>
+      @if (hasFieldError('fullName')) {
+        <div class="pixel-error">{{ getFieldErrorMessage('fullName') }}</div>
+      }
+    </div>
 
-  </mat-card>
+    <!-- Username Field -->
+    <div class="pixel-field">
+      <label class="pixel-label">USERNAME</label>
+      <div class="input-wrapper">
+        <input 
+          type="text"
+          formControlName="username" 
+          placeholder="CHOOSE A USERNAME"
+          class="pixel-input"
+          autocomplete="username">
+        <span class="input-icon">@</span>
+      </div>
+      @if (hasFieldError('username')) {
+        <div class="pixel-error">{{ getFieldErrorMessage('username') }}</div>
+      }
+    </div>
+
+    <!-- Email Field -->
+    <div class="pixel-field">
+      <label class="pixel-label">EMAIL ADDRESS</label>
+      <div class="input-wrapper">
+        <input 
+          type="email"
+          formControlName="email" 
+          placeholder="ENTER YOUR EMAIL"
+          class="pixel-input"
+          autocomplete="email">
+        <span class="input-icon">📧</span>
+      </div>
+      @if (hasFieldError('email')) {
+        <div class="pixel-error">{{ getFieldErrorMessage('email') }}</div>
+      }
+    </div>
+
+    <!-- Password Field -->
+    <div class="pixel-field">
+      <label class="pixel-label">PASSWORD</label>
+      <div class="input-wrapper">
+        <input 
+          [type]="hidePassword() ? 'password' : 'text'" 
+          formControlName="password" 
+          placeholder="CREATE STRONG PASSWORD"
+          class="pixel-input"
+          autocomplete="new-password">
+        <button 
+          type="button"
+          class="input-toggle"
+          (click)="togglePasswordVisibility()">
+          <span class="toggle-icon">{{ hidePassword() ? '👁️' : '🔒' }}</span>
+        </button>
+      </div>
+      @if (hasFieldError('password')) {
+        <div class="pixel-error">{{ getFieldErrorMessage('password') }}</div>
+      }
+    </div>
+
+    <!-- Confirm Password Field -->
+    <div class="pixel-field">
+      <label class="pixel-label">CONFIRM PASSWORD</label>
+      <div class="input-wrapper">
+        <input 
+          [type]="hideConfirmPassword() ? 'password' : 'text'" 
+          formControlName="confirmPassword" 
+          placeholder="CONFIRM YOUR PASSWORD"
+          class="pixel-input"
+          autocomplete="new-password">
+        <button 
+          type="button"
+          class="input-toggle"
+          (click)="toggleConfirmPasswordVisibility()">
+          <span class="toggle-icon">{{ hideConfirmPassword() ? '👁️' : '🔒' }}</span>
+        </button>
+      </div>
+      @if (hasFieldError('confirmPassword')) {
+        <div class="pixel-error">{{ getFieldErrorMessage('confirmPassword') }}</div>
+      }
+    </div>
+
+    <!-- Password Requirements -->
+    <div class="password-requirements">
+      <div class="requirements-header">
+        <span class="req-icon">🔐</span>
+        <span class="req-title">PASSWORD RULES:</span>
+      </div>
+      <ul class="requirements-list">
+        <li [class.valid]="passwordHasMinLength()">
+          <span class="check-icon">{{ passwordHasMinLength() ? '✓' : '✗' }}</span>
+          AT LEAST 8 CHARACTERS
+        </li>
+        <li [class.valid]="passwordHasUppercase()">
+          <span class="check-icon">{{ passwordHasUppercase() ? '✓' : '✗' }}</span>
+          ONE UPPERCASE (A-Z)
+        </li>
+        <li [class.valid]="passwordHasLowercase()">
+          <span class="check-icon">{{ passwordHasLowercase() ? '✓' : '✗' }}</span>
+          ONE LOWERCASE (a-z)
+        </li>
+        <li [class.valid]="passwordHasNumber()">
+          <span class="check-icon">{{ passwordHasNumber() ? '✓' : '✗' }}</span>
+          ONE NUMBER (0-9)
+        </li>
+        <li [class.valid]="passwordHasSpecial()">
+          <span class="check-icon">{{ passwordHasSpecial() ? '✓' : '✗' }}</span>
+          ONE SPECIAL (#?!@$%^&*-)
+        </li>
+      </ul>
+    </div>
+
+    <!-- Submit Button -->
+    <button 
+      type="submit" 
+      class="pixel-btn pixel-btn-primary"
+      [disabled]="registerForm.invalid || isLoading()">
+      @if (isLoading()) {
+        <span class="btn-spinner">⏳</span>
+        <span>CREATING...</span>
+      } @else {
+        <span class="btn-icon">+</span>
+        <span>CREATE ACCOUNT</span>
+      }
+    </button>
+
+  </form>
+
+  <!-- Login Link -->
+  <div class="form-footer">
+    <div class="divider">
+      <span class="divider-text">ALREADY A MEMBER?</span>
+    </div>
+    <p class="footer-text">
+      HAVE AN ACCOUNT ALREADY?
+    </p>
+    <a [routerLink]="loginRoute" class="pixel-btn pixel-btn-secondary">
+      <span class="btn-icon">▶</span>
+      <span>SIGN IN</span>
+    </a>
+  </div>
 </div>

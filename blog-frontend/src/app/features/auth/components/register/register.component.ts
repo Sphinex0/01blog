@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -30,7 +30,7 @@ import { ROUTES } from '../../../../core/constants/app.constants';
     MatSnackBarModule,
   ],
   templateUrl: './register.component.html',
-  styleUrl: './register.component.scss'
+  styleUrl: './register.component.scss',
 })
 export class RegisterComponent {
   private readonly fb = inject(FormBuilder);
@@ -50,28 +50,14 @@ export class RegisterComponent {
 
   constructor() {
     this.registerForm = this.fb.group({
-      fullName: ['', [
-        Validators.required,
-        Validators.minLength(2),
-        CustomValidators.fullName()
-      ]],
-      username: ['', [
-        Validators.required,
-        CustomValidators.username()
-      ]],
-      email: ['', [
-        Validators.required,
-        CustomValidators.email()
-      ]],
-      password: ['', [
-        Validators.required,
-        Validators.minLength(8),
-        CustomValidators.passwordStrength()
-      ]],
-      confirmPassword: ['', [
-        Validators.required,
-        passwordConfirmValidator('password')
-      ]]
+      fullName: ['', [Validators.required, Validators.minLength(2), CustomValidators.fullName()]],
+      username: ['', [Validators.required, CustomValidators.username()]],
+      email: ['', [Validators.required, CustomValidators.email()]],
+      password: [
+        '',
+        [Validators.required, Validators.minLength(8), CustomValidators.passwordStrength()],
+      ],
+      confirmPassword: ['', [Validators.required, passwordConfirmValidator('password')]],
     });
   }
 
@@ -93,7 +79,7 @@ export class RegisterComponent {
           if (response) {
             this.snackBar.open('Registration successful! Welcome to 01Blog!', 'Close', {
               duration: 5000,
-              panelClass: ['success-snackbar']
+              panelClass: ['success-snackbar'],
             });
           }
         },
@@ -101,9 +87,9 @@ export class RegisterComponent {
           const message = error.error?.message || 'Registration failed. Please try again.';
           this.snackBar.open(message, 'Close', {
             duration: 5000,
-            panelClass: ['error-snackbar']
+            panelClass: ['error-snackbar'],
           });
-        }
+        },
       });
     } else {
       this.markFormGroupTouched();
@@ -111,7 +97,7 @@ export class RegisterComponent {
   }
 
   private markFormGroupTouched(): void {
-    Object.keys(this.registerForm.controls).forEach(key => {
+    Object.keys(this.registerForm.controls).forEach((key) => {
       const control = this.registerForm.get(key);
       control?.markAsTouched();
     });
@@ -179,7 +165,7 @@ export class RegisterComponent {
       username: 'Username',
       email: 'Email',
       password: 'Password',
-      confirmPassword: 'Confirm password'
+      confirmPassword: 'Confirm password',
     };
     return displayNames[fieldName] || fieldName;
   }
@@ -188,4 +174,30 @@ export class RegisterComponent {
     const control = this.registerForm.get(fieldName);
     return !!(control?.invalid && (control?.dirty || control?.touched));
   }
+
+  // Password validation computed properties
+  passwordHasMinLength = computed(() => {
+    const password = this.registerForm.get('password')?.value || '';
+    return password.length >= 8;
+  });
+
+  passwordHasUppercase = computed(() => {
+    const password = this.registerForm.get('password')?.value || '';
+    return /[A-Z]/.test(password);
+  });
+
+  passwordHasLowercase = computed(() => {
+    const password = this.registerForm.get('password')?.value || '';
+    return /[a-z]/.test(password);
+  });
+
+  passwordHasNumber = computed(() => {
+    const password = this.registerForm.get('password')?.value || '';
+    return /[0-9]/.test(password);
+  });
+
+  passwordHasSpecial = computed(() => {
+    const password = this.registerForm.get('password')?.value || '';
+    return /[#?!@$%^&*-]/.test(password);
+  });
 }

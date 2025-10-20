@@ -1,86 +1,83 @@
-<div class="register-container">
-  <mat-card class="register-card">
-    <mat-card-header>
-      <mat-card-title class="register-title">
-        <!-- <mat-icon class="register-icon">account_circle</mat-icon> -->
-        Join 01Blog
-      </mat-card-title>
-      <mat-card-subtitle>
-        Welcom Back!
-      </mat-card-subtitle>
-    </mat-card-header>
+<div class="auth-form-container">
+  <div class="form-header">
+    <h2 class="form-title">WELCOME BACK</h2>
+    <p class="form-subtitle">ENTER YOUR CREDENTIALS</p>
+  </div>
 
-    <mat-card-content>
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="register-form">
-        
-        
-        <!-- Username Field -->
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Username/Email</mat-label>
-          <input 
-            matInput 
-            formControlName="username" 
-            placeholder="Enter your username or email"
-            autocomplete="usernameEmail">
-          <mat-icon matSuffix>alternate_email</mat-icon>
-          @if (hasFieldError('username')) {
-            <mat-error>{{ getFieldErrorMessage('usernam') }}</mat-error>
-          }
-        </mat-form-field>
-
-        <!-- Password Field -->
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Password</mat-label>
-          <input 
-            matInput 
-            [type]="hidePassword() ? 'password' : 'text'" 
-            formControlName="password" 
-            placeholder="Create a strong password"
-            autocomplete="new-password">
-          <button 
-            mat-icon-button 
-            matSuffix 
-            type="button"
-            (click)="togglePasswordVisibility()"
-            [attr.aria-label]="'Hide password'"
-            [attr.aria-pressed]="hidePassword()">
-            <mat-icon>{{ hidePassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
-          </button>
-          @if (hasFieldError('password')) {
-            <mat-error>{{ getFieldErrorMessage('password') }}</mat-error>
-          }
-        </mat-form-field>
-
-        <!-- Submit Button -->
-        <button 
-          mat-raised-button 
-          color="primary" 
-          type="submit" 
-          class="submit-button full-width"
-          [disabled]="loginForm.invalid || isLoading()">
-          
-          @if (isLoading()) {
-            <ng-container>
-              <mat-spinner diameter="20" class="button-spinner"></mat-spinner>
-              Accessing Account...
-            </ng-container>
-          } @else {
-            <ng-container>
-              <mat-icon>person_add</mat-icon>
-              Login Account
-            </ng-container>
-          }
-        </button>
-
-      </form>
-    </mat-card-content>
-
-    <mat-card-actions class="card-actions">
-      <div class="login-link">
-        Don't have an account? 
-        <a [routerLink]="registerRoute" class="link">Register here</a>
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="pixel-form">
+    
+    <!-- Username/Email Field -->
+    <div class="pixel-field">
+      <label class="pixel-label">USERNAME / EMAIL</label>
+      <div class="input-wrapper">
+        <input 
+          type="text"
+          formControlName="username" 
+          placeholder="ENTER USERNAME OR EMAIL"
+          class="pixel-input"
+          autocomplete="username">
+        <span class="input-icon">@</span>
       </div>
-    </mat-card-actions>
+      @if (hasFieldError('username')) {
+        <div class="pixel-error">{{ getFieldErrorMessage('username') }}</div>
+      }
+    </div>
 
-  </mat-card>
+    <!-- Password Field -->
+    <div class="pixel-field">
+      <label class="pixel-label">PASSWORD</label>
+      <div class="input-wrapper">
+        <input 
+          [type]="hidePassword() ? 'password' : 'text'" 
+          formControlName="password" 
+          placeholder="ENTER YOUR PASSWORD"
+          class="pixel-input"
+          autocomplete="current-password">
+        <button 
+          type="button"
+          class="input-toggle"
+          (click)="togglePasswordVisibility()"
+          [attr.aria-label]="hidePassword() ? 'Show password' : 'Hide password'">
+          <span class="toggle-icon">{{ hidePassword() ? '👁️' : '🔒' }}</span>
+        </button>
+      </div>
+      @if (hasFieldError('password')) {
+        <div class="pixel-error">{{ getFieldErrorMessage('password') }}</div>
+      }
+    </div>
+
+    <!-- Submit Button -->
+    <button 
+      type="submit" 
+      class="pixel-btn pixel-btn-primary"
+      [disabled]="loginForm.invalid || isLoading()">
+      @if (isLoading()) {
+        <span class="btn-spinner">⏳</span>
+        <span>LOGGING IN...</span>
+      } @else {
+        <span class="btn-icon">▶</span>
+        <span>LOGIN</span>
+      }
+    </button>
+
+    <!-- Forgot Password Link -->
+    <div class="form-link-container">
+      <a href="#" class="form-link">FORGOT PASSWORD?</a>
+    </div>
+
+  </form>
+
+  <!-- Register Link -->
+  <div class="form-footer">
+    <div class="divider">
+      <span class="divider-text">NEW HERE?</span>
+    </div>
+    <p class="footer-text">
+      DON'T HAVE AN ACCOUNT?
+    </p>
+    <a [routerLink]="registerRoute" class="pixel-btn pixel-btn-secondary">
+      <span class="btn-icon">+</span>
+      <span>CREATE ACCOUNT</span>
+    </a>
+  </div>
 </div>
