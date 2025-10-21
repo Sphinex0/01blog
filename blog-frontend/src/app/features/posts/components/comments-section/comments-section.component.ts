@@ -49,7 +49,12 @@ export class CommentsSectionComponent {
 
   // Sidebar state
   readonly sidebarComment = signal<Comment | null>(null);
-  readonly openSidebar = output<Comment>();
+  // readonly openSidebar = output<Comment>();
+
+  openSidebarForComment(comment: Comment): void {
+    console.log('Opening sidebar for comment ID:', comment.id);
+    this.sidebarComment.set(comment);
+  }
 
   // Form
   commentForm: FormGroup;

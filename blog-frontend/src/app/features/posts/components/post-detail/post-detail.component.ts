@@ -148,16 +148,27 @@ export class PostDetailComponent implements OnInit {
 
   onGetReplies(comment: Comment): void {
     // Handle getting replies for a specific comment
-    if (comment.replies) return;
+    console.log('Getting replies for comment ID:', comment.id);
+
+    if (comment.replies && comment.replies.length >= comment.repliesCount) return;
+    
     this.getReplies(comment);
 
   }
 
 
   getReplies(comment: Comment): void {
-    this.commentService.getReplies(comment.id).subscribe({
+    if (!comment.replies){
+      comment.replies = [];
+    }
+    this.commentService.getReplies(comment.id, comment.replies[comment.replies.length - 1]?.id).subscribe({
       next: (replies) => {
-        comment.replies = replies;
+          let newReplies = [...(comment.replies || []), ...replies];
+          comment.replies = newReplies;
+          console.log("new replies", newReplies);
+          // this.comments.update((current) =>
+          //   current.map(c => c.id === comment.id ? { ...c, replies: newReplies } : c)
+          // );
       },
       error: (err) => {
         console.error('Failed to get replies:', err);
@@ -330,6 +341,9 @@ export class PostDetailComponent implements OnInit {
   }
 
   onLikeComment(comment: Comment): void {
+    console.log('Liking comment ID:', comment.id);
+
+    
     this.commentService.likeComment(comment.id).subscribe({
       next: () => {
         this.updateCommentInTree(comment.id, (c) => ({

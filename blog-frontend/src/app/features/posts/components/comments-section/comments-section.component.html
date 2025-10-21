@@ -71,7 +71,7 @@
             <app-comment-item
               [comment]="comment"
               [depth]="0"
-              [maxDepth]="3"
+              [maxDepth]="2"
               [currentUserId]="currentUserId()"
               [currentUserAvatar]="currentUserAvatar()"
               (likeComment)="likeComment.emit($event)"
@@ -79,7 +79,7 @@
               (deleteComment)="deleteComment.emit($event)"
               (replyToComment)="replyToComment.emit($event)"
               (editComment)="editComment.emit($event)"
-              (openSidebar)="openSidebar.emit($event)"
+              (openSidebar)="openSidebarForComment($event)"
             />
 
               @if (comment == comments()[comments().length - 1]) {
@@ -112,10 +112,11 @@
             <app-comment-item
               [comment]="sidebarComment()!"
               [depth]="0"
-              [maxDepth]="3"
+              [maxDepth]="2"
               [currentUserId]="currentUserId()"
               [currentUserAvatar]="currentUserAvatar()"
               (likeComment)="likeComment.emit($event)"
+              (getReplies)="getReplies.emit($event)"
               (deleteComment)="deleteComment.emit($event)"
               (replyToComment)="replyToComment.emit($event)"
               (editComment)="editComment.emit($event)"

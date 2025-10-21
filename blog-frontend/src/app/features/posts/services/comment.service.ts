@@ -32,10 +32,9 @@ export class CommentService {
   /**
    * Get replies for a specific comment
    */
-  getReplies(commentId: number): Observable<Comment[]> {
-    return this.http.get<Comment[]>(
-      `${this.baseUrl}${API_ENDPOINTS.COMMENTS.REPLIES}/${commentId}`
-    );
+  getReplies(commentId: number, cursor: number = 0): Observable<Comment[]> {
+    const params = new HttpParams().set('cursor', cursor.toString());
+    return this.http.get<Comment[]>(`${this.baseUrl}${API_ENDPOINTS.COMMENTS.REPLIES}/${commentId}`, { params });
   }
 
   /**

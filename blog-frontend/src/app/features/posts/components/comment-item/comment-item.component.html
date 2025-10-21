@@ -80,6 +80,7 @@
             }
 
             @if (comment().repliesCount && comment().repliesCount > 0) {
+
               <button class="action-btn" (click)="toggleReplies()">
                 <mat-icon>{{ showReplies() ? 'expand_less' : 'expand_more' }}</mat-icon>
                 <span>{{ comment().repliesCount }} {{ comment().repliesCount === 1 ? 'REPLY' : 'REPLIES' }}</span>

@@ -88,6 +88,13 @@ export class CommentItemComponent {
   }
 
   toggleReplies(): void {
+    console.log("Current depth:", this.depth());
+
+    if ( this.depth() >= this.maxDepth() ){
+      this.onOpenSidebar();
+      return;
+    };
+ 
     this.getReplies.emit(this.comment());
     this.showReplies.update(v => !v);
   }
@@ -106,6 +113,7 @@ export class CommentItemComponent {
 
   onLike(): void {
     this.likeComment.emit(this.comment());
+    // console.log('Liking comment ID:', this.comment().isLiked);
   }
 
   onEdit(): void {
@@ -129,15 +137,23 @@ export class CommentItemComponent {
   }
 
   loadMoreReplies(): void {
+    let c = this.comment();
+    console.log('out:');
+    if (c.replies && c.replies.length - this.visibleRepliesCount() < 3) {
+      console.log('in:');
+      this.getReplies.emit(c);
+    }
     this.visibleRepliesCount.update(v => v + 3);
   }
 
   onOpenSidebar(): void {
+    console.log('Opening sidebar for comment ID:', this.comment().id);
     // Find the third-level reply to continue from
     const replies = this.comment().replies || [];
-    if (replies.length > 0) {
-      this.openSidebar.emit(replies[0]);
-    }
+    // if (replies.length > 0) {
+      // this.openSidebar.emit(replies[0]);
+      this.openSidebar.emit(this.comment());
+    // }
   }
 
   getAvatarUrl(url: string): string {
