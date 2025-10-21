@@ -30,7 +30,7 @@
 
 .success-snackbar {
   .mat-mdc-snack-bar-container {
-    background: var(--pixel-success);
+    background: var(--pixel-success) !important;
     color: white;
     border: 3px solid var(--pixel-border);
     border-radius: 0;

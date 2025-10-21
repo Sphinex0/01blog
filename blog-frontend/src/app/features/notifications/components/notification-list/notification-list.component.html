@@ -1,138 +1,161 @@
 <div class="notifications-container">
-  
   <!-- Header -->
   <div class="notifications-header">
     <div class="header-content">
       <h1 class="page-title">Notifications</h1>
-        <span class="unread-badge">{{ unreadCount() }}</span>
+      <span class="unread-badge">{{ unreadCount() }}</span>
     </div>
 
     <div class="header-actions">
-      <button 
-        mat-icon-button 
-        (click)="refreshNotifications()"
-        matTooltip="Refresh">
+      <button mat-icon-button (click)="refreshNotifications()" matTooltip="Refresh">
         <mat-icon>refresh</mat-icon>
       </button>
 
-        <button 
-          mat-button 
-          (click)="onMarkAllAsRead()"
-          class="mark-all-btn"
-          [disabled]="unreadCount() === 0"
-          
-        >
-          
-          <mat-icon>done_all</mat-icon>
-          {{ unreadCount() === 0 ? 'All read' : 'Mark all as read' }}
-          <!-- Mark all as read -->
-        </button>
-      
+      <button
+        mat-button
+        (click)="onMarkAllAsRead()"
+        class="mark-all-btn"
+        [disabled]="unreadCount() === 0"
+      >
+        <mat-icon>done_all</mat-icon>
+        {{ unreadCount() === 0 ? 'All read' : 'Mark all as read' }}
+        <!-- Mark all as read -->
+      </button>
     </div>
   </div>
 
   <!-- Loading State -->
   @if (isLoading() && notifications().length === 0) {
-    <div class="loading-state">
-      <mat-spinner diameter="48"></mat-spinner>
-      <p>Loading notifications...</p>
-    </div>
+  <div class="loading-state">
+    <mat-spinner diameter="48"></mat-spinner>
+    <p>Loading notifications...</p>
+  </div>
   }
 
   <!-- Empty State -->
   @if (!isLoading() && notifications().length === 0) {
-    <div class="empty-state">
-      <mat-icon class="empty-icon">notifications_none</mat-icon>
-      <h2>No notifications yet</h2>
-      <p>When you get notifications, they'll show up here.</p>
-    </div>
+  <div class="empty-state">
+    <mat-icon class="empty-icon">notifications_none</mat-icon>
+    <h2>No notifications yet</h2>
+    <p>When you get notifications, they'll show up here.</p>
+  </div>
   }
 
   <!-- Notifications Tabs -->
   @if (notifications().length > 0) {
-    <div class="notifications-content">
-      <mat-tab-group class="notifications-tabs" animationDuration="300ms">
-        
-        <!-- All Notifications Tab -->
-        <mat-tab>
-          <ng-template matTabLabel>
-            <span class="tab-label">All</span>
-            <span class="tab-count">{{ notifications().length }}</span>
-          </ng-template>
+  <div class="notifications-content">
+    <mat-tab-group class="notifications-tabs" animationDuration="300ms">
+      <!-- All Notifications Tab -->
+      <mat-tab>
+        <ng-template matTabLabel>
+          <span class="tab-label">All</span>
+          <span class="tab-count">{{ notifications().length }}</span>
+        </ng-template>
 
-          <div class="notifications-list">
-            @for (notification of notifications(); track notification.id) {
-              <app-notification-item 
-                [notification]="notification"
-                (clicked)="onNotificationClick($event)"
-                (markAsRead)="onMarkAsRead($event)"
-                (delete)="onDelete($event)">
-              </app-notification-item>
-              <mat-divider></mat-divider>
-            }
+        <div class="notifications-list">
+          @for (notification of notifications(); track notification.id) {
+          <app-notification-item
+            [notification]="notification"
+            (clicked)="onNotificationClick($event)"
+            (markAsRead)="onMarkAsRead($event)"
+            (delete)="onDelete($event)"
+          >
+          </app-notification-item>
+          <mat-divider></mat-divider>
+          <!-- @if (notification == notifications()[notifications().length - 1]) {
+          <div #loadTrigger class="load-trigger"></div>
+          @defer (on viewport(loadTrigger)) {
+          {{ onTriggerVisible() }}
+          } @placeholder {
+          <div class="load-more-indicator">
+            <mat-spinner diameter="32"></mat-spinner>
+            <p>Loading more posts...</p>
           </div>
-        </mat-tab>
+          } }  -->
+        }
+        </div>
+      </mat-tab>
 
-        <!-- Unread Tab -->
-        <mat-tab>
-          <ng-template matTabLabel>
-            <span class="tab-label">Unread</span>
-            @if (unreadCount() > 0) {
-              <span class="tab-count unread">{{ unreadCount() }}</span>
-            }
-          </ng-template>
-
-          @if (unreadNotifications().length > 0) {
-            <div class="notifications-list">
-              @for (notification of unreadNotifications(); track notification.id) {
-                <app-notification-item 
-                  [notification]="notification"
-                  (clicked)="onNotificationClick($event)"
-                  (markAsRead)="onMarkAsRead($event)"
-                  (delete)="onDelete($event)">
-                </app-notification-item>
-                <mat-divider></mat-divider>
-              }
-            </div>
-          } @else {
-            <div class="empty-tab-state">
-              <mat-icon>done_all</mat-icon>
-              <p>All caught up!</p>
-            </div>
+      <!-- Unread Tab -->
+      <mat-tab>
+        <ng-template matTabLabel>
+          <span class="tab-label">Unread</span>
+          @if (unreadCount() > 0) {
+          <span class="tab-count unread">{{ unreadCount() }}</span>
           }
-        </mat-tab>
+        </ng-template>
 
-        <!-- Read Tab -->
-        <mat-tab>
-          <ng-template matTabLabel>
-            <span class="tab-label">Read</span>
-            @if (readNotifications().length > 0) {
-              <span class="tab-count">{{ readNotifications().length }}</span>
-            }
-          </ng-template>
+        @if (unreadNotifications().length > 0) {
+        <div class="notifications-list">
+          @for (notification of unreadNotifications(); track notification.id) {
+          <app-notification-item
+            [notification]="notification"
+            (clicked)="onNotificationClick($event)"
+            (markAsRead)="onMarkAsRead($event)"
+            (delete)="onDelete($event)"
+          >
+          </app-notification-item>
+          <mat-divider></mat-divider>
+          <!-- @if (notification == unreadNotifications()[unreadNotifications().length - 1]) {
+          <div #loadTrigger class="load-trigger"></div>
+          @defer (on viewport(loadTrigger)) {
+          {{ onTriggerVisible() }}
+          } @placeholder {
+          <div class="load-more-indicator">
+            <mat-spinner diameter="32"></mat-spinner>
+            <p>Loading more posts...</p>
+          </div>
+          } } -->
+         }
+        </div>
+        } @else {
+        <div class="empty-tab-state">
+          <mat-icon>done_all</mat-icon>
+          <p>All caught up!</p>
+        </div>
+        }
+      </mat-tab>
 
+      <!-- Read Tab -->
+      <mat-tab>
+        <ng-template matTabLabel>
+          <span class="tab-label">Read</span>
           @if (readNotifications().length > 0) {
-            <div class="notifications-list">
-              @for (notification of readNotifications(); track notification.id) {
-                <app-notification-item 
-                  [notification]="notification"
-                  (clicked)="onNotificationClick($event)"
-                  (markAsRead)="onMarkAsRead($event)"
-                  (delete)="onDelete($event)">
-                </app-notification-item>
-                <mat-divider></mat-divider>
-              }
-            </div>
-          } @else {
-            <div class="empty-tab-state">
-              <mat-icon>visibility_off</mat-icon>
-              <p>No read notifications</p>
-            </div>
+          <span class="tab-count">{{ readNotifications().length }}</span>
           }
-        </mat-tab>
+        </ng-template>
 
-      </mat-tab-group>
-    </div>
+        @if (readNotifications().length > 0) {
+        <div class="notifications-list">
+          @for (notification of readNotifications(); track notification.id) {
+          <app-notification-item
+            [notification]="notification"
+            (clicked)="onNotificationClick($event)"
+            (markAsRead)="onMarkAsRead($event)"
+            (delete)="onDelete($event)"
+          >
+          </app-notification-item>
+          <mat-divider></mat-divider>
+          <!-- @if (notification == readNotifications()[readNotifications().length - 1]) {
+          <div #loadTrigger class="load-trigger"></div>
+          @defer (on viewport(loadTrigger)) {
+          {{ onTriggerVisible() }}
+          } @placeholder {
+          <div class="load-more-indicator">
+            <mat-spinner diameter="32"></mat-spinner>
+            <p>Loading more posts...</p>
+          </div>
+          } } -->
+          }
+        </div>
+        } @else {
+        <div class="empty-tab-state">
+          <mat-icon>visibility_off</mat-icon>
+          <p>No read notifications</p>
+        </div>
+        }
+      </mat-tab>
+    </mat-tab-group>
+  </div>
   }
-
 </div>

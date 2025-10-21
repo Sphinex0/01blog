@@ -125,6 +125,7 @@ export class PostDetailComponent implements OnInit {
         if (response) {
           if (this.commentCursor() > 0) {
             // Append new comments for pagination
+
             this.comments.update((current) => [...current, ...response]);
           } else {
             // Initial load
@@ -164,11 +165,15 @@ export class PostDetailComponent implements OnInit {
     this.commentService.getReplies(comment.id, comment.replies[comment.replies.length - 1]?.id).subscribe({
       next: (replies) => {
           let newReplies = [...(comment.replies || []), ...replies];
-          comment.replies = newReplies;
-          console.log("new replies", newReplies);
+          // comment.replies = newReplies;
+          // // console.log("new replies", newReplies);
           // this.comments.update((current) =>
           //   current.map(c => c.id === comment.id ? { ...c, replies: newReplies } : c)
           // );
+          this.updateCommentInTree(comment.id, (c) => ({
+          ...c,
+          replies: newReplies,
+        }));
       },
       error: (err) => {
         console.error('Failed to get replies:', err);
@@ -342,10 +347,16 @@ export class PostDetailComponent implements OnInit {
 
   onLikeComment(comment: Comment): void {
     console.log('Liking comment ID:', comment.id);
-
+    // co
     
     this.commentService.likeComment(comment.id).subscribe({
       next: () => {
+        // comment.isLiked = !comment.isLiked;
+        // // Update likes count
+        // comment.likesCount = comment.isLiked
+        //   ? (comment.likesCount || 0) + 1
+        //   : Math.max(0, (comment.likesCount || 1) - 1);
+        // Update comment in the tree
         this.updateCommentInTree(comment.id, (c) => ({
           ...c,
           isLiked: !c.isLiked,

@@ -1,4 +1,4 @@
-import { Component, inject, input, output, signal } from '@angular/core';
+import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -48,12 +48,37 @@ export class CommentsSectionComponent {
   readonly editComment = output<{ commentId: number; content: string }>();
 
   // Sidebar state
-  readonly sidebarComment = signal<Comment | null>(null);
+  // readonly sidebarComment = signal<Comment | null>(null);
+  readonly sidebarCommentId = signal<number | null>(null);
+
+  readonly sidebarComment = computed(() => {
+    const id = this.sidebarCommentId();
+    if (!id) return null;
+    // We need a recursive function to find the comment in the tree
+    return this.findCommentById(this.comments(), id);
+  });
+
+  // 4. Add a helper function to find the comment recursively
+  private findCommentById(comments: Comment[], id: number): Comment | null {
+    for (const comment of comments) {
+      if (comment.id === id) {
+        return comment;
+      }
+      if (comment.replies) {
+        const foundInReply = this.findCommentById(comment.replies, id);
+        if (foundInReply) {
+          return foundInReply;
+        }
+      }
+    }
+    return null;
+  }
   // readonly openSidebar = output<Comment>();
 
   openSidebarForComment(comment: Comment): void {
     console.log('Opening sidebar for comment ID:', comment.id);
-    this.sidebarComment.set(comment);
+    // this.sidebarComment.set(comment);
+    this.sidebarCommentId.set(comment.id);
   }
 
   // Form
@@ -80,11 +105,13 @@ export class CommentsSectionComponent {
 
   onNestedSidebar(comment: Comment): void {
     // Replace current sidebar with nested comment
-    this.sidebarComment.set(comment);
+    // this.sidebarComment.set(comment);
+    this.sidebarCommentId.set(comment.id);
   }
 
   closeSidebar(): void {
-    this.sidebarComment.set(null);
+    // this.sidebarComment.set(null);
+    this.sidebarCommentId.set(null);
   }
 
   getAvatarUrl(url: string): string {

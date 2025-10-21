@@ -1,4 +1,4 @@
-import { Component, input, output, signal, computed, inject } from '@angular/core';
+import { Component, input, output, signal, computed, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
@@ -27,8 +27,13 @@ import { TimeAgoPipe } from '../../../../shared/pipes/time-ago-pipe';
   templateUrl: './comment-item.component.html',
   styleUrl: './comment-item.component.scss'
 })
-export class CommentItemComponent {
+export class CommentItemComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
+
+  ngOnInit(): void {
+    // Initialization logic if needed
+    // console.log('CommentItemComponent initialized with comment ID:', this.comment().id);
+  }
 
   // Inputs
   readonly comment = input.required<Comment>();
@@ -112,8 +117,11 @@ export class CommentItemComponent {
   }
 
   onLike(): void {
+    console.log('############:', this.comment().id);
+    // this.comment().isLiked = !this.comment().isLiked;
+    console.log('Liking after comment ID:', this.comment().isLiked);
     this.likeComment.emit(this.comment());
-    // console.log('Liking comment ID:', this.comment().isLiked);
+
   }
 
   onEdit(): void {
