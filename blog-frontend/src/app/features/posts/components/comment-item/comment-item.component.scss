@@ -400,6 +400,9 @@
 
 // Responsive
 @media (max-width: 768px) {
+  .hide-text {
+    display: none;
+  }
   .comment-item.nested {
     margin-left: calc(var(--depth) * 1rem);
   }

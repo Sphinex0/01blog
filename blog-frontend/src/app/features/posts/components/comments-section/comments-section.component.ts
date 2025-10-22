@@ -50,6 +50,7 @@ export class CommentsSectionComponent {
   // Sidebar state
   // readonly sidebarComment = signal<Comment | null>(null);
   readonly sidebarCommentId = signal<number | null>(null);
+  readonly prevSidebarCommentsQueue = signal<number[]>([]);
 
   readonly sidebarComment = computed(() => {
     const id = this.sidebarCommentId();
@@ -105,12 +106,15 @@ export class CommentsSectionComponent {
 
   onNestedSidebar(comment: Comment): void {
     // Replace current sidebar with nested comment
-    // this.sidebarComment.set(comment);
+    this.prevSidebarCommentsQueue.update(queue => [...queue, this.sidebarCommentId()!]);
     this.sidebarCommentId.set(comment.id);
+
+  }
+  goBack(): void {
+    this.sidebarCommentId.set(this.prevSidebarCommentsQueue().pop() || null);
   }
 
   closeSidebar(): void {
-    // this.sidebarComment.set(null);
     this.sidebarCommentId.set(null);
   }
 

@@ -420,20 +420,40 @@ export class PostDetailComponent implements OnInit {
     this.comments.update((comments) => this.removeCommentRecursive(comments, commentId));
   }
 
-  private removeCommentRecursive(comments: Comment[], id: number): Comment[] {
-    return comments
-      .filter((comment) => comment.id !== id)
-      .map((comment) => {
-        if (comment.replies && comment.replies.length > 0) {
-          return {
-            ...comment,
-            replies: this.removeCommentRecursive(comment.replies, id),
-            repliesCount: Math.max(0, (comment.repliesCount || 1) - 1),
-          };
-        }
+private removeCommentRecursive(comments: Comment[], id: number): Comment[] {
+  // Go through each comment to see if it's the one to remove or if it's a parent
+  return comments
+    .filter(comment => comment.id !== id) // Remove the comment if it's at the current level
+    .map(comment => {
+      // If the comment doesn't have replies, we're done with it
+      if (!comment.replies || comment.replies.length === 0) {
         return comment;
-      });
-  }
+      }
+
+      // Keep track of the original number of replies
+      const originalRepliesLength = comment.replies.length;
+      
+      // Recursively try to remove the comment from the children
+      const newReplies = this.removeCommentRecursive(comment.replies, id);
+
+      // If a direct child was removed, the array length will be smaller
+      if (newReplies.length < originalRepliesLength) {
+        // A child was removed, so update this direct parent
+        return {
+          ...comment,
+          replies: newReplies,
+          // Decrease the count by exactly 1
+          repliesCount: (comment.repliesCount || 1) - 1,
+        };
+      }
+
+      // If no children were removed, return the comment unchanged
+      return {
+        ...comment,
+        replies: newReplies,
+      };
+  });
+}
 
   onReplyToComment(data: { parentId: number; content: string }): void {
     const post = this.post();
@@ -511,6 +531,8 @@ export class PostDetailComponent implements OnInit {
       }
     });
   }
+
+  
 
   private countCommentAndReplies(comment: Comment): number {
     let count = 1; // Count the comment itself

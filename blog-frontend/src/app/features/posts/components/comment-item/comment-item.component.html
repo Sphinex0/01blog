@@ -70,28 +70,23 @@
         @if (depth() < maxDepth()) {
         <button class="action-btn" (click)="toggleReply()">
           <mat-icon>reply</mat-icon>
-          <span>REPLY</span>
+          <span class="hide-text">REPLY</span>
         </button>
-        } @if (comment().repliesCount && comment().repliesCount > 0) {
-
-        <!-- this.depth() >= this.maxDepth() -->
-        @if (depth() >= maxDepth()) {
+        @if (comment().repliesCount && comment().repliesCount > 0) {
         <button class="action-btn" (click)="toggleReplies()">
           <mat-icon>{{ showReplies() ? 'expand_less' : 'expand_more' }}</mat-icon>
-          <span
-            >{{ comment().repliesCount }}
-            {{ comment().repliesCount === 1 ? 'REPLYn' : 'REPLIESn' }}</span
-          >
-        </button>
-        }@else {
-        <button class="action-btn" (click)="toggleReplies()">
-          <mat-icon>{{ showReplies() ? 'expand_less' : 'expand_more' }}</mat-icon>
-          <span
-            >{{ comment().repliesCount }}
+          {{ comment().repliesCount }}
+          <span class="hide-text">
             {{ comment().repliesCount === 1 ? 'REPLY' : 'REPLIES' }}</span
           >
         </button>
-        } }
+
+        } } @else {
+        <button class="open-sidebar-btn pixel-btn" (click)="onOpenSidebar()">
+          <mat-icon>forum</mat-icon>
+          <span class="hide-text">REPLIES  THREAD →</span>
+        </button>
+        }
       </div>
 
       <!-- Reply Form -->
@@ -153,8 +148,8 @@
     }
 
     <!-- Show More Button or Open Sidebar -->
-    @if (hasMoreReplies()) { 
-      <!-- @if (depth() + 1 < maxDepth()) { -->
+    @if (hasMoreReplies()) {
+    <!-- @if (depth() + 1 < maxDepth()) { -->
     <button class="show-more-btn pixel-btn-secondary" (click)="loadMoreReplies()">
       <mat-icon>expand_more</mat-icon>
       SHOW MORE REPLIES
@@ -165,7 +160,7 @@
       CONTINUE THREAD →
     </button>
     } -->
-   }
+    }
   </div>
   }
 </div>

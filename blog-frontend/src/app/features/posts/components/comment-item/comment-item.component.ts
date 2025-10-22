@@ -1,4 +1,14 @@
-import { Component, input, output, signal, computed, inject, OnInit } from '@angular/core';
+import {
+  Component,
+  input,
+  output,
+  signal,
+  computed,
+  inject,
+  OnInit,
+  OnChanges,
+  SimpleChanges,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
@@ -22,18 +32,42 @@ import { TimeAgoPipe } from '../../../../shared/pipes/time-ago-pipe';
     MatMenuModule,
     MatFormFieldModule,
     MatInputModule,
-    TimeAgoPipe
+    TimeAgoPipe,
   ],
   templateUrl: './comment-item.component.html',
-  styleUrl: './comment-item.component.scss'
+  styleUrl: './comment-item.component.scss',
 })
-export class CommentItemComponent implements OnInit {
+export class CommentItemComponent implements OnInit, OnChanges {
   private readonly fb = inject(FormBuilder);
 
   ngOnInit(): void {
     // Initialization logic if needed
     // console.log('CommentItemComponent initialized with comment ID:', this.comment().id);
+    // console.log('content:', this.comment().content);
   }
+
+ngOnChanges(changes: SimpleChanges): void {
+    if ( changes['comment']?.currentValue?.id !== changes['comment']?.previousValue?.id) {
+      this.showReplies.set(false);
+      // this.showReplyForm.set(false);
+      // this.showReplies.set(false);
+      // this.isEditing.set(false);
+      // this.visibleRepliesCount.set(3);
+
+      // // Reset forms and clear their state
+      // if (this.replyForm) {
+      //   this.replyForm.reset();
+      //   this.replyForm.markAsPristine();
+      //   this.replyForm.markAsUntouched();
+      // }
+      // if (this.editForm) {
+      //   this.editForm.reset();
+      //   this.editForm.markAsPristine();
+      //   this.editForm.markAsUntouched();
+      // }
+    }
+}
+
 
   // Inputs
   readonly comment = input.required<Comment>();
@@ -57,9 +91,7 @@ export class CommentItemComponent implements OnInit {
   readonly visibleRepliesCount = signal(3);
 
   // Computed
-  readonly isAuthor = computed(() => 
-    this.currentUserId() === this.comment().user.id
-  );
+  readonly isAuthor = computed(() => this.currentUserId() === this.comment().user.id);
 
   readonly visibleReplies = computed(() => {
     const replies = this.comment().replies || [];
@@ -77,51 +109,42 @@ export class CommentItemComponent implements OnInit {
 
   constructor() {
     this.replyForm = this.fb.group({
-      content: ['', [Validators.required, Validators.maxLength(500)]]
+      content: ['', [Validators.required, Validators.maxLength(500)]],
     });
 
     this.editForm = this.fb.group({
-      content: ['', [Validators.required, Validators.maxLength(500)]]
+      content: ['', [Validators.required, Validators.maxLength(500)]],
     });
   }
 
   toggleReply(): void {
-    this.showReplyForm.update(v => !v);
+    this.showReplyForm.update((v) => !v);
     if (!this.showReplyForm()) {
       this.replyForm.reset();
     }
   }
 
   toggleReplies(): void {
-    console.log("Current depth:", this.depth());
-
-    if ( this.depth() >= this.maxDepth() ){
-      this.onOpenSidebar();
-      return;
-    };
- 
     this.getReplies.emit(this.comment());
-    this.showReplies.update(v => !v);
+    this.showReplies.update((v) => !v);
   }
 
   onSubmitReply(): void {
     if (this.replyForm.valid) {
       this.replyToComment.emit({
         parentId: this.comment().id,
-        content: this.replyForm.value.content
+        content: this.replyForm.value.content,
       });
       this.replyForm.reset();
       this.showReplyForm.set(false);
-      this.showReplies.set(true);
+      // this.showReplies.set(true);
+      this.toggleReplies();
+      
     }
   }
 
   onLike(): void {
-    console.log('############:', this.comment().id);
-    // this.comment().isLiked = !this.comment().isLiked;
-    console.log('Liking after comment ID:', this.comment().isLiked);
     this.likeComment.emit(this.comment());
-
   }
 
   onEdit(): void {
@@ -133,7 +156,7 @@ export class CommentItemComponent implements OnInit {
     if (this.editForm.valid) {
       this.editComment.emit({
         commentId: this.comment().id,
-        content: this.editForm.value.content
+        content: this.editForm.value.content,
       });
       this.isEditing.set(false);
     }
@@ -146,22 +169,14 @@ export class CommentItemComponent implements OnInit {
 
   loadMoreReplies(): void {
     let c = this.comment();
-    console.log('out:');
     if (c.replies && c.replies.length - this.visibleRepliesCount() < 3) {
-      console.log('in:');
       this.getReplies.emit(c);
     }
-    this.visibleRepliesCount.update(v => v + 3);
+    this.visibleRepliesCount.update((v) => v + 3);
   }
 
   onOpenSidebar(): void {
-    console.log('Opening sidebar for comment ID:', this.comment().id);
-    // Find the third-level reply to continue from
-    const replies = this.comment().replies || [];
-    // if (replies.length > 0) {
-      // this.openSidebar.emit(replies[0]);
-      this.openSidebar.emit(this.comment());
-    // }
+    this.openSidebar.emit(this.comment());
   }
 
   getAvatarUrl(url: string): string {
