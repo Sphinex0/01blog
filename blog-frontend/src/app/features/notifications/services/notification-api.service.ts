@@ -25,16 +25,24 @@ export class NotificationApiService {
   /**
    * Get all notifications
    */
-  getNotifications(): Observable<Notification[]> {
+  getNotifications(cursor: number): Observable<Notification[]> {
     this._isLoading.set(true);
 
     return this.http.get<Notification[]>(
-      `${this.baseUrl}${API_ENDPOINTS.NOTIFICATIONS.GET_ALL}`
+      `${this.baseUrl}${API_ENDPOINTS.NOTIFICATIONS.GET_ALL}?cursor=${cursor}`
     ).pipe(
       tap((response) => {
         if (response) {
-          
-          this._notifications.set(response);
+          if (cursor === 0) {
+            // First page, replace notifications
+            this._notifications.set(response);
+          } else {
+            // Append to existing notifications
+            this._notifications.update(notifications => [
+              ...notifications,
+              ...response
+            ]);
+          }
           // this.updateUnreadCount(response.data);
         }
         this._isLoading.set(false);

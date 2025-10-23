@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, computed } from '@angular/core';
+import { Component, OnInit, inject, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -48,14 +48,33 @@ export class NotificationListComponent implements OnInit {
     this.notifications().filter(n => n.read)
   );
 
+  readonly cursor = signal(0);
+  readonly hasMore = signal(true);
+
   ngOnInit(): void {
     this.loadNotifications();
     // Also update unread count
     // this.notificationService.getUnreadCount().subscribe();
   }
+  
+
+  onTriggerVisible(): void {
+    setTimeout(() => {
+      if (this.hasMore() && !this.isLoading()) {
+        this.loadNotifications();
+      }
+    });
+  }
+
 
   loadNotifications(): void {
-    this.notificationService.getNotifications().subscribe({
+    this.notificationService.getNotifications(this.cursor()).subscribe({
+      next: (notifications) => {
+        // Successfully loaded notifications
+        this.cursor.set(notifications[notifications.length - 1]?.id || 0);
+        this.hasMore.set(notifications.length > 0);
+
+      },
       error: (err) => {
         this.snackBar.open('Failed to load notifications', 'Close', {
           duration: 3000,

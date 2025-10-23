@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, signal } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -20,7 +20,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   templateUrl: './post-create.component.html',
   styleUrl: './post-create.component.scss',
 })
-export class PostCreateComponent implements OnInit {
+export class PostCreateComponent implements OnInit, OnDestroy {
   postForm: FormGroup;
   private readonly route = inject(ActivatedRoute);
   readonly isLoadingPost = signal(false);
@@ -28,7 +28,9 @@ export class PostCreateComponent implements OnInit {
   private readonly snackBar = inject(MatSnackBar);
   readonly error = signal<string | null>(null);
 
-  isUploading = false;
+  // NEW: State for deferred uploads
+  isSaving = false;
+  private pendingFiles = new Map<string, File>();
 
   constructor(private fb: FormBuilder, private postService: PostService) {
     this.postForm = this.fb.group({
@@ -41,14 +43,18 @@ export class PostCreateComponent implements OnInit {
     const postId = this.route.snapshot.params['id'];
     if (postId) {
       this.loadPost(+postId);
-      // this.loadComments(+postId);
+    }
+  }
+
+  // NEW: Clean up blob URLs on component destruction to prevent memory leaks
+  ngOnDestroy(): void {
+    for (const url of this.pendingFiles.keys()) {
+      URL.revokeObjectURL(url);
     }
   }
 
   loadPost(postId: number): void {
     this.isLoadingPost.set(true);
-    // this.error.set(null);
-
     this.postService.getPostById(postId).subscribe({
       next: (response) => {
         if (response) {
@@ -69,60 +75,48 @@ export class PostCreateComponent implements OnInit {
         });
       },
     });
-
-    console.log('Loading post with ID:', this.post());
   }
 
   toolBarClick(textarea: HTMLTextAreaElement, start: string, end: string) {
-    console.log(start);
     textarea.focus();
-    // this.insertText(`${start}${window}${end}`)
     document.execCommand('insertText', false, `${start}${window.getSelection()?.toString()}${end}`);
-    this.postForm.get('description')?.setValue(textarea.value);
+    this.postForm.get('content')?.setValue(textarea.value);
   }
 
-  async onImageUpload(event: Event, textarea: HTMLTextAreaElement) {
-    let files = (event.target as HTMLInputElement).files;
+  // --- REVISED FILE HANDLING LOGIC ---
+
+  private handleFileSelection(file: File): void {
+    if (!file || (!file.type.startsWith('image/') && !file.type.startsWith('video/'))) {
+        return;
+    }
+    // Create a temporary local "blob" URL for the file for previewing
+    const localUrl = URL.createObjectURL(file);
+    // Add the file to our pending map, keyed by its local URL
+    this.pendingFiles.set(localUrl, file);
+    // Insert markdown for the preview using the local URL
+    if (file.type.startsWith('image/')) {
+        this.insertMarkdownImage(localUrl);
+    } else if (file.type.startsWith('video/')) {
+        this.insertMarkdownVideo(localUrl);
+    }
+  }
+
+  onImageUpload(event: Event, textarea: HTMLTextAreaElement) {
+    textarea.focus();
+    const files = (event.target as HTMLInputElement).files;
     if (files) {
-      for (const file of files) {
-        textarea.focus();
-        await this.handleFileUpload(file);
+      for (const file of Array.from(files)) {
+        this.handleFileSelection(file);
       }
     }
   }
 
-  onSubmit() {
-    this.postForm.markAllAsTouched();
-
-    if (this.postForm.valid) {
-      let p = this.post();
-      if (p) {
-        this.postService.updatePost(p.id, this.postForm.value).subscribe({
-          next: (res) => {
-            console.log('ok');
-          },
-          error: (err) => {
-            console.log(err);
-          },
-        });
-      } else {
-        this.postService.savePost(this.postForm.value).subscribe({
-          next: (res) => {
-            console.log('ok');
-          },
-          error: (err) => {
-            console.log(err);
-          },
-        });
-      }
-    }
-  }
-
-  async onPaste(event: ClipboardEvent) {
+  onPaste(event: ClipboardEvent) {
     const clipboardData = event.clipboardData;
-
     const pastedText = clipboardData?.getData('text/plain');
+
     if (pastedText) {
+      // Keep existing logic for pasting external URLs
       try {
         const url = new URL(pastedText);
         if (this.isImage(url.pathname)) {
@@ -135,70 +129,89 @@ export class PostCreateComponent implements OnInit {
       } catch {
         return;
       }
-    } else {
-      if (clipboardData?.items) {
-        for (const item of clipboardData?.items) {
-          if (item.kind == 'file') {
-            event.preventDefault();
-            const file = item.getAsFile();
-            if (file) {
-              document.execCommand('insertText', false, `![Uploading image](...)`);
-              await this.handleFileUpload(file);
-            }
+    } else if (clipboardData?.items) {
+      // Handle pasted files
+      for (const item of Array.from(clipboardData.items)) {
+        if (item.kind === 'file') {
+          event.preventDefault();
+          const file = item.getAsFile();
+          if (file) {
+            this.handleFileSelection(file);
           }
         }
       }
     }
   }
 
-  async onDrop(event: DragEvent) {
+  onDrop(event: DragEvent) {
     event.preventDefault();
     const files = event.dataTransfer?.files;
     if (files) {
-      for (const file of files) {
-        document.execCommand('insertText', false, `![Uploading image](...)`);
-        await this.handleFileUpload(file);
+      for (const file of Array.from(files)) {
+        this.handleFileSelection(file);
       }
     }
   }
 
-  async handleFileUpload(file: File): Promise<void> {
-    this.isUploading = true;
+  // --- REVISED SUBMIT LOGIC ---
+
+  async onSubmit() {
+    this.postForm.markAllAsTouched();
+    if (this.postForm.invalid || this.isSaving) {
+      return;
+    }
+
+    this.isSaving = true;
 
     try {
-      const uploadedUrl = await this.postService.uploadFile(file).toPromise();
-      if (uploadedUrl) {
-        let content = this.postForm.value?.content;
-        if (file.type.startsWith('image/')) {
-          if (content.includes('![Uploading image](...)')) {
-            this.postForm.patchValue({
-              content: content.replace(
-                '![Uploading image](...)',
-                this.MarkdownImage(uploadedUrl.url)
-              ),
-            });
-          } else {
-            this.insertMarkdownImage(uploadedUrl.url);
-          }
-        } else if (file.type.startsWith('video/')) {
-          if (content.includes('![Uploading video](...)')) {
-            this.postForm.patchValue({
-              content: content.replace(
-                '![Uploading video](...)',
-                this.MarkdownVideo(uploadedUrl.url)
-              ),
-            });
-          } else {
-            this.insertMarkdownVideo(uploadedUrl.url);
-          }
+      let content = this.postForm.get('content')?.value || '';
+
+      // Step 1: Upload all pending files
+      if (this.pendingFiles.size > 0) {
+        const uploadPromises = Array.from(this.pendingFiles.entries()).filter(([localUrl, file]) => {
+          // Only include files that are images or videos
+          return content.includes(localUrl) && (this.isImage(file.name) || this.isVideo(file.name));
+        }).map(
+          ([localUrl, file]) =>
+            this.postService.uploadFile(file).toPromise().then(response => {
+                // IMPORTANT: Revoke the local URL to free up memory
+                URL.revokeObjectURL(localUrl);
+                return { localUrl, remoteUrl: response?.url };
+            })
+        );
+        const uploadedFiles = await Promise.all(uploadPromises);
+
+        // Step 2: Replace local preview URLs with final remote URLs in the content
+        for (const { localUrl, remoteUrl } of uploadedFiles) {
+          content = content.replaceAll(localUrl, remoteUrl);
         }
+
+        this.postForm.patchValue({ content });
+        this.pendingFiles.clear();
       }
+
+      // Step 3: Save or update the post with final content
+      const postData = this.postForm.value;
+      const currentPost = this.post();
+      const saveOrUpdate$ = currentPost
+        ? this.postService.updatePost(currentPost.id, postData)
+        : this.postService.savePost(postData);
+
+      await saveOrUpdate$.toPromise();
+      this.snackBar.open('Post saved successfully!', 'Close', { duration: 3000 });
+      
     } catch (error) {
-      console.error('Upload failed:', error);
+      console.error('Failed to save post:', error);
+      this.snackBar.open('An error occurred while saving.', 'Close', {
+        duration: 3000,
+        panelClass: ['error-snackbar'],
+      });
     } finally {
-      this.isUploading = false;
+      this.isSaving = false;
     }
   }
+
+  // --- HELPER FUNCTIONS ---
 
   getExtension(filename: string): string {
     return filename.split('.').pop()?.toLowerCase() || '';
@@ -220,14 +233,6 @@ export class PostCreateComponent implements OnInit {
   insertMarkdownVideo(url: string): void {
     const markdown = `<video controls><source src="${url}" ></video>`;
     this.insertText(markdown);
-  }
-
-  MarkdownVideo(url: string): string {
-    return `<video controls><source src="${url}" ></video>`;
-  }
-
-  MarkdownImage(url: string): string {
-    return `![image](${url})`;
   }
 
   insertText(pastedText: string) {

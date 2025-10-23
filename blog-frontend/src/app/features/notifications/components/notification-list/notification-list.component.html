@@ -7,9 +7,9 @@
     </div>
 
     <div class="header-actions">
-      <button mat-icon-button (click)="refreshNotifications()" matTooltip="Refresh">
+      <!-- <button mat-icon-button (click)="refreshNotifications()" matTooltip="Refresh">
         <mat-icon>refresh</mat-icon>
-      </button>
+      </button> -->
 
       <button
         mat-button
@@ -62,7 +62,7 @@
           >
           </app-notification-item>
           <mat-divider></mat-divider>
-          <!-- @if (notification == notifications()[notifications().length - 1]) {
+          @if (notification == notifications()[notifications().length - 1]) {
           <div #loadTrigger class="load-trigger"></div>
           @defer (on viewport(loadTrigger)) {
           {{ onTriggerVisible() }}
@@ -71,7 +71,7 @@
             <mat-spinner diameter="32"></mat-spinner>
             <p>Loading more posts...</p>
           </div>
-          } }  -->
+          } } 
         }
         </div>
       </mat-tab>

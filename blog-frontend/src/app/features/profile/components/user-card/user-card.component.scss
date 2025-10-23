@@ -217,13 +217,19 @@
 
     &:hover {
       background: var(--pixel-error);
-      
-      .btn-icon::before {
-        content: '✗';
-      }
+
+      // .btn-icon::before {
+      //   content: '✗';
+      //   // color: white;
+      // }
       
       &::after {
-        content: 'UNFOLLOW';
+        content: '✗   UNFOLLOW';
+        display: inline-block;
+        transition: all 1s ease;
+        background-color: var(--pixel-error);
+        width: 100%;
+        height: max-content;
         position: absolute;
       }
       

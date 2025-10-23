@@ -249,7 +249,12 @@
     letter-spacing: 2px;
   }
 
-  .close-btn {
+  .thread-buttons {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .close-btn, .back-btn {
     width: 40px;
     height: 40px;
     background: var(--pixel-bg-tertiary);
@@ -264,6 +269,9 @@
     &:hover {
       transform: translate(1px, 1px);
       box-shadow: 1px 1px 0 var(--pixel-shadow);
+      &:not(.close-btn) {
+        background: rgba(0, 0, 0, 0.459) !important;
+      }
       background: var(--pixel-error);
 
       mat-icon {

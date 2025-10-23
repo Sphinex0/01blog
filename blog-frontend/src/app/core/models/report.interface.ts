@@ -1,18 +1,26 @@
 export interface Report {
   id: number;
   reportedUserId: number;
-  reportedUser: User;
+  reportedUser: {
+    id: number;
+    username: string;
+    fullName: string;
+    avatar?: string;
+  };
   reporterId: number;
-  reporter: User;
+  reporter: {
+    id: number;
+    username: string;
+    fullName: string;
+  };
   reason: string;
-  status: 'pending' | 'resolved' | 'dismissed';
+  status: 'PENDING' | 'RESOLVED' | 'DISMISSED'; // CHANGE to uppercase
   createdAt: Date;
   resolvedAt?: Date;
+  resolvedBy?: string; // ADD THIS
 }
 
 export interface CreateReportRequest {
   reportedUserId: number;
   reason: string;
 }
-
-import { User } from './user.interface';

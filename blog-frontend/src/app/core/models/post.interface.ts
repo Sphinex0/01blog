@@ -8,14 +8,19 @@ export interface Post {
   likesCount: number;
   commentsCount: number;
   isLiked?: boolean;
+  isHidden?: boolean; // ADD THIS for admin
   createdAt: Date;
   updatedAt: Date;
+}
+
+// ADD THIS: For admin post management
+export interface AdminPost extends Post {
+  reportCount?: number;
 }
 
 export interface CreatePostRequest {
   title: string;
   content: string;
-  // media?: File;
 }
 
 export interface UpdatePostRequest {

@@ -103,6 +103,7 @@
         <div class="sidebar-content" (click)="$event.stopPropagation()">
           <div class="sidebar-header">
             <h3>THREAD</h3>
+            <div class="thread-buttons">
             @if (prevSidebarCommentsQueue().length > 0) {
               <button mat-icon-button (click)="goBack()" class="back-btn">
                 <mat-icon>arrow_back</mat-icon>
@@ -111,6 +112,7 @@
             <button mat-icon-button (click)="closeSidebar()" class="close-btn">
               <mat-icon>close</mat-icon>
             </button>
+            </div>
           </div>
           
           <div class="sidebar-thread">

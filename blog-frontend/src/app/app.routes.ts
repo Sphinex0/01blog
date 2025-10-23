@@ -37,6 +37,20 @@ export const routes: Routes = [
       // }
     ],
   },
+  {
+    path: 'admin',
+    // loadComponent: () =>
+    //   import('./layout/admin-layout/admin-layout.component').then((c) => c.AdminLayoutComponent),
+    loadComponent: () =>
+      import('./layout/main-layout/main-layout.component').then((c) => c.MainLayoutComponent),
+    canActivate: [authGuard],
+    children: [
+      {
+        path: '',
+        loadChildren: () => import('./features/admin/admin.routes').then((r) => r.adminRoutes),
+      },
+    ],
+  },
   // {
   //   path: 'admin',
   //   loadComponent: () => import('./layout/admin-layout/admin-layout.component').then(c => c.AdminLayoutComponent),

@@ -4,20 +4,6 @@
   padding: 0;
 }
 
-// Feed Header
-.feed-header {
-  text-align: center;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  background: var(--pixel-bg-secondary);
-  border-bottom: 3px solid var(--pixel-border);
-  padding: 1.5rem 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0 4px 0 var(--pixel-shadow);
-}
 
 .header-content {
   flex: 1;
@@ -550,9 +536,7 @@
 
 // Responsive
 @media (max-width: 768px) {
-  .feed-header {
-    padding: 1rem;
-  }
+
 
   .feed-title {
     font-size: 14px;

@@ -6,6 +6,8 @@
   gap: 0;
 }
 
+
+
 .home-sidebar {
   position: sticky;
   top: 64px; // Header height
@@ -36,6 +38,7 @@
 }
 
 @media (max-width: 768px) {
+
   .home-layout {
     grid-template-columns: 1fr;
   }

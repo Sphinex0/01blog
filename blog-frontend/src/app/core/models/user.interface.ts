@@ -5,11 +5,12 @@ export interface User {
   fullName: string;
   avatar?: string;
   bio?: string;
-  // isAdmin: boolean;
   role: 'USER' | 'ADMIN';
   isActive: boolean;
+  isBanned?: boolean; // ADD THIS
   createdAt: Date;
   updatedAt: Date;
+  lastLoginAt?: Date; // ADD THIS
 }
 
 export interface UserProfile extends User {
@@ -17,6 +18,11 @@ export interface UserProfile extends User {
   followersCount: number;
   followingCount: number;
   isFollowed?: boolean;
+}
+
+// ADD THIS: For admin user management
+export interface AdminUserDetails extends UserProfile {
+  reportCount?: number;
 }
 
 export interface RegisterRequest {

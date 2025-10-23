@@ -84,7 +84,9 @@
         } } @else {
         <button class="open-sidebar-btn pixel-btn" (click)="onOpenSidebar()">
           <mat-icon>forum</mat-icon>
-          <span class="hide-text">REPLIES  THREAD →</span>
+          {{  comment().repliesCount > 0 ? comment().repliesCount : '' }}
+          <!-- <span class="hide-text">REPLIES  THREAD →</span> -->
+          <span class="hide-text">{{ comment().repliesCount && comment().repliesCount > 0 ? ' REPLIES' : 'OPEN THREAD' }}</span>
         </button>
         }
       </div>

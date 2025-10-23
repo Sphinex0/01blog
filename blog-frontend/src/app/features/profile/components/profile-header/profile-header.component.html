@@ -41,7 +41,9 @@
     <div class="user-info">
       <div class="user-details">
         <h1 class="user-name">{{ user()?.fullName }}</h1>
-        <p class="username">&#64;{{ user()?.username }}</p>
+        <p class="username">&#64;{{ user()?.username }}
+        </p>
+       
 
         @if (user()?.bio) {
         <p class="bio">{{ user()?.bio }}</p>
@@ -65,37 +67,29 @@
           </a>
         </div>
 
-        <!-- Badges -->
-        @if (user()?.role === 'ADMIN') {
-        <div class="badges">
-          <mat-chip class="admin-badge">
-            <mat-icon>admin_panel_settings</mat-icon>
-            Admin
-          </mat-chip>
-        </div>
-        }
+
       </div>
 
       <!-- Actions -->
       <div class="actions">
         @if (isOwnProfile()) {
         <!-- Own Profile Actions -->
-        <button mat-raised-button color="primary"  class="action-btn">
+        <!-- <button mat-raised-button color="primary"  class="action-btn"> -->
           <!-- (click)="onEditProfile()" -->
-          <mat-icon>edit</mat-icon>
+          <!-- <mat-icon>edit</mat-icon>
           Edit Profile
-        </button>
+        </button> -->
 
-        <button mat-icon-button [matMenuTriggerFor]="ownMenu" class="menu-btn">
+        <!-- <button mat-icon-button [matMenuTriggerFor]="ownMenu" class="menu-btn">
           <mat-icon>more_vert</mat-icon>
         </button>
 
-        <mat-menu #ownMenu="matMenu">
-          <button mat-menu-item (click)="onShareProfile()">
+        <mat-menu #ownMenu="matMenu"> -->
+          <button mat-raised-button (click)="onShareProfile()" class="btn" >
             <mat-icon>share</mat-icon>
             <span>Share Profile</span>
           </button>
-        </mat-menu>
+        <!-- </mat-menu> -->
 
         } @else {
 
