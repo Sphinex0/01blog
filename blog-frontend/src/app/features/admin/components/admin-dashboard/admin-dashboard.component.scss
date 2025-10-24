@@ -864,42 +864,56 @@
   }
 }
 
-// Paginator
-::ng-deep {
-  .pixel-paginator {
-    background: var(--pixel-bg-tertiary);
-    border-top: 3px solid var(--pixel-border);
-    font-family: 'Press Start 2P', cursive;
-    font-size: 8px;
+// Paginator (Removed)
 
-    .mat-mdc-paginator-container {
-      padding: 1rem;
-    }
 
-    .mat-mdc-paginator-page-size-label,
-    .mat-mdc-paginator-range-label {
-      font-family: 'Press Start 2P', cursive;
-      font-size: 8px;
-      text-transform: uppercase;
-    }
+// --- NEW/ADJUSTED STYLES FOR INFINITE SCROLL ---
 
-    .mat-mdc-icon-button {
-      background: var(--pixel-bg-secondary);
-      border: 2px solid var(--pixel-border);
-      box-shadow: 2px 2px 0 var(--pixel-shadow);
-      margin: 0 4px;
+.loading-more-indicator {
+  text-align: center;
+  padding: 2rem 1rem;
 
-      &:hover:not(:disabled) {
-        transform: translate(1px, 1px);
-        box-shadow: 1px 1px 0 var(--pixel-shadow);
-      }
-
-      &:disabled {
-        opacity: 0.5;
-      }
+  mat-spinner {
+    margin: 0 auto 1rem;
+    ::ng-deep circle {
+      stroke: var(--pixel-primary);
+      stroke-width: 6px;
+      stroke-linecap: square;
     }
   }
+
+  p {
+    margin: 0;
+    color: var(--pixel-text-secondary);
+    font-family: 'Press Start 2P', cursive;
+    font-size: 9px;
+    text-transform: uppercase;
+  }
 }
+
+.end-of-feed {
+  text-align: center;
+  padding: 2rem 1rem 3rem;
+  color: var(--pixel-text-muted);
+
+  mat-icon {
+    font-size: 2rem;
+    width: 2rem;
+    height: 2rem;
+    margin-bottom: 0.5rem;
+    color: var(--pixel-success) !important;
+  }
+
+  p {
+    margin: 0;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+  }
+}
+// --- END NEW/ADJUSTED STYLES ---
+
 
 // Animations
 @keyframes pixelPulse {

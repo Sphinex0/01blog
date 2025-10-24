@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Builder.Default;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import api.backend.model.comment.Comment;
 import api.backend.model.notification.Notification;
 import api.backend.model.post.Post;
 
@@ -68,19 +70,21 @@ public class User implements UserDetails {
         return List.of(new SimpleGrantedAuthority("ROLE_" + role));
     }
 
-    private LocalDateTime bannedUntil;
+    @NotNull
+    @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT '2000-01-01 00:00:00'")
+    private LocalDateTime bannedUntil = LocalDateTime.of(2000, 1, 1, 0, 0);
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
     private LocalDateTime deletedAt;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Post> posts;
-    
 
-    @OneToMany(mappedBy = "receiver", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL, orphanRemoval = true)
     // @JsonIgnore
     private List<Notification> notifications;
 
@@ -95,12 +99,15 @@ public class User implements UserDetails {
     @ManyToMany(mappedBy = "subscribers")
     @JsonIgnore
     private Set<User> subscribedTo = new HashSet<>();
-    
-    //posts
+
+    // posts
     @OnDelete(action = OnDeleteAction.CASCADE)
     @ManyToMany(mappedBy = "likedBy")
     @JsonIgnore
     private List<Post> likedPosts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
 
     // Constructor for record mapping
     public User(String fullName, String username, String email, String password, String role,

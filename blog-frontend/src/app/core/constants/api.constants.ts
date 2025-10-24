@@ -62,7 +62,7 @@ export const API_ENDPOINTS = {
     // Users Management
     USERS: '/admin/users',
     GET_USER: '/admin/users', // ADD THIS
-    BAN_USER: '/admin/users/ban',
+    BAN_USER: '/admin/ban',
     UNBAN_USER: '/admin/users/unban',
     DELETE_USER: '/admin/users', // ADD THIS
     

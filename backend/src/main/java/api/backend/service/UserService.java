@@ -129,17 +129,25 @@ public class UserService implements UserDetailsService {
         return userRepository.save(user);
     }
 
-    public String deleteUser(DeleteRequest request) {
-        userRepository.findById(request.id()).get();
-        userRepository.deleteById(request.id());
-        return "user deleted";
+    public String deleteUser(long userId) {
+        userRepository.findById(userId).get();
+        userRepository.deleteById(userId);
+        // return "user deleted";
+        return "";
     }
 
     public String banUser(BanRequest request) {
         User user = userRepository.findById(request.id()).get();
+        if (request.until() == null) {
+            user.setBannedUntil(LocalDateTime.parse("2000-01-01T00:00:00"));
+            userRepository.save(user);
+            // return "user unbanned";
+            return "";
+        }
         user.setBannedUntil(request.until());
         userRepository.save(user);
-        return "user banned until " + request.until();
+        // return "user banned until " + request.until();
+        return "";
     }
 
     public String unbanUser(DeleteRequest request) {

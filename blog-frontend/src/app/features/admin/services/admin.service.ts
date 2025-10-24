@@ -2,10 +2,16 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { API_BASE_URL, API_ENDPOINTS } from '../../../core/constants/api.constants';
-import { PaginatedResponse } from '../../../core/models/api-response.interface';
+// Import only necessary models
 import { AdminUserDetails } from '../../../core/models/user.interface';
 import { AdminPost } from '../../../core/models/post.interface';
 import { Report } from '../../../core/models/report.interface';
+
+
+export interface BanRequestPayload {
+  id: number;
+  until: string | null; 
+}
 
 @Injectable({
   providedIn: 'root'
@@ -15,9 +21,10 @@ export class AdminService {
   private readonly baseUrl = API_BASE_URL;
 
   // Users Management
-  getAllUsers(page: number = 0, size: number = 10, search?: string): Observable<AdminUserDetails[]> {
+  // Returns Observable<AdminUserDetails[]>
+  getAllUsers(cursor: number = 0, size: number = 10, search?: string): Observable<AdminUserDetails[]> {
     let params = new HttpParams()
-      .set('page', page.toString())
+      .set('cursor', cursor.toString()) // Cursor is the ID of the last fetched item
       .set('size', size.toString());
     
     if (search) {
@@ -25,7 +32,7 @@ export class AdminService {
     }
 
     return this.http.get<AdminUserDetails[]>(
-      `${this.baseUrl}/users`,
+      `${this.baseUrl}${API_ENDPOINTS.ADMIN.USERS}`,
       { params }
     );
   }
@@ -36,18 +43,26 @@ export class AdminService {
     );
   }
 
-  banUser(userId: number): Observable<void> {
-    return this.http.post<void>(
-      `${this.baseUrl}${API_ENDPOINTS.ADMIN.BAN_USER}/${userId}`,
-      {}
-    );
-  }
+/**
+   * Bans a user until a specific date or lifts the ban.
+   * @param userId The ID of the user to ban/unban.
+   * @param bannedUntil The calculated expiration date (ISO string) or null to unban.
+   */
+  banUser(userId: number, bannedUntil: Date | null): Observable<void> {
+    const endpoint = `${this.baseUrl}${API_ENDPOINTS.ADMIN.BAN_USER}`;
+    
+    // Format the date to an ISO string, or use null for the payload
+    const untilString = bannedUntil ? bannedUntil.toISOString() : null;
 
+    const payload: BanRequestPayload = { id: userId, until: untilString };
+    
+
+    return this.http.patch<void>(endpoint, payload);
+  }
+  
+  // We keep this as a convenience method for the component logic
   unbanUser(userId: number): Observable<void> {
-    return this.http.post<void>(
-      `${this.baseUrl}${API_ENDPOINTS.ADMIN.UNBAN_USER}/${userId}`,
-      {}
-    );
+    return this.banUser(userId, null);
   }
 
   deleteUser(userId: number): Observable<void> {
@@ -57,16 +72,16 @@ export class AdminService {
   }
 
   // Posts Management
-  getAllPosts(page: number = 0, size: number = 12, search?: string): Observable<PaginatedResponse<AdminPost>> {
+  getAllPosts(cursor: number = 0, size: number = 12, search?: string): Observable<AdminPost[]> {
     let params = new HttpParams()
-      .set('page', page.toString())
+      .set('cursor', cursor.toString())
       .set('size', size.toString());
     
     if (search) {
       params = params.set('search', search);
     }
 
-    return this.http.get<PaginatedResponse<AdminPost>>(
+    return this.http.get<AdminPost[]>(
       `${this.baseUrl}${API_ENDPOINTS.ADMIN.POSTS}`,
       { params }
     );
@@ -99,16 +114,16 @@ export class AdminService {
   }
 
   // Reports Management
-  getAllReports(page: number = 0, size: number = 10, status?: string): Observable<PaginatedResponse<Report>> {
+  getAllReports(cursor: number = 0, size: number = 10, status?: string): Observable<Report[]> {
     let params = new HttpParams()
-      .set('page', page.toString())
+      .set('cursor', cursor.toString())
       .set('size', size.toString());
     
     if (status) {
       params = params.set('status', status);
     }
 
-    return this.http.get<PaginatedResponse<Report>>(
+    return this.http.get<Report[]>(
       `${this.baseUrl}${API_ENDPOINTS.ADMIN.REPORTS}`,
       { params }
     );

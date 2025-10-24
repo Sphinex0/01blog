@@ -16,9 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import api.backend.model.report.ReportResponse;
 import api.backend.model.report.ReviewRequest;
+import api.backend.model.user.AdminUserResponse;
 import api.backend.model.user.BanRequest;
 import api.backend.model.user.DeleteRequest;
 import api.backend.model.user.User;
+import api.backend.model.user.UserResponse;
+import api.backend.service.AdminService;
 import api.backend.service.ReportService;
 import api.backend.service.UserService;
 import jakarta.validation.Valid;
@@ -30,15 +33,26 @@ public class AdminController {
 
     UserService userService;
     ReportService reportService;
+    AdminService adminService;
 
-    public AdminController(UserService userService, ReportService reportService) {
+    public AdminController(UserService userService, ReportService reportService,AdminService adminService) {
         this.userService = userService;
         this.reportService = reportService;
+        this.adminService = adminService;
     }
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteUser(@RequestBody DeleteRequest request) {
-        return ResponseEntity.ok(userService.deleteUser(request));
+        @GetMapping("/users")
+    public ResponseEntity<List<AdminUserResponse>> getAllUsers(@RequestParam(defaultValue = "0") long cursor) {
+        if (cursor == 0) {
+            cursor = Long.MAX_VALUE;
+        }
+        List<AdminUserResponse> users = adminService.getAllUsers(cursor);
+        return ResponseEntity.ok(users);
+    }
+
+    @DeleteMapping("/users/{userId}")
+    public ResponseEntity<String> deleteUser(@PathVariable long userId) {
+        return ResponseEntity.ok(userService.deleteUser(userId));
     }
 
     @PatchMapping("/ban")

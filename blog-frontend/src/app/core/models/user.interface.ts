@@ -8,6 +8,7 @@ export interface User {
   role: 'USER' | 'ADMIN';
   isActive: boolean;
   isBanned?: boolean; // ADD THIS
+  bannedUntil?: Date | string | null; // <-- NEW: Date ban expires
   createdAt: Date;
   updatedAt: Date;
   lastLoginAt?: Date; // ADD THIS

@@ -10,10 +10,14 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 @Entity
 @Data
 @Table(name = "reports", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"reporter_id", "reported_id", "post_id"}) // Prevent duplicate reports for the same user and post
+        @UniqueConstraint(columnNames = { "reporter_id", "reported_id", "post_id" }) // Prevent duplicate reports for
+                                                                                     // the same user and post
 })
 public class Report {
 
@@ -24,11 +28,13 @@ public class Report {
     @NotNull(message = "Reporter is required")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reporter_id", nullable = false)
-    private User reporter; 
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private User reporter;
 
     @NotNull(message = "Reported user is required")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reported_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private User reported;
 
     @ManyToOne(fetch = FetchType.LAZY)

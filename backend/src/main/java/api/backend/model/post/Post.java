@@ -4,10 +4,14 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import api.backend.model.comment.Comment;
 import api.backend.model.user.User;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -18,6 +22,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.Min;
@@ -37,18 +42,18 @@ public class Post {
     @NotNull(message = "User is required")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
 
     @NotBlank(message = "Title is required")
     @Size(max = 255, message = "Title cannot exceed 255 characters")
     @Column(nullable = false, columnDefinition = "TEXT")
     private String title;
-    
+
     @NotBlank(message = "Content is required")
     @Size(max = 10000, message = "Content cannot exceed 10000 characters")
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
-
 
     @NotNull(message = "Created at is required")
     @Column(nullable = false)
@@ -68,14 +73,13 @@ public class Post {
     @Column(nullable = false)
     private Integer commentsCount = 0;
 
-
-
     @ManyToMany
     @JoinTable(name = "likes", joinColumns = @JoinColumn(name = "post_id"), inverseJoinColumns = @JoinColumn(name = "user_id"), uniqueConstraints = {
             @UniqueConstraint(columnNames = { "post_id", "user_id" })
     })
     @JsonIgnore
     private List<User> likedBy = new ArrayList<>();
+
 
     // Default constructor for JPA
     public Post() {
