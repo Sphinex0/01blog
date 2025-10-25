@@ -2,18 +2,20 @@
   <div class="dashboard-header">
     <div class="header-content">
       <div class="header-icon">👑</div>
+
       <div>
         <h1 class="header-title">ADMIN PANEL</h1>
+
         <p class="header-subtitle">MODERATE & MANAGE</p>
       </div>
     </div>
+
     <button
       mat-raised-button
       class="refresh-btn pixel-btn"
       (click)="loadStats(); loadUsers(true); loadPosts(true); loadReports(true)"
     >
-      <mat-icon>refresh</mat-icon>
-      REFRESH ALL
+      <mat-icon>refresh</mat-icon> REFRESH ALL
     </button>
   </div>
 
@@ -21,35 +23,46 @@
   <div class="stats-grid">
     <div class="stat-card">
       <div class="stat-icon">👥</div>
+
       <div class="stat-content">
         <div class="stat-value">{{ stats()!.totalUsers }}</div>
+
         <div class="stat-label">TOTAL USERS</div>
+
         <div class="stat-sub">{{ stats()!.activeUsers }} ACTIVE</div>
       </div>
     </div>
 
     <div class="stat-card">
       <div class="stat-icon">📝</div>
+
       <div class="stat-content">
         <div class="stat-value">{{ stats()!.totalPosts }}</div>
+
         <div class="stat-label">TOTAL POSTS</div>
+
         <div class="stat-sub">+{{ stats()!.postsThisMonth }} THIS MONTH</div>
       </div>
     </div>
 
     <div class="stat-card">
       <div class="stat-icon">🚨</div>
+
       <div class="stat-content">
         <div class="stat-value">{{ stats()!.totalReports }}</div>
+
         <div class="stat-label">TOTAL REPORTS</div>
+
         <div class="stat-sub">+{{ stats()!.reportsThisMonth }} THIS MONTH</div>
       </div>
     </div>
 
     <div class="stat-card">
       <div class="stat-icon">🔨</div>
+
       <div class="stat-content">
         <div class="stat-value">{{ stats()!.totalBannedUsers }}</div>
+
         <div class="stat-label">BANNED USERS</div>
       </div>
     </div>
@@ -58,22 +71,26 @@
   @if (stats()!.mostReportedUsers && stats()!.mostReportedUsers.length > 0) {
   <div class="reported-users-section">
     <h2 class="section-title">🎯 MOST REPORTED USERS</h2>
+
     <div class="reported-users-grid">
       @for (user of stats()!.mostReportedUsers; track user.userId) {
       <div class="reported-user-card">
         <div class="user-avatar">
           @if (user.avatar) {
-          <img [src]="getMediaUrl(user.avatar)" [alt]="user.fullName" />
-          } @else {
+          <img [src]="getMediaUrl(user.avatar)" [alt]="user.fullName" /> } @else {
+
           <div class="avatar-placeholder">
             {{ user.fullName[0] }}
           </div>
           }
         </div>
+
         <div class="user-info">
           <div class="user-name">{{ user.fullName }}</div>
+
           <div class="user-username">@{{ user.username }}</div>
         </div>
+
         <div class="report-badge">
           <span class="badge-icon">🚨</span>
           <span class="badge-count">{{ user.reportCount }}</span>
@@ -83,15 +100,11 @@
     </div>
   </div>
   } }
-
   <div class="dashboard-tabs">
     <mat-tab-group class="pixel-tabs" animationDuration="0ms">
       <mat-tab>
         <ng-template mat-tab-label>
-          <span class="tab-label">
-            <mat-icon>people</mat-icon>
-            USERS ({{ usersTotal() }})
-          </span>
+          <span class="tab-label"> <mat-icon>people</mat-icon> USERS ({{ usersTotal() }}) </span>
         </ng-template>
 
         <div class="tab-content">
@@ -119,32 +132,40 @@
                   </div>
                   }
                 </div>
+
                 <div class="user-details">
                   <div class="user-name-row">
                     <span class="name">{{ user.fullName }}</span>
                     @if (user.role === 'ADMIN') {
-                    <span class="admin-badge">ADMIN</span>
-                    } @if (user.isBanned) {
-                    <span class="banned-badge">BANNED</span>
-                    }
+                    <span class="admin-badge">ADMIN</span> } @if (user.isBanned) {
+                    <span class="banned-badge">BANNED</span> }
                   </div>
+
                   <div class="user-meta">
                     <span>@{{ user.username }}</span>
                     <span class="separator">•</span>
                     <span>{{ user.email }}</span>
                   </div>
+
+                  @if (user.isBanned) {
+                  <div class="user-stats-row banned-info">
+                    <span>🚨 BAN: </span>
+                    <span class="ban-status">{{ getBanStatus(user) }}</span>
+                  </div>
+                  } @else {
                   <div class="user-stats-row">
                     <span>📝 {{ user.postsCount }} POSTS</span>
                     <span>👥 {{ user.followersCount }} FOLLOWERS</span>
                     <span>📅 {{ user.createdAt | timeAgo }}</span>
                   </div>
+                  }
                 </div>
               </div>
+
               <div class="user-actions">
                 @if (!user.isBanned) {
                 <button mat-button class="pixel-btn-danger" (click)="onBanUser(user)">
-                  <mat-icon>block</mat-icon>
-                  BAN
+                  <mat-icon>block</mat-icon> BAN
                 </button>
                 } @else {
                 <button mat-button class="pixel-btn-success" (click)="onBanUser(user)">
@@ -155,11 +176,26 @@
                 <button mat-icon-button [matMenuTriggerFor]="userMenu" class="menu-btn">
                   <mat-icon>more_vert</mat-icon>
                 </button>
+
                 <mat-menu #userMenu="matMenu">
                   <button mat-menu-item [routerLink]="['/users/profile', user.username]">
                     <mat-icon>visibility</mat-icon>
                     <span>VIEW PROFILE</span>
                   </button>
+                  <mat-divider></mat-divider>
+                  @if (user.role !== 'ADMIN') {
+                  <button mat-menu-item (click)="onPromoteUser(user)">
+                    <mat-icon>star</mat-icon>
+                    <span>PROMOTE TO ADMIN</span>
+                  </button>
+                  } @else {
+                  <button mat-menu-item (click)="onDemoteUser(user)">
+                    <mat-icon>star_border</mat-icon>
+                    <span>DEMOTE TO USER</span>
+                  </button>
+                  }
+                  <mat-divider></mat-divider>
+
                   <button mat-menu-item (click)="onDeleteUser(user)" class="delete-item">
                     <mat-icon>delete</mat-icon>
                     <span>DELETE USER</span>
@@ -170,8 +206,7 @@
             @if (user === users()[users().length -1]) { @if (hasMoreUsers()) {
             <div #loadTriggerUsers class="load-trigger"></div>
             @defer (on viewport(loadTriggerUsers)) {
-            {{ onUsersScrollBottom() }}
-            } @placeholder {
+            {{ onUsersScrollBottom() }} } @placeholder {
             <div class="loading-more-indicator">
               <mat-spinner diameter="32"></mat-spinner>
               <p>LOADING MORE USERS...</p>
@@ -189,10 +224,7 @@
 
       <mat-tab>
         <ng-template mat-tab-label>
-          <span class="tab-label">
-            <mat-icon>article</mat-icon>
-            POSTS ({{ postsTotal() }})
-          </span>
+          <span class="tab-label"> <mat-icon>article</mat-icon> POSTS ({{ postsTotal() }}) </span>
         </ng-template>
 
         <div class="tab-content">
@@ -215,29 +247,32 @@
                 @if (post.mediaType === 'image') {
                 <img [src]="getMediaUrl(post.mediaUrl)" [alt]="post.title" />
                 } @else {
-                <video [src]="getMediaUrl(post.mediaUrl)" controls></video>
-                }
+                <video [src]="getMediaUrl(post.mediaUrl)" controls></video> }
               </div>
               }
               <div class="post-content">
                 <div class="post-header">
                   <h3 class="post-title">{{ post.title }}</h3>
                   @if (post.isHidden) {
-                  <span class="hidden-badge">HIDDEN</span>
-                  } @if (post.reportCount && post.reportCount > 0) {
+                  <span class="hidden-badge">HIDDEN</span> } @if (post.reportCount &&
+                  post.reportCount > 0) {
                   <span class="report-badge-post">🚨 {{ post.reportCount }}</span>
                   }
                 </div>
+
                 <p class="post-excerpt">{{ post.content.substring(0, 100) }}...</p>
+
                 <div class="post-meta">
                   <span>BY @{{ post.user.username }}</span>
                   <span class="separator">•</span>
                   <span>{{ post.createdAt | timeAgo }}</span>
                 </div>
+
                 <div class="post-stats">
                   <span>❤️ {{ post.likesCount }}</span>
                   <span>💬 {{ post.commentsCount }}</span>
                 </div>
+
                 <div class="post-actions">
                   <button mat-button [routerLink]="['/posts', post.id]" class="pixel-btn-sm">
                     <mat-icon>visibility</mat-icon>
@@ -272,8 +307,7 @@
             @if (post === posts()[posts().length -1]) { @if (hasMorePosts()) {
             <div #loadTriggerPosts class="load-trigger"></div>
             @defer (on viewport(loadTriggerPosts)) {
-            {{ onPostsScrollBottom() }}
-            } @placeholder {
+            {{ onPostsScrollBottom() }} } @placeholder {
             <div class="loading-more-indicator">
               <mat-spinner diameter="32"></mat-spinner>
               <p>LOADING MORE POSTS...</p>
@@ -285,16 +319,14 @@
             <mat-icon>check_circle</mat-icon>
             <p>END OF POST LIST</p>
           </div>
-          } }
+          }
+        }
         </div>
       </mat-tab>
 
       <mat-tab>
         <ng-template mat-tab-label>
-          <span class="tab-label">
-            <mat-icon>flag</mat-icon>
-            REPORTS ({{ reportsTotal() }})
-          </span>
+          <span class="tab-label"> <mat-icon>flag</mat-icon> REPORTS ({{ reportsTotal() }}) </span>
         </ng-template>
 
         <div class="tab-content">
@@ -306,6 +338,7 @@
             >
               PENDING
             </button>
+
             <button
               class="filter-btn"
               [class.active]="selectedReportStatus() === 'RESOLVED'"
@@ -313,6 +346,7 @@
             >
               RESOLVED
             </button>
+
             <button
               class="filter-btn"
               [class.active]="selectedReportStatus() === 'DISMISSED'"
@@ -320,6 +354,7 @@
             >
               DISMISSED
             </button>
+
             <button
               class="filter-btn"
               [class.active]="selectedReportStatus() === ''"
@@ -351,52 +386,59 @@
                 <span class="report-status-badge" [class]="report.status.toLowerCase()">
                   {{ report.status }}
                 </span>
+
                 <span class="report-date">{{ report.createdAt | timeAgo }}</span>
               </div>
 
               <div class="report-content">
                 <div class="report-section">
                   <div class="section-label">REPORTER:</div>
+
                   <div class="user-chip">
                     <span class="chip-icon">👤</span>
+
                     <span>{{ report.reporter.fullName }} (@{{ report.reporter.username }})</span>
                   </div>
                 </div>
 
                 <div class="report-section">
                   <div class="section-label">REPORTED USER:</div>
+
                   <div class="reported-user">
-                    @if (report.reportedUser.avatar) {
+                    @if (report.reported.avatar) {
+
                     <img
-                      [src]="getMediaUrl(report.reportedUser.avatar)"
-                      [alt]="report.reportedUser.fullName"
+                      [src]="getMediaUrl(report.reported.avatar)"
+                      [alt]="report.reported.fullName"
                       class="reported-avatar"
                     />
                     } @else {
                     <div class="reported-avatar-placeholder">
-                      {{ report.reportedUser.fullName[0] }}
+                      {{ report.reported.fullName[0] }}
                     </div>
                     }
                     <div class="reported-info">
-                      <div class="reported-name">{{ report.reportedUser.fullName }}</div>
-                      <div class="reported-username">@{{ report.reportedUser.username }}</div>
+                      <div class="reported-name">{{ report.reported.fullName }}</div>
+
+                      <div class="reported-username">@{{ report.reported.username }}</div>
                     </div>
                   </div>
                 </div>
 
                 <div class="report-section">
                   <div class="section-label">REASON:</div>
+
                   <div class="report-reason">{{ report.reason }}</div>
                 </div>
 
                 @if (report.resolvedAt) {
                 <div class="report-section">
                   <div class="section-label">RESOLVED:</div>
+
                   <div class="resolved-info">
                     {{ report.resolvedAt | timeAgo }}
                     @if (report.resolvedBy) {
-                    <span>BY {{ report.resolvedBy }}</span>
-                    }
+                    <span>BY {{ report.resolvedBy }}</span> }
                   </div>
                 </div>
                 }
@@ -406,53 +448,49 @@
                 <button
                   mat-button
                   class="pixel-btn-sm"
-                  [routerLink]="['/users/profile', report.reportedUser.username]"
+                  [routerLink]="['/users/profile', report.reported.username]"
                 >
-                  <mat-icon>visibility</mat-icon>
-                  VIEW USER
+                  <mat-icon>visibility</mat-icon> VIEW USER
                 </button>
-
                 @if (report.status === 'PENDING') {
+
                 <button
                   mat-button
                   class="pixel-btn-sm pixel-btn-success"
                   (click)="onResolveReport(report)"
                 >
-                  <mat-icon>check</mat-icon>
-                  RESOLVE
+                  <mat-icon>check</mat-icon> RESOLVE
                 </button>
+
                 <button
                   mat-button
                   class="pixel-btn-sm pixel-btn-warning"
                   (click)="onDismissReport(report)"
                 >
-                  <mat-icon>close</mat-icon>
-                  DISMISS
+                  <mat-icon>close</mat-icon> DISMISS
                 </button>
                 }
-
                 <button
                   mat-button
                   class="pixel-btn-sm pixel-btn-danger"
                   (click)="onDeleteReport(report)"
                 >
-                  <mat-icon>delete</mat-icon>
-                  DELETE
+                  <mat-icon>delete</mat-icon> DELETE
                 </button>
               </div>
             </div>
             @if (report === reports()[reports().length -1]) { @if (hasMoreReports()) {
             <div #loadTriggerReports class="load-trigger"></div>
             @defer (on viewport(loadTriggerReports)) {
-            {{ onReportsScrollBottom() }}
-            } @placeholder {
+            {{ onReportsScrollBottom() }} } @placeholder {
             <div class="loading-more-indicator">
               <mat-spinner diameter="32"></mat-spinner>
               <p>LOADING MORE REPORTS...</p>
             </div>
-            } } } }
+            } } } 
+            }
           </div>
-          }
+        }
         </div>
       </mat-tab>
     </mat-tab-group>

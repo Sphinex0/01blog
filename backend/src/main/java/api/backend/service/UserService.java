@@ -157,23 +157,28 @@ public class UserService implements UserDetailsService {
         return "user unbanned";
     }
 
-    public String promoteUser(DeleteRequest request) {
-        User user = userRepository.findById(request.id()).get();
+    public String promoteUser(long userId) {
+        User user = userRepository.findById(userId).get();
         user.setRole("ADMIN");
         userRepository.save(user);
-        return "user " + user.getUsername() + " promoted";
+        // return "user " + user.getUsername() + " promoted";
+        return "";
     }
 
-    public String demoteUser(DeleteRequest request) {
-        User user = userRepository.findById(request.id()).get();
+    public String demoteUser(long userId) {
+        User user = userRepository.findById(userId).get();
         user.setRole("USER");
         userRepository.save(user);
-        return "user " + user.getUsername() + " demoted";
+        // return "user " + user.getUsername() + " demoted";
+        return "";
+
     }
 
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsernameOrEmail(username, username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+
+
 
         if (user.getBannedUntil() != null && user.getBannedUntil().isAfter(LocalDateTime.now())) {
             throw new DisabledException("Account is banned until " + user.getBannedUntil());

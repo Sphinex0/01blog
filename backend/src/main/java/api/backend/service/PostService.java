@@ -84,7 +84,8 @@ public class PostService {
     public String deletePost(long id) {
         postRepository.findById(id).get();
         postRepository.deleteById(id);
-        return "Post deleted";
+        // return "Post deleted";
+        return "";
     }
 
     public String hidePost(long id) {
@@ -93,7 +94,8 @@ public class PostService {
             return postRepository.save(existingPost);
         }).get();
 
-        return "Post hidden";
+        // return "Post hidden";
+        return "";
     }
 
     public PostResponse updatePost(Long id, PostRequest request) {

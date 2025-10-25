@@ -81,7 +81,7 @@ public class PostController {
         return ResponseEntity.ok(postService.likePost(id, user.getId()));
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/hide/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> hidePost(@PathVariable Long id) {
         return ResponseEntity.ok(postService.hidePost(id));

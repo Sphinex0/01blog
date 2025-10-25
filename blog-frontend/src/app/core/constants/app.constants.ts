@@ -133,4 +133,6 @@ export const SUCCESS_MESSAGES = { // ADD THIS
   POST_UPDATED: 'Post updated successfully',
   COMMENT_CREATED: 'Comment created successfully',
   COMMENT_DELETED: 'Comment deleted successfully',
+  USER_PROMOTED: 'User promoted to Admin successfully', 
+  USER_DEMOTED: 'User demoted to regular User successfully', 
 } as const;

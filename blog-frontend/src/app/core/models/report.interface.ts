@@ -1,7 +1,7 @@
 export interface Report {
   id: number;
   reportedUserId: number;
-  reportedUser: {
+  reported: {
     id: number;
     username: string;
     fullName: string;

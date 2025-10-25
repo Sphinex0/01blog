@@ -17,7 +17,7 @@ export const API_ENDPOINTS = {
     FOLLOWERS: '/users/subscribers',
     FOLLOWING: '/users/subscribtions', // FIX typo
     BY_USERNAME: '/users/username',
-    SEARCH: '/users/search', // ADD THIS
+    SEARCH: '/users/search', 
   },
   POSTS: {
     CREATE: '/posts',
@@ -36,7 +36,7 @@ export const API_ENDPOINTS = {
     UPDATE: '/comments',
     DELETE: '/comments',
     LIKE: '/comments/like',
-    UNLIKE: '/comments/unlike', // ADD THIS
+    UNLIKE: '/comments/unlike', 
     REPLIES: '/comments/replies',
   },
   NOTIFICATIONS: {
@@ -44,46 +44,48 @@ export const API_ENDPOINTS = {
     MARK_AS_READ: '/notifications/read',
     MARK_ALL_AS_READ: '/notifications/read-all',
     UNREAD_COUNT: '/notifications/unread-count',
-    DELETE: '/notifications', // ADD THIS
+    DELETE: '/notifications', 
   },
   REPORTS: {
     CREATE: '/reports',
     GET_ALL: '/reports',
-    GET_BY_ID: '/reports', // ADD THIS
+    GET_BY_ID: '/reports', 
     RESOLVE: '/reports/resolve',
     DISMISS: '/reports/dismiss',
-    DELETE: '/reports', // ADD THIS
+    DELETE: '/reports', 
   },
   ADMIN: {
     // Analytics
-    STATS: '/admin/stats', // ADD THIS
+    STATS: '/admin/stats', 
     ANALYTICS: '/admin/analytics',
     
     // Users Management
     USERS: '/admin/users',
-    GET_USER: '/admin/users', // ADD THIS
+    GET_USER: '/admin/users', 
     BAN_USER: '/admin/ban',
     UNBAN_USER: '/admin/users/unban',
-    DELETE_USER: '/admin/users', // ADD THIS
+    DELETE_USER: '/admin/users', 
+    PROMOTE_USER: '/admin/promote', 
+    DEMOTE_USER: '/admin/demote', 
     
     // Posts Management
-    POSTS: '/admin/posts',
-    GET_POST: '/admin/posts', // ADD THIS
-    HIDE_POST: '/admin/posts/hide', // ADD THIS
-    UNHIDE_POST: '/admin/posts/unhide', // ADD THIS
-    DELETE_POST: '/admin/posts',
+    POSTS: '/posts',
+    GET_POST: '/admin/posts', 
+    HIDE_POST: '/posts/hide', 
+    UNHIDE_POST: '/admin/posts/unhide', 
+    DELETE_POST: '/posts',
     
     // Reports Management
     REPORTS: '/admin/reports',
-    RESOLVE_REPORT: '/admin/reports/resolve', // ADD THIS
-    DISMISS_REPORT: '/admin/reports/dismiss', // ADD THIS
-    DELETE_REPORT: '/admin/reports', // ADD THIS
+    RESOLVE_REPORT: '/admin/reports/resolve', 
+    DISMISS_REPORT: '/admin/reports/dismiss', 
+    DELETE_REPORT: '/admin/reports', 
   },
   MEDIA: {
     UPLOAD: '/media/upload',
     LOCAL_UPLOAD: '/media/local/upload',
     DELETE: '/media/delete',
-    GET: '/media', // ADD THIS
+    GET: '/media', 
   }
 } as const;
 
@@ -98,5 +100,5 @@ export const HTTP_STATUS_CODES = {
   CONFLICT: 409,
   UNPROCESSABLE_ENTITY: 422,
   INTERNAL_SERVER_ERROR: 500,
-  SERVICE_UNAVAILABLE: 503, // ADD THIS
+  SERVICE_UNAVAILABLE: 503, 
 } as const;

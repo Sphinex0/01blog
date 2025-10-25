@@ -65,14 +65,14 @@ public class AdminController {
         return ResponseEntity.ok(userService.unbanUser(request));
     }
 
-    @PatchMapping("/promote")
-    public ResponseEntity<String> promoteUser(@Valid @RequestBody DeleteRequest request) {
-        return ResponseEntity.ok(userService.promoteUser(request));
+    @PatchMapping("/promote/{userId}")
+    public ResponseEntity<String> promoteUser(@PathVariable long userId) {
+        return ResponseEntity.ok(userService.promoteUser(userId));
     }
 
-    @PatchMapping("/demote")
-    public ResponseEntity<String> demoteUser(@Valid @RequestBody DeleteRequest request) {
-        return ResponseEntity.ok(userService.demoteUser(request));
+    @PatchMapping("/demote/{userId}")
+    public ResponseEntity<String> demoteUser(@PathVariable long userId) {
+        return ResponseEntity.ok(userService.demoteUser(userId));
     }
 
     @GetMapping("/reports")
