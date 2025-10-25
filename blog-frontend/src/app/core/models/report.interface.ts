@@ -18,6 +18,7 @@ export interface Report {
   createdAt: Date;
   resolvedAt?: Date;
   resolvedBy?: string; // ADD THIS
+  postId?: number | null; // <-- NEW: Optional ID if a post was reported
 }
 
 export interface CreateReportRequest {

@@ -1015,3 +1015,40 @@
     }
   }
 }
+
+
+
+.post-link-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 8px 12px;
+    background: var(--pixel-bg-primary);
+    color: var(--pixel-primary);
+    border: 2px solid var(--pixel-border);
+    font-family: 'Press Start 2P', cursive;
+    font-size: 8px;
+    text-transform: uppercase;
+    text-decoration: none;
+    box-shadow: 2px 2px 0 var(--pixel-shadow);
+    transition: all 0.1s ease;
+    width: fit-content;
+
+    mat-icon {
+        font-size: 14px;
+        width: 14px;
+        height: 14px;
+        color: var(--pixel-primary);
+    }
+
+    &:hover {
+        background: var(--pixel-primary);
+        color: white;
+        transform: translate(1px, 1px);
+        box-shadow: 1px 1px 0 var(--pixel-shadow);
+
+        mat-icon {
+            color: white;
+        }
+    }
+}

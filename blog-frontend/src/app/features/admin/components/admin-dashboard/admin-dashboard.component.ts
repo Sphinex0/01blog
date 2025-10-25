@@ -149,6 +149,17 @@ export class AdminDashboardComponent implements OnInit {
 
   ngOnInit(): void {
     // this.loadStats();
+    // Initialize with dummy stats for design preview
+    // const dummyStats = {
+    //   totalUsers: 123,
+    //   totalPosts: 45,
+    //   totalReports: 3,
+    // } as unknown as AdminStats;
+
+    // this.stats.set(dummyStats);
+    // this.usersTotal.set(dummyStats.totalUsers);
+    // this.postsTotal.set(dummyStats.totalPosts);
+    // this.reportsTotal.set(dummyStats.totalReports);
     this.loadUsers(true); // Initial load
     this.loadPosts(true);
     this.loadReports(true);

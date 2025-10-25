@@ -319,8 +319,7 @@
             <mat-icon>check_circle</mat-icon>
             <p>END OF POST LIST</p>
           </div>
-          }
-        }
+          } }
         </div>
       </mat-tab>
 
@@ -338,7 +337,6 @@
             >
               PENDING
             </button>
-
             <button
               class="filter-btn"
               [class.active]="selectedReportStatus() === 'RESOLVED'"
@@ -346,7 +344,6 @@
             >
               RESOLVED
             </button>
-
             <button
               class="filter-btn"
               [class.active]="selectedReportStatus() === 'DISMISSED'"
@@ -354,7 +351,6 @@
             >
               DISMISSED
             </button>
-
             <button
               class="filter-btn"
               [class.active]="selectedReportStatus() === ''"
@@ -386,27 +382,22 @@
                 <span class="report-status-badge" [class]="report.status.toLowerCase()">
                   {{ report.status }}
                 </span>
-
                 <span class="report-date">{{ report.createdAt | timeAgo }}</span>
               </div>
 
               <div class="report-content">
                 <div class="report-section">
                   <div class="section-label">REPORTER:</div>
-
                   <div class="user-chip">
                     <span class="chip-icon">👤</span>
-
                     <span>{{ report.reporter.fullName }} (@{{ report.reporter.username }})</span>
                   </div>
                 </div>
 
                 <div class="report-section">
                   <div class="section-label">REPORTED USER:</div>
-
                   <div class="reported-user">
                     @if (report.reported.avatar) {
-
                     <img
                       [src]="getMediaUrl(report.reported.avatar)"
                       [alt]="report.reported.fullName"
@@ -419,26 +410,38 @@
                     }
                     <div class="reported-info">
                       <div class="reported-name">{{ report.reported.fullName }}</div>
-
                       <div class="reported-username">@{{ report.reported.username }}</div>
                     </div>
                   </div>
                 </div>
 
+                @if (report.postId) {
+                <div class="report-section">
+                  <div class="section-label">REPORTED POST:</div>
+                  <a
+                    [routerLink]="['/posts', report.postId]"
+                    class="post-link-chip pixel-btn-sm"
+                    target="_blank"
+                  >
+                    <mat-icon>article</mat-icon>
+                    VIEW POST #{{ report.postId }}
+                  </a>
+                </div>
+                }
+
                 <div class="report-section">
                   <div class="section-label">REASON:</div>
-
                   <div class="report-reason">{{ report.reason }}</div>
                 </div>
 
                 @if (report.resolvedAt) {
                 <div class="report-section">
                   <div class="section-label">RESOLVED:</div>
-
                   <div class="resolved-info">
                     {{ report.resolvedAt | timeAgo }}
                     @if (report.resolvedBy) {
-                    <span>BY {{ report.resolvedBy }}</span> }
+                    <span>BY {{ report.resolvedBy }}</span>
+                    }
                   </div>
                 </div>
                 }
@@ -450,47 +453,56 @@
                   class="pixel-btn-sm"
                   [routerLink]="['/users/profile', report.reported.username]"
                 >
-                  <mat-icon>visibility</mat-icon> VIEW USER
+                  <mat-icon>visibility</mat-icon>
+                  VIEW USER
                 </button>
-                @if (report.status === 'PENDING') {
 
+                @if (report.status === 'PENDING') {
                 <button
                   mat-button
                   class="pixel-btn-sm pixel-btn-success"
                   (click)="onResolveReport(report)"
                 >
-                  <mat-icon>check</mat-icon> RESOLVE
+                  <mat-icon>check</mat-icon>
+                  RESOLVE
                 </button>
-
                 <button
                   mat-button
                   class="pixel-btn-sm pixel-btn-warning"
                   (click)="onDismissReport(report)"
                 >
-                  <mat-icon>close</mat-icon> DISMISS
+                  <mat-icon>close</mat-icon>
+                  DISMISS
                 </button>
                 }
+
                 <button
                   mat-button
                   class="pixel-btn-sm pixel-btn-danger"
                   (click)="onDeleteReport(report)"
                 >
-                  <mat-icon>delete</mat-icon> DELETE
+                  <mat-icon>delete</mat-icon>
+                  DELETE
                 </button>
               </div>
             </div>
             @if (report === reports()[reports().length -1]) { @if (hasMoreReports()) {
             <div #loadTriggerReports class="load-trigger"></div>
             @defer (on viewport(loadTriggerReports)) {
-            {{ onReportsScrollBottom() }} } @placeholder {
+            {{ onReportsScrollBottom() }}
+            } @placeholder {
             <div class="loading-more-indicator">
               <mat-spinner diameter="32"></mat-spinner>
               <p>LOADING MORE REPORTS...</p>
             </div>
-            } } } 
-            }
+            } } } }
           </div>
-        }
+          @if (!hasMoreReports() && !isLoadingReports()) {
+          <div class="end-of-feed">
+            <mat-icon>check_circle</mat-icon>
+            <p>END OF REPORT LIST</p>
+          </div>
+          } }
         </div>
       </mat-tab>
     </mat-tab-group>
