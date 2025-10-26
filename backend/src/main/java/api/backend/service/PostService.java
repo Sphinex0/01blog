@@ -81,11 +81,12 @@ public class PostService {
 
     @Transactional
     public PostResponse createPost(PostRequest postRequest, User currentUser) {
-        Post post = new Post();
-        post.setTitle(postRequest.title());
-        post.setContent(postRequest.content());
-        post.setUser(currentUser);
-
+        // Post post = new Post();
+        // post.setTitle(postRequest.title());
+        // post.setContent(postRequest.content());
+        // post.setUser(currentUser);
+        User user = userRepository.findById(currentUser.getId()).get();
+        Post post = new Post(user, postRequest.title(), postRequest.content(), LocalDateTime.now());
         Post savedPost = postRepository.save(post);
 
         // --- WebSocket Notification Logic ---
