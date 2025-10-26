@@ -34,7 +34,7 @@ public class PostController {
     public ResponseEntity<PostResponse> createPost(@Valid @RequestBody PostRequest post,
             @AuthenticationPrincipal User currentUser) {
 
-        PostResponse savedPost = postService.createPost(post, currentUser.getId());
+        PostResponse savedPost = postService.createPost(post, currentUser);
         return ResponseEntity.ok(savedPost);
     }
 

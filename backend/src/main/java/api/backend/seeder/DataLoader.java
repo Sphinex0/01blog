@@ -81,7 +81,7 @@ public class DataLoader implements CommandLineRunner {
                 String title = faker.leagueOfLegends().quote();
                 Post post = new Post(user, title, content, LocalDateTime.now());
                 postRepository.save(post);
-                Notification notification = new Notification(adminUser, post);
+                Notification notification = new Notification(adminUser,post.getUser(), post);
                 notificationRepository.save(notification);
             });
         });
