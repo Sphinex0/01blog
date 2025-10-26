@@ -1,5 +1,7 @@
 export const API_BASE_URL = 'http://localhost:8080/api';
 
+export const WS_BASE_URL = 'ws://localhost:8080/ws'; // <-- Define WS URL here
+
 export const API_ENDPOINTS = {
   AUTH: {
     REGISTER: '/auth/register',

@@ -46,7 +46,8 @@ public class AdminService  {
                 user.getSubscribedTo().size(),
                 currentInSubscribersByUsername,
                 LocalDateTime.now().isBefore(user.getBannedUntil()),
-                user.getBannedUntil());
+                user.getBannedUntil()
+                );
     }
 
 }

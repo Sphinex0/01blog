@@ -123,14 +123,14 @@ export class AdminService {
   }
 
   resolveReport(reportId: number): Observable<void> {
-    return this.http.post<void>(
+    return this.http.patch<void>(
       `${this.baseUrl}${API_ENDPOINTS.ADMIN.RESOLVE_REPORT}/${reportId}`,
       {}
     );
   }
 
   dismissReport(reportId: number): Observable<void> {
-    return this.http.post<void>(
+    return this.http.patch<void>(
       `${this.baseUrl}${API_ENDPOINTS.ADMIN.DISMISS_REPORT}/${reportId}`,
       {}
     );

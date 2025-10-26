@@ -12,5 +12,6 @@ public record PostResponse(
     LocalDateTime createdAt,
     Integer likesCount,
     Integer commentsCount,
-    boolean isLiked
+    boolean isLiked,
+    boolean isHidden
 ) {}

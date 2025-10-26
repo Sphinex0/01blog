@@ -59,7 +59,7 @@ public class Report {
 
     // Enum for report status
     public enum Status {
-        PENDING, REVIEWED, RESOLVED
+        PENDING, DISMISSED, RESOLVED
     }
 
     // Default constructor for JPA

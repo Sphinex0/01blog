@@ -1,12 +1,9 @@
+import { User } from "./user.interface";
+
 export interface Report {
   id: number;
   reportedUserId: number;
-  reported: {
-    id: number;
-    username: string;
-    fullName: string;
-    avatar?: string;
-  };
+  reported: User;
   reporterId: number;
   reporter: {
     id: number;
@@ -19,6 +16,7 @@ export interface Report {
   resolvedAt?: Date;
   resolvedBy?: string; // ADD THIS
   postId?: number | null; // <-- NEW: Optional ID if a post was reported
+  postHidden:boolean;
 }
 
 export interface CreateReportRequest {

@@ -35,13 +35,13 @@ public class AdminController {
     ReportService reportService;
     AdminService adminService;
 
-    public AdminController(UserService userService, ReportService reportService,AdminService adminService) {
+    public AdminController(UserService userService, ReportService reportService, AdminService adminService) {
         this.userService = userService;
         this.reportService = reportService;
         this.adminService = adminService;
     }
 
-        @GetMapping("/users")
+    @GetMapping("/users")
     public ResponseEntity<List<AdminUserResponse>> getAllUsers(@RequestParam(defaultValue = "0") long cursor) {
         if (cursor == 0) {
             cursor = Long.MAX_VALUE;
@@ -84,11 +84,21 @@ public class AdminController {
         return ResponseEntity.ok(reports);
     }
 
-    @PatchMapping("/reports/{reportId}/review")
-    public ResponseEntity<String> reviewReport(@PathVariable long reportId, @AuthenticationPrincipal User user,
-            @RequestBody ReviewRequest request) {
-        String reports = reportService.reviewReport(reportId, user, request.decision());
-        return ResponseEntity.ok(reports);
+    // @PatchMapping("/reports/{reportId}/review")
+    // public ResponseEntity<String> reviewReport(@PathVariable long reportId, @AuthenticationPrincipal User user,
+    //         @RequestBody ReviewRequest request) {
+    //     String reports = reportService.reviewReport(reportId, user, request.decision());
+    //     return ResponseEntity.ok(reports);
+    // }
+
+    @PatchMapping("/reports/resolve/{reportId}")
+    public ResponseEntity<String> resolveReport(@PathVariable long reportId, @AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(reportService.resolveReport(reportId, user));
+    }
+
+    @PatchMapping("/reports/dismiss/{reportId}")
+    public ResponseEntity<String> dismissReport(@PathVariable long reportId, @AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(reportService.dismissReport(reportId, user));
     }
 
 }

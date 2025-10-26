@@ -4,6 +4,7 @@ import api.backend.model.post.Post;
 import api.backend.model.report.Report;
 import api.backend.model.report.ReportRequest;
 import api.backend.model.report.ReportResponse;
+import api.backend.model.user.AdminUserResponse;
 import api.backend.model.user.User;
 import api.backend.model.user.UserResponse;
 import api.backend.repository.PostRepository;
@@ -11,6 +12,7 @@ import api.backend.repository.ReportRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -40,36 +42,53 @@ public class ReportService {
         return new ReportResponse(
                 savedReport.getId(),
                 toUserResponse(savedReport.getReporter()),
-                toUserResponse(savedReport.getReported()),
+                toAdminUserResponse(savedReport.getReported()),     
                 savedReport.getReason(),
                 savedReport.getStatus().name(),
                 savedReport.getCreatedAt(),
                 savedReport.getReviewedAt(),
-                request.postId() // Reflect the requested postId
-        );
+                request.postId(), false);
     }
 
     public ReportResponse getReportById(Long id) {
         Report report = reportRepository.findById(id).get();
-        return new ReportResponse(
-                report.getId(),
-                toUserResponse(report.getReporter()),
-                toUserResponse(report.getReported()),
-                report.getReason(),
-                report.getStatus().name(),
-                report.getCreatedAt(),
-                report.getReviewedAt(),
-                (report.getPost() != null ? report.getPost().getId() : null));
+        return toReportResponse(report);
     }
 
-    public String reviewReport(Long id, User reviewer, Report.Status newStatus) {
+    // public String reviewReport(Long id, User reviewer, Report.Status newStatus) {
+    //     return reportRepository.findById(id)
+    //             .map(report -> {
+    //                 report.setStatus(newStatus);
+    //                 report.setReviewedAt(LocalDateTime.now());
+    //                 reportRepository.save(report);
+    //                 return "Report reviewed";
+    //             }).get();
+    // }
+
+    public String resolveReport(Long id, User reviewer) {
         return reportRepository.findById(id)
                 .map(report -> {
-                    report.setStatus(newStatus);
+                    report.setStatus(Report.Status.RESOLVED);
+                    report.setReviewedAt(LocalDateTime.now());
+                    // hide the associated post if any
+                    // if (report.getPost() != null) {
+                    //     Post p = report.getPost();
+                    //     p.setHidden(true);
+                    //     postRepository.save(p);
+                    // }
+                    reportRepository.save(report);
+                    return "";
+                }).orElseThrow(() -> new IllegalStateException("Report not found"));
+    }
+
+    public String dismissReport(Long id, User reviewer) {
+        return reportRepository.findById(id)
+                .map(report -> {
+                    report.setStatus(Report.Status.DISMISSED);
                     report.setReviewedAt(LocalDateTime.now());
                     reportRepository.save(report);
-                    return "Report reviewed";
-                }).get();
+                    return "";
+                }).orElseThrow(() -> new IllegalStateException("Report not found"));
     }
 
     public List<ReportResponse> getAllReports(long cursor) {
@@ -81,12 +100,34 @@ public class ReportService {
     public ReportResponse toReportResponse(Report report) {
         return new ReportResponse(report.getId(),
                 toUserResponse(report.getReporter()),
-                toUserResponse(report.getReported()),
+                toAdminUserResponse(report.getReported()),
                 report.getReason(),
                 report.getStatus().toString(),
                 report.getCreatedAt(),
                 report.getReviewedAt(),
-                (report.getPost() != null ? report.getPost().getId() : null));
+                (report.getPost() != null ? report.getPost().getId() : null),
+                (report.getPost() != null ? report.getPost().isHidden() : false));
+    }
+
+    public static AdminUserResponse toAdminUserResponse(User user) {
+        User currentUser = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        String currentUsername = currentUser.getUsername();
+        boolean currentInSubscribersByUsername = currentUsername != null && user.getSubscribers().stream()
+                .anyMatch(sub -> currentUsername.equals(sub.getUsername()));
+        return new AdminUserResponse(
+                user.getId(),
+                user.getFullName(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getRole(),
+                user.getAvatar(),
+                user.getCreatedAt(),
+                user.getPosts().size(),
+                user.getSubscribers().size(),
+                user.getSubscribedTo().size(),
+                currentInSubscribersByUsername,
+                LocalDateTime.now().isBefore(user.getBannedUntil()),
+                user.getBannedUntil());
     }
 
     public static UserResponse toUserResponse(User user) {
@@ -98,6 +139,6 @@ public class ReportService {
                 user.getRole(),
                 user.getAvatar(),
                 user.getCreatedAt(),
-                0,0,0,false);
+                0, 0, 0, false);
     }
 }

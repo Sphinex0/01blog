@@ -57,7 +57,7 @@ public class PostService {
     }
 
     public PostResponse getPostById(long id) {
-        return toPostResponse(postRepository.findById(id).get());
+        return toPostResponse(postRepository.findByIdAndIsHiddenFalse(id).get());
     }
 
     public Post getPostEntityById(long id) {
@@ -147,7 +147,8 @@ public class PostService {
                 post.getCreatedAt(),
                 post.getLikesCount(),
                 post.getCommentsCount(),
-                likedByCurrentUser);
+                likedByCurrentUser,
+                post.isHidden());
     }
 
 }

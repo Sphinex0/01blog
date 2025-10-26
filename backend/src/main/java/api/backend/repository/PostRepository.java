@@ -19,6 +19,9 @@ import java.util.Set;
 public interface PostRepository extends JpaRepository<Post, Long> {
     // Custom query methods
     List<Post> findByUser(User user);
+    
+    Optional<Post> findByIdAndIsHiddenFalse(Long id);
+    
 
     Page<Post> findByUserAndIdLessThan(User user, Long cursor, Pageable pageable);
     Page<Post> findAllByIdLessThan(Long cursor, Pageable pageable);

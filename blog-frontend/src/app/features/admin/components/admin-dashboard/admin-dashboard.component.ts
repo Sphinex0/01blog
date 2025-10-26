@@ -246,91 +246,87 @@ export class AdminDashboardComponent implements OnInit {
     }
   }
 
-  onBanUser(user: AdminUserDetails): void {
-    if (user.isBanned) {
+  onBanUser(user: AdminUserDetails | Report['reported']): void {
+    // Attempt to find the full user object if only the subset from Report is passed
+    let fullUser = this.users().find(u => u.id === user.id) as AdminUserDetails || user as AdminUserDetails;
+    
+    // Check if the user is currently banned (or is being treated as banned for the action)
+    const isCurrentlyBanned = fullUser.isBanned;
+
+    if (isCurrentlyBanned) {
       // UNBAN ACTION
-      this.dialog
-        .open(ConfirmationDialogComponent, {
-          width: '400px',
-          data: {
-            title: 'UNBAN USER',
-            message: `Are you sure you want to unban ${user.username}?`,
-            confirmText: 'UNBAN',
-            cancelText: 'Cancel',
-            type: 'success',
-          },
-        })
-        .afterClosed()
-        .pipe(take(1))
-        .subscribe((result) => {
-          if (result) {
-            // Call banUser with null date to unban
-            this.adminService
-              .banUser(user.id, null)
-              .pipe(take(1))
-              .subscribe({
-                next: () => {
-                  this.snackBar.open(SUCCESS_MESSAGES.USER_UNBANNED, 'Close', { duration: 2000 });
-                  // Update local state directly: set isBanned=false and clear bannedUntil
-                  this.users.update((users) =>
-                    users.map((u) =>
-                      u.id === user.id ? { ...u, isBanned: false, bannedUntil: null } : u
-                    )
-                  );
-                  // this.loadStats();
-                },
-                error: () => {
-                  this.snackBar.open(`Failed to unban user`, 'Close', { duration: 3000 });
-                },
-              });
-          }
-        });
+      this.dialog.open(ConfirmationDialogComponent, {
+        width: '400px',
+        data: {
+          title: 'UNBAN USER',
+          message: `Are you sure you want to unban ${fullUser.username}?`,
+          confirmText: 'UNBAN',
+          cancelText: 'Cancel',
+          type: 'success'
+        }
+      }).afterClosed().pipe(take(1)).subscribe(result => {
+        if (result) {
+          // Call banUser with null date to unban
+          this.adminService.banUser(fullUser.id, null).pipe(take(1)).subscribe({
+            next: () => {
+              this.snackBar.open(SUCCESS_MESSAGES.USER_UNBANNED, 'Close', { duration: 2000 });
+              // Update local state directly: set isBanned=false and clear bannedUntil
+              this.users.update(users => users.map(u => 
+                u.id === fullUser.id ? { ...u, isBanned: false, bannedUntil: null } : u
+              ));
+              this.reports.update((current) =>
+                current.map((r) =>
+                  r.reported && r.reported.id === fullUser.id
+                    ? { ...r, reported: { ...r.reported, isBanned: false, bannedUntil: null } }
+                    : r
+                )
+              );
+
+              // this.loadStats();
+            },
+            error: () => {
+              this.snackBar.open(`Failed to unban user`, 'Close', { duration: 3000 });
+            }
+          });
+        }
+      });
     } else {
       // BAN ACTION - Prompt for duration
-      this.dialog
-        .open(BanDurationDialog, {
-          width: '400px',
-        })
-        .afterClosed()
-        .pipe(take(1))
-        .subscribe((dialogResult) => {
-          if (
-            dialogResult &&
-            (dialogResult.bannedUntil instanceof Date || dialogResult.isPermanent)
-          ) {
-            const bannedUntilDate: Date | null = dialogResult.isPermanent
-              ? null
-              : dialogResult.bannedUntil;
-            const isPermanent = dialogResult.isPermanent;
-            const durationDays = dialogResult.durationDays;
+      this.dialog.open(BanDurationDialog, {
+        width: '400px',
+      }).afterClosed().pipe(take(1)).subscribe(dialogResult => {
+        if (dialogResult && (dialogResult.bannedUntil instanceof Date || dialogResult.isPermanent)) {
+          
+          const bannedUntilDate: Date | null = dialogResult.isPermanent ? null : dialogResult.bannedUntil;
+          const isPermanent = dialogResult.isPermanent;
+          const durationDays = dialogResult.durationDays;
 
-            this.adminService
-              .banUser(user.id, bannedUntilDate)
-              .pipe(take(1))
-              .subscribe({
-                next: () => {
-                  const message = isPermanent
-                    ? `User ${user.username} permanently banned.`
-                    : `User ${user.username} banned for ${durationDays} days.`;
-                  this.snackBar.open(message, 'Close', { duration: 2000 });
-                  // Update local state directly: set isBanned=true and bannedUntil date
-                  this.users.update((users) =>
-                    users.map((u) =>
-                      u.id === user.id ? { ...u, isBanned: true, bannedUntil: bannedUntilDate } : u
-                    )
-                  );
-                  // this.loadStats();
-                },
-                error: (err) => {
-                  this.snackBar.open(
-                    `Failed to ban user: ${err.error?.message || 'Server error'}`,
-                    'Close',
-                    { duration: 3000 }
-                  );
-                },
-              });
-          }
-        });
+          this.adminService.banUser(fullUser.id, bannedUntilDate).pipe(take(1)).subscribe({
+            next: () => {
+              const message = isPermanent 
+                ? `User ${fullUser.username} permanently banned.` 
+                : `User ${fullUser.username} banned for ${durationDays} days.`;
+                
+              this.snackBar.open(message, 'Close', { duration: 2000 });
+              // Update local state directly: set isBanned=true and bannedUntil date
+              this.users.update(users => users.map(u => 
+                u.id === fullUser.id ? { ...u, isBanned: true, bannedUntil: bannedUntilDate } : u
+              ));
+              this.reports.update((current) =>
+                current.map((r) =>
+                  r.reported && r.reported.id === fullUser.id
+                    ? { ...r, reported: { ...r.reported, isBanned: true, bannedUntil: bannedUntilDate } }
+                    : r
+                )
+              );
+              // this.loadStats();
+            },
+            error: (err) => {
+              this.snackBar.open(`Failed to ban user: ${err.error?.message || 'Server error'}`, 'Close', { duration: 3000 });
+            }
+          });
+        }
+      });
     }
   }
 
@@ -622,6 +618,62 @@ export class AdminDashboardComponent implements OnInit {
             });
         }
       });
+  }
+
+  // --- Quick Action Handlers for Reports Tab ---
+  // Quick Ban from Report card
+  onQuickBanUserFromReport(report: Report) {
+    // We only have subset user data in the report, so we pass it to the main handler.
+    this.onBanUser(report.reported);
+  }
+
+
+  // Quick Hide Post from Report card
+  onQuickHidePostFromReport(report: Report) {
+    if (!report.postId) {
+      this.snackBar.open('Report is not linked to a post.', 'Close', { duration: 3000 });
+      return;
+    }
+    
+    // Find the post's current state (isHidden) if possible, otherwise assume not hidden for simplicity
+    const isCurrentlyHidden = report.postHidden;
+
+    const action = isCurrentlyHidden ? 'unhide' : 'hide';
+    const request = isCurrentlyHidden
+      ? this.adminService.unhidePost(report.postId!)
+      : this.adminService.hidePost(report.postId!);
+    
+    const confirmationMessage = isCurrentlyHidden
+      ? `Are you sure you want to unhide post #${report.postId}?`
+      : `Are you sure you want to HIDE post #${report.postId}? This will hide it immediately.`;
+    
+    this.dialog.open(ConfirmationDialogComponent, {
+      width: '400px',
+      data: {
+        title: `${action.toUpperCase()} POST`,
+        message: confirmationMessage,
+        confirmText: action.toUpperCase(),
+        cancelText: 'CANCEL',
+        type: isCurrentlyHidden ? 'success' : 'danger'
+      }
+    }).afterClosed().pipe(take(1)).subscribe(dialogResult => {
+      if (dialogResult) {
+        request.pipe(take(1)).subscribe({
+          next: () => {
+            this.snackBar.open(`Post ${action} successful!`, 'Close', { duration: 2000 });
+            
+            // Update local POSTS state directly
+            this.posts.update(posts => posts.map(p => 
+              p.id === report.postId ? { ...p, isHidden: !isCurrentlyHidden } as AdminPost : p
+            ));
+            report.postHidden = !isCurrentlyHidden;
+          },
+          error: () => {
+            this.snackBar.open(`Failed to ${action} post.`, 'Close', { duration: 3000 });
+          }
+        });
+      }
+    });
   }
 
   getMediaUrl(url: string | undefined): string {
