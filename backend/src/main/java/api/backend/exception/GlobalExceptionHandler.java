@@ -11,6 +11,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import io.github.resilience4j.ratelimiter.RequestNotPermitted;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,6 +19,14 @@ import java.util.NoSuchElementException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(RequestNotPermitted.class)
+    public ResponseEntity<Map<String, String>> rateLimitFallback(RequestNotPermitted ex) {
+        return new ResponseEntity<>(
+                Map.of("error", "Too many requests. Please try again later."),
+                HttpStatus.TOO_MANY_REQUESTS // This sends the 429 status code
+        );
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
@@ -33,7 +42,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
     }
 
-    @ExceptionHandler({DisabledException.class, AuthorizationDeniedException.class})
+    @ExceptionHandler({ DisabledException.class, AuthorizationDeniedException.class })
     public ResponseEntity<String> handleDisabledException(Exception ex) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
     }

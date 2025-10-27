@@ -16,6 +16,7 @@ import api.backend.service.NotificationService;
 import api.backend.service.PostService;
 import api.backend.service.ReportService;
 import api.backend.service.UserService;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import jakarta.validation.Valid;
 
 import java.util.List;
@@ -23,6 +24,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users") // Define a specific path
+@RateLimiter(name = "myApiLimiter")
 public class UserController {
 
     private final UserService userService;
@@ -44,6 +46,23 @@ public class UserController {
             cursor = Long.MAX_VALUE;
         }
         List<UserResponse> users = userService.getAllUsers(cursor);
+        return ResponseEntity.ok(users);
+    }
+
+    // --- NEW SEARCH ENDPOINT ---
+    @GetMapping("/search")
+    public ResponseEntity<List<UserResponse>> searchUsers(
+            @RequestParam("q") String query,
+            @RequestParam(defaultValue = "0") long cursor) {
+
+        List<UserResponse> users = userService.searchUsers(query, cursor);
+        if (users != null && !users.isEmpty()) {
+            long firstId = users.get(0).id();
+            long lastId = users.get(users.size() - 1).id();
+            System.out.println("First id: " + firstId + ", Last id: " + lastId);
+        } else {
+            System.out.println("No users found");
+        }
         return ResponseEntity.ok(users);
     }
 

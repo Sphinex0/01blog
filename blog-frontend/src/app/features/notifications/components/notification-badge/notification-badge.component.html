@@ -6,10 +6,10 @@
   class="notification-badge-btn"
 >
   <span
-    [matBadge]="unreadCount() > 0 ? unreadCount() : null"
+    [matBadge]="unreadCount() > 0 ? unreadCount() > 9? '9+': unreadCount() : null"
     [matBadgeHidden]="unreadCount() === 0"
     matBadgeColor="warn"
-    matBadgeSize="small"
+    matBadgeSize="medium"
   >
     <svg width="20" viewBox="0 0 20 20" class="fill-current">
       <path d="M12 19H8V17H12V19Z"></path>

@@ -49,13 +49,16 @@ export class ProfileService {
     return this.http.get<UserProfile[]>(`${this.baseUrl}/users`, { params });
   }
 
-  /**
-   * Search users by name or username
+/**
+   * Search users by name or username with pagination
    */
-  searchUsers(query: string): Observable<ApiResponse<UserProfile[]>> {
-    const params = new HttpParams().set('q', query);
+  searchUsers(query: string, cursor: number = 0, size: number = 10): Observable<UserProfile[]> {
+    const params = new HttpParams()
+      .set('q', query)
+      .set('cursor', cursor.toString())
+      // .set('size', size.toString());
 
-    return this.http.get<ApiResponse<UserProfile[]>>(`${this.baseUrl}/users/search`, { params });
+    return this.http.get<UserProfile[]>(`${this.baseUrl}${API_ENDPOINTS.USERS.SEARCH}`, { params });
   }
 
   /**

@@ -117,6 +117,21 @@ public class UserService implements UserDetailsService {
         return userRepository.findAllByIdLessThan(cursor, pageable).stream().map(UserService::toUserResponse).toList();
     }
 
+    public List<UserResponse> searchUsers(String query, long cursor) {
+        if (cursor == 0) {
+            cursor = Long.MAX_VALUE;
+        }
+        Pageable pageable = PageRequest.of(0, 10, Direction.DESC, "id");
+        System.out.println("###############################################################################################");
+        System.out.println(cursor);
+        System.out.println("###############################################################################################");
+        return userRepository
+                .findByIdLessThanAndFullNameContainingIgnoreCaseOrUsernameContainingIgnoreCase(cursor, query, query, pageable)
+                .stream()
+                .map(UserService::toUserResponse)
+                .toList();
+    }
+
     public Optional<User> getUserById(Long id) {
         return userRepository.findById(id);
     }

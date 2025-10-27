@@ -148,18 +148,7 @@ export class AdminDashboardComponent implements OnInit {
   readonly selectedReportStatus = signal<string>('PENDING');
 
   ngOnInit(): void {
-    // this.loadStats();
-    // Initialize with dummy stats for design preview
-    // const dummyStats = {
-    //   totalUsers: 123,
-    //   totalPosts: 45,
-    //   totalReports: 3,
-    // } as unknown as AdminStats;
-
-    // this.stats.set(dummyStats);
-    // this.usersTotal.set(dummyStats.totalUsers);
-    // this.postsTotal.set(dummyStats.totalPosts);
-    // this.reportsTotal.set(dummyStats.totalReports);
+     this.loadStats();
     this.loadUsers(true); // Initial load
     this.loadPosts(true);
     this.loadReports(true);
@@ -282,7 +271,7 @@ export class AdminDashboardComponent implements OnInit {
                 )
               );
 
-              // this.loadStats();
+               this.loadStats();
             },
             error: () => {
               this.snackBar.open(`Failed to unban user`, 'Close', { duration: 3000 });
@@ -319,7 +308,7 @@ export class AdminDashboardComponent implements OnInit {
                     : r
                 )
               );
-              // this.loadStats();
+               this.loadStats();
             },
             error: (err) => {
               this.snackBar.open(`Failed to ban user: ${err.error?.message || 'Server error'}`, 'Close', { duration: 3000 });
@@ -355,7 +344,7 @@ export class AdminDashboardComponent implements OnInit {
                 this.snackBar.open(SUCCESS_MESSAGES.USER_DELETED, 'Close', { duration: 2000 }); // Update local state directly: remove the deleted user
                 this.users.update((current) => current.filter((u) => u.id !== user.id));
                 this.usersTotal.update((count) => Math.max(0, count - 1));
-                // this.loadStats();
+                 this.loadStats();
               },
               error: () => {
                 this.snackBar.open('Failed to delete user', 'Close', { duration: 3000 });
@@ -490,7 +479,7 @@ export class AdminDashboardComponent implements OnInit {
                 this.snackBar.open(SUCCESS_MESSAGES.POST_DELETED, 'Close', { duration: 2000 }); // Update local state directly
                 this.posts.update((current) => current.filter((p) => p.id !== post.id));
                 this.postsTotal.update((count) => Math.max(0, count - 1));
-                // this.loadStats();
+                 this.loadStats();
               },
               error: () => {
                 this.snackBar.open('Failed to delete post', 'Close', { duration: 3000 });
@@ -560,7 +549,7 @@ export class AdminDashboardComponent implements OnInit {
           this.reports.update((reports) =>
             reports.map((r) => (r.id === report.id ? { ...r, status: 'RESOLVED' as const } : r))
           );
-          // this.loadStats();
+           this.loadStats();
         },
         error: () => {
           this.snackBar.open('Failed to resolve report', 'Close', { duration: 3000 });

@@ -17,10 +17,13 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         this.jwtChannelInterceptor = jwtChannelInterceptor;
     }
 
-    @Override
+@Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/topic");
-        config.setApplicationDestinationPrefixes("/app");
+        // Enable broker for topics (public) and queues (private)
+        config.enableSimpleBroker("/queue");
+        // config.setApplicationDestinationPrefixes("/app");
+        // Designates the prefix for user-specific destinations (e.g., /user/queue/notifications)
+        config.setUserDestinationPrefix("/user");
     }
 
     @Override

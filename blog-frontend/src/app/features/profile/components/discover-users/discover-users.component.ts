@@ -9,7 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { debounceTime, distinctUntilChanged } from 'rxjs';
+import { debounceTime, distinctUntilChanged, Observable, take } from 'rxjs';
 import { ProfileService } from '../../services/profile.service';
 // import { SubscriptionService } from '../../services/subscription.service';
 import { UserProfile } from '../../../../core/models/user.interface';
@@ -38,7 +38,7 @@ export class DiscoverUsersComponent implements OnInit {
   private readonly subscriptionService = inject(SubscriptionService);
   private readonly snackBar = inject(MatSnackBar);
 
-  // Signals
+  // State Signals
   readonly users = signal<UserProfile[]>([]);
   readonly isLoading = signal(false);
   readonly cursor = signal(0);
@@ -47,53 +47,66 @@ export class DiscoverUsersComponent implements OnInit {
 
   // Search control
   readonly searchControl = new FormControl('');
+  private readonly pageSize = 10;
 
   ngOnInit(): void {
-    this.loadUsers();
+    this.loadUsers(true); // Initial load for all users
     this.setupSearch();
   }
 
   private setupSearch(): void {
     this.searchControl.valueChanges
-      .pipe(debounceTime(300), distinctUntilChanged())
-      .subscribe((searchTerm) => {
-        if (searchTerm && searchTerm.trim()) {
-          this.searchUsers(searchTerm.trim());
-        } else {
-          this.loadUsers();
-        }
+      .pipe(debounceTime(400), distinctUntilChanged())
+      .subscribe(() => {
+        // When search term changes, reset everything and start a new search
+        this.users.set([]);
+        this.cursor.set(0);
+        this.hasMore.set(true);
+        this.loadUsers(true);
       });
   }
 
   onTriggerVisible(): void {
-    if (this.hasMore() && !this.isLoading() && this.error() === null) {
+    // This is called by the @defer block when the trigger is visible
+    if (this.hasMore() && !this.isLoading()) {
       setTimeout(() => {
         this.loadUsers();
-      }, 0);
+      });
     }
   }
 
-  loadUsers(): void {
-    if (this.isLoading()) {
+  loadUsers(isInitialLoad: boolean = false): void {
+    if (this.isLoading() || (!this.hasMore() && !isInitialLoad)) {
       return;
     }
     this.isLoading.set(true);
     this.error.set(null);
 
-    this.profileService.getAllUsers(this.cursor()).subscribe({
+    const searchTerm = this.searchControl.value?.trim();
+    const currentCursor = this.cursor();
+    
+    let apiCall: Observable<UserProfile[]>;
+
+    // Decide which API endpoint to call based on the search term
+    if (searchTerm) {
+      apiCall = this.profileService.searchUsers(searchTerm, currentCursor, this.pageSize);
+    } else {
+      apiCall = this.profileService.getAllUsers(currentCursor);
+    }
+
+    apiCall.pipe(take(1)).subscribe({
       next: (response) => {
         if (response && response.length > 0) {
-          if (this.cursor() === 0) {
+          if (currentCursor === 0) {
             this.users.set(response);
           } else {
             this.users.update((users) => [...users, ...response]);
           }
           this.cursor.set(response[response.length - 1].id);
         }
-
-        if (response.length === 0) {
-          this.hasMore.set(false);
-        }
+        
+        // If the API returns fewer items than requested, we've reached the end
+        this.hasMore.set(response.length === this.pageSize);
         
         this.isLoading.set(false);
       },
@@ -108,31 +121,10 @@ export class DiscoverUsersComponent implements OnInit {
     });
   }
 
-  searchUsers(searchTerm: string): void {
-    this.isLoading.set(true);
-    this.error.set(null);
-
-    this.profileService.searchUsers(searchTerm).subscribe({
-      next: (response) => {
-        if (response.success && response.data) {
-          this.users.set(response.data);
-        }
-        this.isLoading.set(false);
-      },
-      error: (err) => {
-        this.error.set(err.error?.message || 'Search failed');
-        this.isLoading.set(false);
-      },
-    });
-  }
-
   onFollowToggle(event: { userId: number; isFollowing: boolean }): void {
-    // Follow
     this.subscriptionService.TogglefollowUser(event.userId).subscribe({
       next: (response) => {
-        // Update user in list
         let action = response.action;
-        console.log('Response from follow API:', response);
         this.users.update((users) =>
           users.map((user) =>
             user.id === event.userId
@@ -144,14 +136,13 @@ export class DiscoverUsersComponent implements OnInit {
               : user
           )
         );
-        this.snackBar.open('Following successfully', 'Close', {
+        this.snackBar.open(action === 'subscribed' ? 'Followed successfully' : 'Unfollowed successfully', 'Close', {
           duration: 2000,
           panelClass: ['success-snackbar'],
         });
       },
       error: (err) => {
-        console.log('here', err);
-        this.snackBar.open('Failed to follow user', 'Close', {
+        this.snackBar.open('Action failed', 'Close', {
           duration: 3000,
           panelClass: ['error-snackbar'],
         });
@@ -161,5 +152,6 @@ export class DiscoverUsersComponent implements OnInit {
 
   clearSearch(): void {
     this.searchControl.setValue('');
+    // The valueChanges subscription will automatically handle the reset and reload.
   }
 }

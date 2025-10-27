@@ -8,6 +8,7 @@ import api.backend.model.post.PostRequest;
 import api.backend.model.post.PostResponse;
 import api.backend.service.CommentService;
 import api.backend.service.PostService;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import jakarta.validation.Valid;
 
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/posts")
+@RateLimiter(name = "myApiLimiter")
 public class PostController {
 
     private final PostService postService;

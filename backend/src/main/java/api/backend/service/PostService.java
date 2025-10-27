@@ -92,12 +92,8 @@ public class PostService {
         // --- WebSocket Notification Logic ---
         // 1. Create and save notifications for followers in the database.
         // 2. This method should return a DTO for the broadcast.
-        var notificationResponse = notificationService.createAndSaveNewPostNotification(savedPost);
+        notificationService.createAndSendNewPostNotifications(savedPost);
         
-        // 3. Broadcast the notification to all subscribers on the "/topic/new-posts" topic.
-        messagingTemplate.convertAndSend("/topic/new-posts", notificationResponse);
-        // --- End of WebSocket Logic ---
-
         return toPostResponse(post);
     }
 

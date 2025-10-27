@@ -24,11 +24,13 @@ import api.backend.model.user.UserResponse;
 import api.backend.service.AdminService;
 import api.backend.service.ReportService;
 import api.backend.service.UserService;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/admin")
 @PreAuthorize("hasRole('ADMIN')")
+@RateLimiter(name = "myApiLimiter")
 public class AdminController {
 
     UserService userService;
@@ -100,5 +102,11 @@ public class AdminController {
     public ResponseEntity<String> dismissReport(@PathVariable long reportId, @AuthenticationPrincipal User user) {
         return ResponseEntity.ok(reportService.dismissReport(reportId, user));
     }
+
+    @GetMapping("/stats")
+    public ResponseEntity<Object> getMethodName() {
+        return ResponseEntity.ok(adminService.getAdminStats());
+    }
+    
 
 }

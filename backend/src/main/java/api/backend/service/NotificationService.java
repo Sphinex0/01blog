@@ -11,8 +11,10 @@ import api.backend.repository.UserRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -22,40 +24,48 @@ public class NotificationService {
 
     private final NotificationRepository notificationRepository;
     private final UserRepository userRepository;
+    private final SimpMessagingTemplate messagingTemplate; // Inject the template
 
-    public NotificationService(NotificationRepository notificationRepository, UserRepository userRepository) {
+    public NotificationService(NotificationRepository notificationRepository, UserRepository userRepository, SimpMessagingTemplate messagingTemplate) {
         this.notificationRepository = notificationRepository;
         this.userRepository = userRepository;
+        this.messagingTemplate = messagingTemplate;
     }
 
-    /**
-     * Creates and saves notifications for a new post and returns a DTO for broadcasting.
-     * @param post The newly created post.
-     * @return A NotificationResponse DTO representing the event.
-     */
-    public NotificationResponse createAndSaveNewPostNotification(Post post) {
-        Set<User> followers = post.getUser().getSubscribers();
-        
-        // Find all followers of the post's author
-        // List<User> followers = userRepository.findFollowersOf(author.getId());
-        
-        // Create a notification for each follower
-        List<Notification> notifications = followers.stream()
-            .map(follower -> new Notification(follower,post.getUser(), post))
-            .collect(Collectors.toList());
 
-        // Save all notifications to the database
-        notificationRepository.saveAll(notifications);
+    /**
+     * Creates, saves, and sends new post notifications to each of the author's followers.
+     * @param post The newly created post.
+     */
+    public void createAndSendNewPostNotifications(Post post) {
+        User author = post.getUser();
+        Set<User> followers = author.getSubscribers(); // You need to implement this query
         
-        // Return a single DTO for the broadcast. The 'receiver' is irrelevant for the broadcast,
-        // but the 'sender' (the post author) is important.
-        return new NotificationResponse(
-            null, // ID is not needed for the broadcast payload
-            toUserResponse(post.getUser()), // Use a toResponse() method or manual mapping for sender
-            post.getId(),
-            false,
-            post.getCreatedAt()
-        );
+        if (followers.isEmpty()) {
+            return;
+        }
+
+        List<Notification> notificationsToSave = new ArrayList<>();
+
+        for (User follower : followers) {
+            // 1. Create the notification entity to save in the database
+            Notification notification = new Notification(follower, author, post);
+            notificationsToSave.add(notification);
+
+            // 2. Create the DTO to be sent over WebSocket
+            NotificationResponse notificationResponse = toNotificationResponse(notification);
+
+            // 3. Send the notification directly to the specific follower's queue
+            // Spring automatically maps follower.getUsername() to the correct WebSocket session
+            messagingTemplate.convertAndSendToUser(
+                follower.getUsername(),       // The user (principal name) to send to
+                "/queue/new-posts",           // The private destination
+                notificationResponse          // The payload
+            );
+        }
+
+        // 4. Save all notifications to the database
+        notificationRepository.saveAll(notificationsToSave);
     }
 
     public long getUnreadCountByUserId(long userID) {
