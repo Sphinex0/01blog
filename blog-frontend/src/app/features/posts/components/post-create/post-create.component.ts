@@ -10,7 +10,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MarkdownModule } from 'ngx-markdown';
 
 import { PostService } from '../../services/post.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Post } from '../../../../core/models/post.interface';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
@@ -23,6 +23,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class PostCreateComponent implements OnInit, OnDestroy {
   postForm: FormGroup;
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   readonly isLoadingPost = signal(false);
   readonly post = signal<Post | null>(null);
   private readonly snackBar = inject(MatSnackBar);
@@ -162,7 +163,6 @@ export class PostCreateComponent implements OnInit, OnDestroy {
     }
 
     this.isSaving = true;
-
     try {
       let content = this.postForm.get('content')?.value || '';
 
@@ -197,9 +197,10 @@ export class PostCreateComponent implements OnInit, OnDestroy {
         ? this.postService.updatePost(currentPost.id, postData)
         : this.postService.savePost(postData);
 
-      await saveOrUpdate$.toPromise();
+      const savedpost = await saveOrUpdate$.toPromise();
       this.snackBar.open('Post saved successfully!', 'Close', { duration: 3000 });
-      
+      this.router.navigate(["posts", savedpost?.id])
+
     } catch (error) {
       console.error('Failed to save post:', error);
       this.snackBar.open('An error occurred while saving.', 'Close', {
@@ -208,6 +209,7 @@ export class PostCreateComponent implements OnInit, OnDestroy {
       });
     } finally {
       this.isSaving = false;
+      this.postForm.reset();
     }
   }
 

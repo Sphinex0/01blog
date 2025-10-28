@@ -319,7 +319,7 @@ export class PostDetailComponent implements OnInit {
               duration: 2000,
               panelClass: ['success-snackbar'],
             });
-            this.router.navigate(['/home']);
+            this.router.navigate(['']);
           },
           error: () => {
             this.snackBar.open('Failed to delete post', 'Close', {
