@@ -9,6 +9,10 @@ import api.backend.model.user.User;
 import api.backend.model.user.UserResponse;
 import api.backend.repository.PostRepository;
 import api.backend.repository.ReportRepository;
+import api.backend.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
@@ -23,17 +27,19 @@ public class ReportService {
 
     private final ReportRepository reportRepository;
     private final PostRepository postRepository;
+    private final UserRepository userRepository;
 
-    public ReportService(ReportRepository reportRepository, PostRepository postRepository) {
+    public ReportService(ReportRepository reportRepository, PostRepository postRepository, UserRepository userRepository) {
         this.reportRepository = reportRepository;
         this.postRepository = postRepository;
+        this.userRepository = userRepository;
     }
 
     public ReportResponse submitReport(User reporter, User reported, ReportRequest request) {
 
         Post post = null;
-        if (request.postId() != null) {
-            post = postRepository.findById(request.postId())
+        if (request.reportedPostId() != null) {
+            post = postRepository.findById(request.reportedPostId())
                     .orElseThrow(() -> new IllegalStateException("Post not found"));
         }
 
@@ -47,7 +53,7 @@ public class ReportService {
                 savedReport.getStatus().name(),
                 savedReport.getCreatedAt(),
                 savedReport.getReviewedAt(),
-                request.postId(), false);
+                request.reportedPostId(), false);
     }
 
     public ReportResponse getReportById(Long id) {
@@ -79,6 +85,33 @@ public class ReportService {
                     reportRepository.save(report);
                     return "";
                 }).orElseThrow(() -> new IllegalStateException("Report not found"));
+    }
+
+    @Transactional
+    public ReportResponse submitReport(User reporter, ReportRequest request) {
+        if (request.reportedPostId() == null && request.reportedUserId() == null) {
+            throw new IllegalArgumentException("Either a post or a user must be reported.");
+        }
+
+        Report report = new Report();
+        report.setReporter(reporter);
+        report.setReason(request.reason());
+
+        if (request.reportedPostId() != null) {
+            Post reportedPost = postRepository.findById(request.reportedPostId())
+                    .orElseThrow(() -> new EntityNotFoundException("Post not found with ID: " + request.reportedPostId()));
+            report.setPost(reportedPost);
+            // Implicitly report the post's author
+            report.setReported(reportedPost.getUser());
+        } else { // reportedUserId must not be null here
+            User reportedUser = userRepository.findById(request.reportedUserId())
+                    .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + request.reportedUserId()));
+            report.setReported(reportedUser);
+        }
+
+        Report savedReport = reportRepository.save(report);
+
+        return toReportResponse(savedReport);
     }
 
     public String dismissReport(Long id, User reviewer) {

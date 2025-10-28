@@ -13,6 +13,11 @@ import { Post } from '../../../../core/models/post.interface';
 import { ProfileHeaderComponent } from '../profile-header/profile-header.component';
 import { FeedComponent } from '../../../home/components/feed/feed.component';
 import { AuthService } from '../../../../core/services/auth.service';
+import { ReportService } from '../../../reporting/services/report.service';
+import { take } from 'rxjs';
+import { CreateReportRequest } from '../../../../core/models/report.interface';
+import { ReportDialogComponent } from '../../../reporting/components/report-dialog/report-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-profile',
@@ -36,6 +41,9 @@ export class ProfileComponent implements OnInit {
   private readonly subscriptionService = inject(SubscriptionService);
   private readonly postService = inject(PostService);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly reportService = inject(ReportService);
+  private readonly dialog = inject(MatDialog);
+
 
   // Signals
   readonly user = signal<UserProfile | null>(null);
@@ -75,6 +83,8 @@ export class ProfileComponent implements OnInit {
       },
     });
   }
+
+  
 
   loadUserPosts(userId: number): void {
     this.isLoadingPosts.set(true);
@@ -177,13 +187,35 @@ export class ProfileComponent implements OnInit {
     }
   }
 
-  onReportUser(): void {
-    // TODO: Implement report dialog
-    this.snackBar.open('Report feature coming soon', 'Close', {
-      duration: 2000,
+onReportUser(): void {
+    const user = this.user();
+    if (!user) return;
+
+    const dialogRef = this.dialog.open(ReportDialogComponent, {
+      width: '500px',
+      data: {
+        type: 'User',
+        targetName: `@${user.username}`
+      }
+    });
+
+    dialogRef.afterClosed().pipe(take(1)).subscribe(reason => {
+      if (reason) {
+        const request: CreateReportRequest = {
+          reportedUserId: user.id,
+          reason: reason
+        };
+        this.reportService.createReport(request).subscribe({
+          next: () => {
+            this.snackBar.open('User reported successfully. Our moderators will review it.', 'Close', { duration: 3000 });
+          },
+          error: () => {
+            this.snackBar.open('Failed to submit report. Please try again.', 'Close', { duration: 3000, panelClass: ['error-snackbar'] });
+          }
+        });
+      }
     });
   }
-
   private copyProfileLink(url: string): void {
     navigator.clipboard.writeText(url).then(() => {
       this.snackBar.open('Profile link copied to clipboard!', 'Close', {

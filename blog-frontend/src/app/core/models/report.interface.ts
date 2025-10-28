@@ -21,5 +21,6 @@ export interface Report {
 
 export interface CreateReportRequest {
   reportedUserId: number;
+  reportedPostId?: number;
   reason: string;
 }

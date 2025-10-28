@@ -4,8 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 public record ReportRequest(
-        @NotBlank(message = "Reason is required")
-        @Size(max = 500, message = "Reason cannot exceed 500 characters")
-        String reason,
-        Long postId // Optional, null if not related to a specific post
+        Long reportedUserId,
+        Long reportedPostId,
+        @NotBlank @Size(max = 1000) String reason
 ) {}

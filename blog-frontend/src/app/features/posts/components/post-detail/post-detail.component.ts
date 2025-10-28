@@ -21,6 +21,10 @@ import { ConfirmationDialogComponent } from '../../../../shared/components/confi
 import { TimeAgoPipe } from '../../../../shared/pipes/time-ago-pipe';
 import { MarkdownModule } from 'ngx-markdown';
 import { CommentsSectionComponent } from '../comments-section/comments-section.component';
+import { ReportDialogComponent } from '../../../reporting/components/report-dialog/report-dialog.component';
+import { take } from 'rxjs';
+import { CreateReportRequest } from '../../../../core/models/report.interface';
+import { ReportService } from '../../../reporting/services/report.service';
 
 @Component({
   selector: 'app-post-detail',
@@ -53,6 +57,7 @@ export class PostDetailComponent implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly snackBar = inject(MatSnackBar);
   private readonly dialog = inject(MatDialog);
+  private readonly reportService = inject(ReportService);
 
 
 
@@ -155,6 +160,36 @@ export class PostDetailComponent implements OnInit {
     
     this.getReplies(comment);
 
+  }
+  onReportPost(): void {
+    const post = this.post();
+    if (!post) return;
+
+    const dialogRef = this.dialog.open(ReportDialogComponent, {
+      width: '500px',
+      data: {
+        type: 'Post',
+        targetName: post.title.substring(0, 50) + '...'
+      }
+    });
+
+    dialogRef.afterClosed().pipe(take(1)).subscribe(reason => {
+      if (reason) {
+        const request: CreateReportRequest = {
+          reportedPostId: post.id,
+          reportedUserId: post.user.id,
+          reason: reason
+        };
+        this.reportService.createReport(request).subscribe({
+          next: () => {
+            this.snackBar.open('Post reported successfully. Our moderators will review it.', 'Close', { duration: 3000 });
+          },
+          error: () => {
+            this.snackBar.open('Failed to submit report. Please try again.', 'Close', { duration: 3000, panelClass: ['error-snackbar'] });
+          }
+        });
+      }
+    });
   }
 
 
