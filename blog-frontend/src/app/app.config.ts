@@ -1,5 +1,5 @@
 import { ApplicationConfig } from '@angular/core';
-import { provideRouter, withComponentInputBinding, withRouterConfig } from '@angular/router';
+import { provideRouter, UrlSerializer, withComponentInputBinding, withRouterConfig } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideServiceWorker } from '@angular/service-worker';
@@ -12,6 +12,7 @@ import { errorInterceptor } from './core/interceptors/error.interceptor';
 import { loadingInterceptor } from './core/interceptors/loading.interceptor';
 // import { environment } from '../environments/environment';
 import { provideMarkdown } from "ngx-markdown" 
+import { CustomUrlSerializer } from './core/config/custom-url-serializer';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -23,6 +24,7 @@ export const appConfig: ApplicationConfig = {
         paramsInheritanceStrategy: 'always',
       })
     ),
+    { provide: UrlSerializer, useClass: CustomUrlSerializer },
     
     // HTTP client with interceptors
     provideHttpClient(

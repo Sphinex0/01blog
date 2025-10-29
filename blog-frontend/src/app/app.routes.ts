@@ -35,6 +35,14 @@ export const routes: Routes = [
       //   path: 'settings',
       //   loadChildren: () => import('./features/settings/settings.routes').then(r => r.settingsRoutes),
       // }
+      {
+        path: '**',
+        loadComponent: () =>
+          import('./shared/components/not-found/not-found.component').then(
+            (c) => c.NotFoundComponent
+          ),
+        title: '404 - Page Not Found',
+      },
     ],
   },
   {
@@ -72,4 +80,10 @@ export const routes: Routes = [
   //   path: '**',
   //   redirectTo: '/auth/login'
   // }
+  // {
+  //   path: '**',
+  //   loadComponent: () =>
+  //     import('./shared/components/not-found/not-found.component').then((c) => c.NotFoundComponent),
+  //   title: '404 - Page Not Found',
+  // },
 ];

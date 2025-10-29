@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  # 1. PostgreSQL Database Service
+  postgres:
+    image: postgres:15
+    container_name: postgres-springboot
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_DB: 01DB
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
+
+  # 2. Spring Boot Backend Service
+  backend:
+    build:
+      context: ./backend
+      # --- ADD THIS LINE ---
+      # This forces the build process to use your host's network
+      network: host 
+    container_name: blog-backend
+    ports:
+      - "8080:8080"
+    environment:
+      # We still need the datasource URL for runtime
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/01DB
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - CLOUDINARY_URL=${CLOUDINARY_URL}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRATION=${JWT_EXPIRATION}
+    depends_on:
+      - postgres
+
+  # 3. Angular Frontend Service (with Nginx)
+  frontend:
+    build:
+      context: ./blog-frontend
+      network: host
+    container_name: blog-frontend
+    ports:
+      # --- CHANGE THIS LINE ---
+      # Old: - "80:80"
+      - "8000:80" # New: Map host port 8000 to container port 80
+    depends_on:
+      - backend
+
+# Defines the volume for persistent database storage
+volumes:
+  postgres_data:

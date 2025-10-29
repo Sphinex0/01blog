@@ -1,6 +1,11 @@
-export const API_BASE_URL = 'http://localhost:8080/api';
+import { environment } from "../../../environments/environment";
 
-export const WS_BASE_URL = 'ws://localhost:8080/ws'; // <-- Define WS URL here
+
+
+// export const API_BASE_URL = 'http://localhost:8080/api';
+export const API_BASE_URL = environment.apiUrl;
+
+// export const WS_BASE_URL = environment.wsUrl; // <-- Define WS URL here
 
 export const API_ENDPOINTS = {
   AUTH: {
