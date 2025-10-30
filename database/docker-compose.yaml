@@ -1,7 +1,7 @@
 services:
   postgres:
     image: postgres:15
-    container_name: postgres-springboot
+    container_name: postgres-springboot2
     ports:
       - "5433:5432"
     environment:
