@@ -33,6 +33,9 @@ services:
       - CLOUDINARY_URL=${CLOUDINARY_URL}
       - JWT_SECRET=${JWT_SECRET}
       - JWT_EXPIRATION=${JWT_EXPIRATION}
+      - app.upload.dir=/app/uploads
+    volumes:
+      - app_uploads:/app/uploads
     depends_on:
       - postgres
 
@@ -52,3 +55,4 @@ services:
 # Defines the volume for persistent database storage
 volumes:
   postgres_data:
+  app_uploads:

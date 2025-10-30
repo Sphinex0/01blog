@@ -1,10 +1,15 @@
 package api.backend.service;
 
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
@@ -26,6 +31,8 @@ import jakarta.transaction.Transactional;
 @Service
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
+    @Value("${app.upload.dir}")
+    private String uploadDir;
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -70,39 +77,65 @@ public class UserService implements UserDetailsService {
     }
 
     public String updateProfile(MultipartFile file, String ext) {
-        long id = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
-        User user = userRepository.findById(id)
+        long userId = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("No authenticated user found"));
-        String avatarUrl = "images/" + id + "." + ext;
-        // Save the file to the local filesystem (you can customize the path as needed)
-        String imagesDir = "images";
-        java.io.File dir = new java.io.File(imagesDir);
-        if (dir.exists() && dir.isDirectory()) {
-            String idStr = String.valueOf(id);
-            String prefix = idStr + ".";
-            java.io.File[] toDelete = dir.listFiles((d, name) -> name.equals(idStr) || name.startsWith(prefix));
-            if (toDelete != null) {
-                for (java.io.File f : toDelete) {
-                    try {
-                        if (!f.delete()) {
-                            System.out.println("Failed to delete old avatar: " + f.getAbsolutePath());
-                        }
-                    } catch (Exception e) {
-                        System.out.println("Error deleting old avatar: " + e.getMessage());
-                    }
-                }
+
+        // Define the absolute file system path (from our MvcConfig)
+        // String uploadDir = "/app/uploads";
+
+        // --- 1. Delete Old Image Logic ---
+        String oldAvatarUrl = user.getAvatar(); // Get URL from DB (e.g., "/images/1.png")
+
+        // Check if an old avatar URL exists
+        if (oldAvatarUrl != null && !oldAvatarUrl.isEmpty()) {
+            try {
+                // Get just the file name (e.g., "1.png")
+                String oldFileName = Paths.get(oldAvatarUrl).getFileName().toString();
+
+                // Build the full absolute path to the old file
+                Path oldFilePath = Paths.get(uploadDir, oldFileName);
+
+                // Delete the file if it exists
+                Files.deleteIfExists(oldFilePath);
+                System.out.println("Successfully deleted old avatar: " + oldFilePath);
+
+            } catch (IOException e) {
+                // Log the error, but don't stop the upload.
+                // The new file is more important.
+                System.err.println("Error deleting old avatar: " + e.getMessage());
+                e.printStackTrace();
             }
         }
-        try (FileOutputStream fos = new FileOutputStream(avatarUrl)) {
-            byte[] bytes = file.getBytes();
-            fos.write(bytes);
-            user.setAvatar(avatarUrl);
-            System.out.println("Data successfully written to the file.");
+        // --- End Deletion Logic ---
+
+        // --- 2. Save New Image Logic (Same as before) ---
+        String newFileName = userId + "." + ext;
+        Path newFilePath = Paths.get(uploadDir, newFileName);
+
+        try {
+            // Ensure the directory exists
+            Files.createDirectories(Paths.get(uploadDir));
+
+            // Write the new file
+            try (FileOutputStream fos = new FileOutputStream(newFilePath.toString())) {
+                byte[] bytes = file.getBytes();
+                fos.write(bytes);
+            }
+
+            // Update the user's avatar URL in the database to the new path
+            String newAvatarUrl = "images/" + newFileName; // "/images/"
+            user.setAvatar(newAvatarUrl);
+            this.userRepository.save(user);
+
+            System.out.println("Data successfully written to: " + newFilePath);
+            return user.getAvatar();
+
         } catch (Exception e) {
-            System.out.println("An error occurred: " + e.getMessage());
+            // This is a critical error, so we throw an exception
+            e.printStackTrace();
+            throw new RuntimeException("Error uploading new file: " + e.getMessage(), e);
         }
-        userRepository.save(user);
-        return avatarUrl;
     }
 
     public List<UserResponse> getSubscribtions(long userId, long cursor) {

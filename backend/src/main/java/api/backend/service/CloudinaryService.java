@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.cloudinary.Cloudinary;
 
@@ -24,8 +25,8 @@ public class CloudinaryService {
             String publicId = (String) uploadedFile.get("public_id");
             return cloudinary.url().secure(true).resourcType(resourceType).generate(publicId);
         } catch (Exception e) {
-            System.out.println(e);
-            throw new IllegalArgumentException("Faild: to upload this filed");
+            // System.out.println(e);
+            throw new InternalError("Failed: to upload this file");
         }
     }
 }

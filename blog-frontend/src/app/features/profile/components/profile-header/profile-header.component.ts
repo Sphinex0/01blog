@@ -64,7 +64,7 @@ export class ProfileHeaderComponent {
   getAvatarUrl(avatar: string | undefined): string {
     if (!avatar) return '';
     if (avatar.startsWith('http')) return avatar;
-    return `http://localhost:8080/api/${avatar}`;
+    return `/api/${avatar}`;
   }
 
   onAvatarSelected(event: Event): void {
