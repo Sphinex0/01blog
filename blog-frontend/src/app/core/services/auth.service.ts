@@ -146,6 +146,10 @@ export class AuthService {
   getToken(): string | null {
     return this.storage.getToken();
   }
+  removeToken() {
+    return this.storage.clearAuth();
+  }
+
 
   isTokenExpired(): boolean {
     const token = this.getToken();

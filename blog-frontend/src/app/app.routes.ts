@@ -3,6 +3,13 @@ import { authGuard } from './core/guards/auth.guard';
 import { adminGuard } from './core/guards/admin.guard';
 
 export const routes: Routes = [
+
+    {
+    path: 'auth',
+    loadComponent: () =>
+      import('./layout/auth-layout/auth-layout.component').then((c) => c.AuthLayoutComponent),
+    loadChildren: () => import('./features/auth/auth.routes').then((r) => r.authRoutes),
+  },
   {
     path: '',
     loadComponent: () =>
@@ -70,12 +77,7 @@ export const routes: Routes = [
   //     }
   //   ]
   // },
-  {
-    path: 'auth',
-    loadComponent: () =>
-      import('./layout/auth-layout/auth-layout.component').then((c) => c.AuthLayoutComponent),
-    loadChildren: () => import('./features/auth/auth.routes').then((r) => r.authRoutes),
-  },
+
   // {
   //   path: '**',
   //   redirectTo: '/auth/login'

@@ -9,9 +9,9 @@ export const noAuthGuard: CanActivateFn = (route, state) => {
   console.log("noAuthGuard")
   if (authService.isAuthenticated()) {
     // Already authenticated, redirect to home
-    // router.navigate([ROUTES.HOME]);
-    // return false;
-    return router.navigate([ROUTES.HOME]);
+    router.navigate([ROUTES.HOME]);
+    return false;
+    // return router.navigate([ROUTES.HOME]);
   }
   console.log("noAuthGuard after condition")
 

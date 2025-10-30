@@ -10,14 +10,17 @@ export const authGuard: CanActivateFn = (route, state) => {
     console.log("authGuard inside condition")
     return true;
   }
-  console.log("authGuard")
+  // console.log("authGuard")
 
-  // // Not authenticated, redirect to login
-  // router.navigate([ROUTES.AUTH.LOGIN], {
-  //   queryParams: { returnUrl: state.url }
-  // });
-  // return false;
-  return router.navigate([ROUTES.AUTH.LOGIN], {
+  authService.removeToken()
+
+  // Not authenticated, redirect to login
+  router.navigate([ROUTES.AUTH.LOGIN], {
     queryParams: { returnUrl: state.url }
   });
+  console.log("authGuard before return ")
+  return false;
+  // return router.navigate([ROUTES.AUTH.LOGIN], {
+  //   queryParams: { returnUrl: state.url }
+  // });
 };

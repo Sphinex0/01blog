@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar'; // Import MatSnackBar
 import { API_BASE_URL, API_ENDPOINTS } from '../../../core/constants/api.constants';
-// import { WebSocketService } from '../../../core/services/websocket.service';
+import { WebSocketService } from '../../../core/services/websocket.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { Notification } from '../../../core/models/notification.interface';
 
@@ -13,7 +13,7 @@ import { Notification } from '../../../core/models/notification.interface';
 export class NotificationApiService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = API_BASE_URL;
-  // private readonly wsService = inject(WebSocketService);
+  private readonly wsService = inject(WebSocketService);
   private readonly authService = inject(AuthService);
   private readonly snackBar = inject(MatSnackBar);
 
@@ -27,26 +27,26 @@ export class NotificationApiService {
   readonly unreadCount = computed(() => this._unreadCount());
   readonly isLoading = computed(() => this._isLoading());
   
-  // constructor() {
-  //   this.setupWebSocketConnection();
-  // }
+  constructor() {
+    this.setupWebSocketConnection();
+  }
   
-  // private setupWebSocketConnection(): void {
-  //   // 1. Use effect() to react to changes in the isAuthenticated signal
-  //   effect(() => {
-  //     const isAuthenticated = this.authService.isAuthenticated(); // Read the signal's value
-  //     if (isAuthenticated) {
-  //       this.wsService.connect();
-  //     } else {
-  //       this.wsService.disconnect();
-  //     }
-  //   });
+  private setupWebSocketConnection(): void {
+    // 1. Use effect() to react to changes in the isAuthenticated signal
+    effect(() => {
+      const isAuthenticated = this.authService.isAuthenticated(); // Read the signal's value
+      if (isAuthenticated) {
+        this.wsService.connect();
+      } else {
+        this.wsService.disconnect();
+      }
+    });
 
-  //   // 2. Subscribe to new post notifications from the WebSocket service's Observable
-  //   this.wsService.newPost$.subscribe(notification => {
-  //     this.handleNewPostNotification(notification);
-  //   });
-  // }
+    // 2. Subscribe to new post notifications from the WebSocket service's Observable
+    this.wsService.newPost$.subscribe(notification => {
+      this.handleNewPostNotification(notification);
+    });
+  }
   
   /**
    * Handles a real-time notification received via WebSocket.
