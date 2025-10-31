@@ -490,6 +490,35 @@ private removeCommentRecursive(comments: Comment[], id: number): Comment[] {
   });
 }
 
+public onSharePost(): void {
+    // Get the full URL of the current post from the browser
+    const postUrl = window.location.href;
+    
+    // Call the private helper to copy the link
+    this.copyLinkToClipboard(postUrl);
+  }
+
+  /**
+   * Copies the given string to the clipboard and shows a snackbar.
+   * (Adapted from your example)
+   */
+  private copyLinkToClipboard(url: string): void {
+    navigator.clipboard.writeText(url).then(() => {
+      // Success message
+      this.snackBar.open('Post link copied to clipboard!', 'Close', {
+        duration: 2000,
+        panelClass: ['success-snackbar'], // Your custom class
+      });
+    }).catch(err => {
+      // Error handling (good practice)
+      console.error('Failed to copy link: ', err);
+      this.snackBar.open('Failed to copy link.', 'Close', {
+        duration: 3000,
+        panelClass: ['error-snackbar'], // Optional: a class for errors
+      });
+    });
+  }
+
   onReplyToComment(data: { parentId: number; content: string }): void {
     const post = this.post();
     if (!post) return;

@@ -86,7 +86,7 @@ export class NotificationApiService {
             this._notifications.update(notifications => [...notifications, ...response]);
           }
            // Re-calculate the actual unread count based on fetched data
-           this.updateUnreadCount(this._notifications());
+          //  this.updateUnreadCount(this._notifications());
         }
         this._isLoading.set(false);
       })
@@ -165,6 +165,6 @@ export class NotificationApiService {
    */
   private updateUnreadCount(notifications: Notification[]): void {
     const unreadCount = notifications.filter(n => !n.read).length;
-    this._unreadCount.set(unreadCount);
+    // this._unreadCount.set(unreadCount);
   }
 }

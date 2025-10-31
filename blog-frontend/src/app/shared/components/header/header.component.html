@@ -18,7 +18,7 @@
 
   <!-- Desktop Navigation -->
   <nav class="desktop-nav">
-    <a mat-button routerLink="/" routerLinkActive="active-link" class="pixel-nav-btn">
+    <a mat-button routerLink="/" routerLinkActive="active-link" class="pixel-nav-btn" [routerLinkActiveOptions]="{ exact: true }">
       <!-- <span class="nav-icon">🏠</span> -->
       <span>HOME</span>
     </a>
@@ -63,10 +63,10 @@
         MY PROFILE
       </a>
       
-      <a mat-menu-item routerLink="/settings" class="pixel-menu-item">
+      <!-- <a mat-menu-item routerLink="/settings" class="pixel-menu-item">
         <span class="menu-icon">⚙️</span>
         SETTINGS
-      </a>
+      </a> -->
       
       @if (user.role === 'ADMIN') {
         <mat-divider></mat-divider>

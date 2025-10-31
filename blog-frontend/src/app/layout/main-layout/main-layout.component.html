@@ -25,9 +25,13 @@
             <mat-icon>home</mat-icon>
             Home
           </a>
-          <a mat-button routerLink="/profile/me" (click)="closeMobileMenu()">
+          <a mat-button [routerLink]="`/users/profile/${currentUser()?.username}`" (click)="closeMobileMenu()">
             <mat-icon>person</mat-icon>
             My Profile
+          </a>
+          <a mat-button routerLink="/users" (click)="closeMobileMenu()">
+            <mat-icon>group</mat-icon>
+            Discover Users
           </a>
           <a mat-button routerLink="/posts/create" (click)="closeMobileMenu()">
             <mat-icon>add</mat-icon>
@@ -37,10 +41,10 @@
             <mat-icon>notifications</mat-icon>
             Notifications
           </a>
-          <a mat-button routerLink="/settings" (click)="closeMobileMenu()">
+          <!-- <a mat-button routerLink="/settings" (click)="closeMobileMenu()">
             <mat-icon>settings</mat-icon>
             Settings
-          </a>
+          </a> -->
         </nav>
       </div>
     </mat-sidenav>

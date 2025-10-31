@@ -30,7 +30,6 @@
 
 .header-icon {
   font-size: 48px;
-  animation: pixelPulse 2s steps(4) infinite;
 }
 
 .header-title {
@@ -295,7 +294,6 @@
     font-size: 10px;
     color: var(--pixel-text-secondary);
     text-transform: uppercase;
-    animation: pixelPulse 2s steps(4) infinite;
   }
 }
 
@@ -915,17 +913,7 @@
 // --- END NEW/ADJUSTED STYLES ---
 
 
-// Animations
-@keyframes pixelPulse {
-  0%, 100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.8;
-    transform: scale(1.05);
-  }
-}
+
 
 // Responsive
 @media (max-width: 1024px) {

@@ -70,11 +70,37 @@ body {
 }
 
 // Dark Theme Variables
+// .dark-theme {
+//   --pixel-primary: #dd8448;
+//   --pixel-primary-dark: #b86c39;
+//   --pixel-secondary: #63e6e0;
+//   --pixel-accent: #fff3a3;
+  
+//   --pixel-bg-primary: #1a1a1a;
+//   --pixel-bg-secondary: #2d2d2d;
+//   --pixel-bg-tertiary: #3d3d3d;
+  
+//   --pixel-text-primary: #f0f0f0;
+//   --pixel-text-secondary: #b8b8b8;
+//   --pixel-text-muted: #808080;
+  
+//   --pixel-border: #f0f0f0;
+//   --pixel-border-light: #4d4d4d;
+//   --pixel-shadow: rgba(0, 0, 0, 0.6);
+//   --pixel-shadow-inner: rgba(255, 255, 255, 0.05);
+  
+//   --pixel-success: #69db7c;
+//   --pixel-warning: #ffe066;
+//   --pixel-error: #ff8787;
+//   --pixel-info: #74c0fc;
+// }
+
+/* Dark Theme Variables (Fixed) */
 .dark-theme {
   --pixel-primary: #dd8448;
   --pixel-primary-dark: #b86c39;
   --pixel-secondary: #63e6e0;
-  --pixel-accent: #fff3a3;
+  --pixel-accent: #fcd22cab;
   
   --pixel-bg-primary: #1a1a1a;
   --pixel-bg-secondary: #2d2d2d;
@@ -84,8 +110,18 @@ body {
   --pixel-text-secondary: #b8b8b8;
   --pixel-text-muted: #808080;
   
-  --pixel-border: #f0f0f0;
-  --pixel-border-light: #4d4d4d;
+  /* --- FIXED BORDER COLORS --- */
+  
+  /* Was #f0f0f0 (too bright). 
+     Now using a subtle grey that's one step up from the tertiary bg. */
+  --pixel-border: #4d4d4d; 
+  
+  /* Was #4d4d4d.
+     Now using the tertiary bg color, perfect for very subtle dividers. */
+  --pixel-border-light: #3d3d3d; 
+  
+  /* --- END OF FIX --- */
+  
   --pixel-shadow: rgba(0, 0, 0, 0.6);
   --pixel-shadow-inner: rgba(255, 255, 255, 0.05);
   
@@ -428,3 +464,6 @@ a {
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
+
+
+

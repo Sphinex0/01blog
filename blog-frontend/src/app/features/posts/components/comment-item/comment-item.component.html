@@ -61,8 +61,24 @@
       <!-- Actions -->
       <div class="comment-actions">
         <button class="action-btn" (click)="onLike()" [class.liked]="comment().isLiked">
-          <mat-icon>{{ comment().isLiked ? 'favorite' : 'favorite_border' }}</mat-icon>
-          @if (comment().likesCount && comment().likesCount > 0) {
+          @if(comment().isLiked){
+          <mat-icon>
+            <svg id="heart-solid" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <polygon
+                points="23 6 23 11 22 11 22 12 21 12 21 13 20 13 20 14 19 14 19 15 18 15 18 16 17 16 17 17 16 17 16 18 15 18 15 19 14 19 14 20 13 20 13 21 11 21 11 20 10 20 10 19 9 19 9 18 8 18 8 17 7 17 7 16 6 16 6 15 5 15 5 14 4 14 4 13 3 13 3 12 2 12 2 11 1 11 1 6 2 6 2 5 3 5 3 4 4 4 4 3 10 3 10 4 11 4 11 5 13 5 13 4 14 4 14 3 20 3 20 4 21 4 21 5 22 5 22 6 23 6"
+              />
+            </svg>
+          </mat-icon>
+          }@else{
+          <mat-icon>
+            <svg id="heart" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path
+                d="m22,6v-1h-1v-1h-1v-1h-6v1h-1v1h-2v-1h-1v-1h-6v1h-1v1h-1v1h-1v5h1v1h1v1h1v1h1v1h1v1h1v1h1v1h1v1h1v1h1v1h2v-1h1v-1h1v-1h1v-1h1v-1h1v-1h1v-1h1v-1h1v-1h1v-1h1v-5h-1Zm-2,4v1h-1v1h-1v1h-1v1h-1v1h-1v1h-1v1h-1v1h-2v-1h-1v-1h-1v-1h-1v-1h-1v-1h-1v-1h-1v-1h-1v-1h-1v-3h1v-1h1v-1h4v1h1v1h1v1h2v-1h1v-1h1v-1h4v1h1v1h1v3h-1Z"
+              />
+            </svg>
+          </mat-icon>
+
+          } @if (comment().likesCount && comment().likesCount > 0) {
           <span>{{ comment().likesCount }}</span>
           }
         </button>
@@ -76,17 +92,17 @@
         <button class="action-btn" (click)="toggleReplies()">
           <mat-icon>{{ showReplies() ? 'expand_less' : 'expand_more' }}</mat-icon>
           {{ comment().repliesCount }}
-          <span class="hide-text">
-            {{ comment().repliesCount === 1 ? 'REPLY' : 'REPLIES' }}</span
-          >
+          <span class="hide-text"> {{ comment().repliesCount === 1 ? 'REPLY' : 'REPLIES' }}</span>
         </button>
 
         } } @else {
         <button class="open-sidebar-btn pixel-btn" (click)="onOpenSidebar()">
           <mat-icon>forum</mat-icon>
-          {{  comment().repliesCount > 0 ? comment().repliesCount : '' }}
+          {{ comment().repliesCount > 0 ? comment().repliesCount : '' }}
           <!-- <span class="hide-text">REPLIES  THREAD →</span> -->
-          <span class="hide-text">{{ comment().repliesCount && comment().repliesCount > 0 ? ' REPLIES' : 'OPEN THREAD' }}</span>
+          <span class="hide-text">{{
+            comment().repliesCount && comment().repliesCount > 0 ? ' REPLIES' : 'OPEN THREAD'
+          }}</span>
         </button>
         }
       </div>

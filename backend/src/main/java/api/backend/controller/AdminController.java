@@ -86,12 +86,6 @@ public class AdminController {
         return ResponseEntity.ok(reports);
     }
 
-    // @PatchMapping("/reports/{reportId}/review")
-    // public ResponseEntity<String> reviewReport(@PathVariable long reportId, @AuthenticationPrincipal User user,
-    //         @RequestBody ReviewRequest request) {
-    //     String reports = reportService.reviewReport(reportId, user, request.decision());
-    //     return ResponseEntity.ok(reports);
-    // }
 
     @PatchMapping("/reports/resolve/{reportId}")
     public ResponseEntity<String> resolveReport(@PathVariable long reportId, @AuthenticationPrincipal User user) {

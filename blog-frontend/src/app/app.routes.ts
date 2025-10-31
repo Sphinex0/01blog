@@ -89,7 +89,7 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        loadChildren: () =>
+        loadComponent: () =>
           import('./shared/components/not-found/not-found.component').then(
             (c) => c.NotFoundComponent
           ),

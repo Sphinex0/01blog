@@ -69,9 +69,7 @@
           <span>Delete Post</span>
         </button>
         }@else {
-        <button mat-menu-item class="report-btn"
-        (click)="onReportPost()" 
-        >
+        <button mat-menu-item class="report-btn" (click)="onReportPost()">
           <mat-icon>flag</mat-icon>
           <span>Report Post</span>
         </button>
@@ -105,7 +103,14 @@
     <!-- Post Stats -->
     <div class="post-stats">
       <span class="stat-item">
-        <mat-icon>favorite</mat-icon>
+        <mat-icon>
+          <svg id="heart-solid" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <polygon
+              points="23 6 23 11 22 11 22 12 21 12 21 13 20 13 20 14 19 14 19 15 18 15 18 16 17 16 17 17 16 17 16 18 15 18 15 19 14 19 14 20 13 20 13 21 11 21 11 20 10 20 10 19 9 19 9 18 8 18 8 17 7 17 7 16 6 16 6 15 5 15 5 14 4 14 4 13 3 13 3 12 2 12 2 11 1 11 1 6 2 6 2 5 3 5 3 4 4 4 4 3 10 3 10 4 11 4 11 5 13 5 13 4 14 4 14 3 20 3 20 4 21 4 21 5 22 5 22 6 23 6"
+            />
+          </svg>
+        </mat-icon>
+
         {{ postData.likesCount }} {{ postData.likesCount === 1 ? 'like' : 'likes' }}
       </span>
       <span class="stat-item">
@@ -119,19 +124,36 @@
     <!-- Post Actions -->
     <div class="post-actions">
       <button mat-button (click)="onLikePost()" [class.liked]="postData.isLiked" class="action-btn">
-        <mat-icon>{{ postData.isLiked ? 'favorite' : 'favorite_border' }}</mat-icon>
+        @if(postData.isLiked){
+        <mat-icon>
+          <svg id="heart-solid" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <polygon
+              points="23 6 23 11 22 11 22 12 21 12 21 13 20 13 20 14 19 14 19 15 18 15 18 16 17 16 17 17 16 17 16 18 15 18 15 19 14 19 14 20 13 20 13 21 11 21 11 20 10 20 10 19 9 19 9 18 8 18 8 17 7 17 7 16 6 16 6 15 5 15 5 14 4 14 4 13 3 13 3 12 2 12 2 11 1 11 1 6 2 6 2 5 3 5 3 4 4 4 4 3 10 3 10 4 11 4 11 5 13 5 13 4 14 4 14 3 20 3 20 4 21 4 21 5 22 5 22 6 23 6"
+            />
+          </svg>
+        </mat-icon>
+        }@else{
+        <mat-icon>
+          <svg id="heart" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path
+              d="m22,6v-1h-1v-1h-1v-1h-6v1h-1v1h-2v-1h-1v-1h-6v1h-1v1h-1v1h-1v5h1v1h1v1h1v1h1v1h1v1h1v1h1v1h1v1h1v1h1v1h2v-1h1v-1h1v-1h1v-1h1v-1h1v-1h1v-1h1v-1h1v-1h1v-1h1v-5h-1Zm-2,4v1h-1v1h-1v1h-1v1h-1v1h-1v1h-1v1h-1v1h-2v-1h-1v-1h-1v-1h-1v-1h-1v-1h-1v-1h-1v-1h-1v-1h-1v-3h1v-1h1v-1h4v1h1v1h1v1h2v-1h1v-1h1v-1h4v1h1v1h1v3h-1Z"
+            />
+          </svg>
+        </mat-icon>
+
+        }
         <span>{{ postData.isLiked ? 'Liked' : 'Like' }}</span>
       </button>
 
-      <button mat-button class="action-btn">
+      <button mat-button class="action-btn" (click)="onSharePost()">
         <mat-icon>share</mat-icon>
         <span>Share</span>
       </button>
 
-      <button mat-button class="action-btn">
+      <!-- <button mat-button class="action-btn">
         <mat-icon>bookmark_border</mat-icon>
         <span>Save</span>
-      </button>
+      </button> -->
     </div>
 
     <mat-divider></mat-divider>

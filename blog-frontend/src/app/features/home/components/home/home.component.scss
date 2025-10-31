@@ -1,6 +1,7 @@
 .home-layout {
   display: grid;
-  grid-template-columns: 280px 1fr;
+  // grid-template-columns: 280px 1fr;
+  grid-template-columns:1fr ;
   min-height: calc(100vh - 64px); // Subtract header height
   // background: #fafafa;
   gap: 0;
