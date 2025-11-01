@@ -40,7 +40,7 @@
 
   <!-- User Menu -->
   @if (currentUser(); as user) {
-    <span [matMenuTriggerFor]="userMenu" class="pixel-user-btn">
+    <span [matMenuTriggerFor]="userMenu" class="pixel-user-btn" (menuOpened)="onMenuOpen()">
        @if (currentUser()?.avatar) {
             <img [src]="getAvatarUrl(currentUser()?.avatar)" [alt]="user.fullName" class="avatar">
           } @else {

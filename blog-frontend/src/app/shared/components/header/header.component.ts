@@ -11,6 +11,7 @@ import { User } from '../../../core/models/user.interface';
 import { AuthService } from '../../../core/services/auth.service';
 import { NotificationBadgeComponent } from '../../../features/notifications/components/notification-badge/notification-badge.component';
 import { ThemeToggleComponent } from '../../../features/settings/components/theme-toggle/theme-toggle.component';
+import { API_BASE_URL } from '../../../core/constants/api.constants';
 
 @Component({
   selector: 'app-header',
@@ -38,6 +39,10 @@ export class HeaderComponent {
   // Outputs
   readonly mobileMenuToggle = output<void>();
 
+  onMenuOpen(): void {
+    this.authService.updateUserRole();
+  }
+
   onLogout(): void {
     this.authService.logout();
   }
@@ -49,7 +54,7 @@ export class HeaderComponent {
   getAvatarUrl(avatar: string | undefined): string {
     if (!avatar) return '';
     if (avatar.startsWith('http')) return avatar;
-    return `/api/${avatar}`;
+    return `${API_BASE_URL}/${avatar}`;
   }
 
   getInitials(fullName: string = ''): string {

@@ -8,6 +8,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatChipsModule } from '@angular/material/chips';
 import { UserProfile } from '../../../../core/models/user.interface';
 import { AuthService } from '../../../../core/services/auth.service';
+import { API_BASE_URL } from '../../../../core/constants/api.constants';
 
 @Component({
   selector: 'app-profile-header',
@@ -64,7 +65,7 @@ export class ProfileHeaderComponent {
   getAvatarUrl(avatar: string | undefined): string {
     if (!avatar) return '';
     if (avatar.startsWith('http')) return avatar;
-    return `/api/${avatar}`;
+    return `${API_BASE_URL}/${avatar}`;
   }
 
   onAvatarSelected(event: Event): void {

@@ -19,16 +19,13 @@ export class AdminService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = API_BASE_URL;
 
-  // Users Management
-  // Returns Observable<AdminUserDetails[]>
+
   getAllUsers(
     cursor: number = 0,
-    size: number = 10,
     search?: string
   ): Observable<AdminUserDetails[]> {
     let params = new HttpParams()
-      .set('cursor', cursor.toString()) // Cursor is the ID of the last fetched item
-      .set('size', size.toString());
+      .set('cursor', cursor.toString()) 
 
     if (search) {
       params = params.set('search', search);
@@ -85,8 +82,8 @@ export class AdminService {
   }
 
   // Posts Management
-  getAllPosts(cursor: number = 0, size: number = 12, search?: string): Observable<AdminPost[]> {
-    let params = new HttpParams().set('cursor', cursor.toString()).set('size', size.toString());
+  getAllPosts(cursor: number = 0, search?: string): Observable<AdminPost[]> {
+    let params = new HttpParams().set('cursor', cursor.toString());
 
     if (search) {
       params = params.set('search', search);
@@ -112,8 +109,8 @@ export class AdminService {
   }
 
   // Reports Management
-  getAllReports(cursor: number = 0, size: number = 10, status?: string): Observable<Report[]> {
-    let params = new HttpParams().set('cursor', cursor.toString()).set('size', size.toString());
+  getAllReports(cursor: number = 0, status?: string): Observable<Report[]> {
+    let params = new HttpParams().set('cursor', cursor.toString());
 
     if (status) {
       params = params.set('status', status);

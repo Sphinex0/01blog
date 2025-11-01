@@ -32,9 +32,6 @@ export class WebSocketService {
           };
         }
       },
-    //   connectHeaders : {
-    //         Authorization: `Bearer ${this.authService.getToken()}`
-    //       },
     });
 
     this.stompClient.onConnect = (frame) => {

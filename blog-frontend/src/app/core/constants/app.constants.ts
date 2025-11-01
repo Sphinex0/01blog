@@ -7,39 +7,33 @@ export const APP_CONSTANTS = {
     USER_DATA: 'blog_user_data',
     THEME: 'blog_app_theme',
   },
-  PAGINATION: {
-    DEFAULT_PAGE_SIZE: 10,
-    MAX_PAGE_SIZE: 100,
-    POSTS_PER_PAGE: 12, // ADD THIS
-    USERS_PER_PAGE: 10, // ADD THIS
-    REPORTS_PER_PAGE: 10, // ADD THIS
-  },
+
   MEDIA: {
     MAX_FILE_SIZE: 10 * 1024 * 1024, // 10MB
     ALLOWED_IMAGE_TYPES: ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
     ALLOWED_VIDEO_TYPES: ['video/mp4', 'video/webm', 'video/ogg'],
-    ALLOWED_IMAGE_EXTENSIONS: ['jpg', 'jpeg', 'png', 'gif', 'webp'],
+    ALLOWED_IMAGE_EXTENSIONS: ["jpg", "jpeg", "png", "gif", "webp"],
     ALLOWED_VIDEO_EXTENSIONS: ['mp4', 'webm', 'ogg'],
   },
   VALIDATION: {
     MIN_PASSWORD_LENGTH: 8,
     MAX_PASSWORD_LENGTH: 100,
-    MAX_POST_TITLE_LENGTH: 200, // ADD THIS
+    MAX_POST_TITLE_LENGTH: 200, 
     MAX_POST_LENGTH: 2000,
     MAX_COMMENT_LENGTH: 500,
     MIN_USERNAME_LENGTH: 3,
     MAX_USERNAME_LENGTH: 50,
     MAX_FULLNAME_LENGTH: 100,
     MAX_BIO_LENGTH: 500,
-    MAX_REPORT_REASON_LENGTH: 500, // ADD THIS
+    MAX_REPORT_REASON_LENGTH: 500, 
   },
-  NOTIFICATION_TYPES: { // ADD THIS
+  NOTIFICATION_TYPES: { 
     LIKE: 'LIKE',
     COMMENT: 'COMMENT',
     FOLLOW: 'FOLLOW',
     NEW_POST: 'NEW_POST',
   },
-  REPORT_STATUS: { // ADD THIS
+  REPORT_STATUS: { 
     PENDING: 'PENDING',
     RESOLVED: 'RESOLVED',
     DISMISSED: 'DISMISSED',
@@ -55,12 +49,12 @@ export const ROUTES = {
   },
   HOME: '/',
   PROFILE: {
-    BASE: '/users/profile', // CHANGE from '/profile'
+    BASE: '/users/profile', 
     ME: '/users/profile/me',
     EDIT: '/users/profile/edit',
     VIEW: '/users/profile',
-    FOLLOWERS: '/users/profile/:username/followers', // ADD THIS
-    FOLLOWING: '/users/profile/:username/following', // ADD THIS
+    FOLLOWERS: '/users/profile/:username/followers', 
+    FOLLOWING: '/users/profile/:username/following', 
   },
   POSTS: {
     BASE: '/posts',
@@ -68,7 +62,7 @@ export const ROUTES = {
     EDIT: '/posts/edit',
     DETAIL: '/posts',
   },
-  USERS: { // ADD THIS
+  USERS: { 
     BASE: '/users',
     DISCOVER: '/users',
   },
@@ -115,10 +109,11 @@ export const HTTP_STATUS_CODES = {
   NOT_FOUND: 404,
   CONFLICT: 409,
   UNPROCESSABLE_ENTITY: 422,
+  LOCKED: 423,
   INTERNAL_SERVER_ERROR: 500,
 } as const;
 
-export const SUCCESS_MESSAGES = { // ADD THIS
+export const SUCCESS_MESSAGES = { 
   USER_BANNED: 'User banned successfully',
   USER_UNBANNED: 'User unbanned successfully',
   USER_DELETED: 'User deleted successfully',

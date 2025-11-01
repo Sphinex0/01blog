@@ -1,11 +1,8 @@
 import { environment } from "../../../environments/environment";
 
-
-
-// export const API_BASE_URL = 'http://localhost:8080/api';
 export const API_BASE_URL = environment.apiUrl;
 
-export const WS_BASE_URL = environment.wsUrl; // <-- Define WS URL here
+export const WS_BASE_URL = environment.wsUrl; 
 
 export const API_ENDPOINTS = {
   AUTH: {
@@ -20,9 +17,9 @@ export const API_ENDPOINTS = {
     PROFILE: '/users/profile',
     UPDATE_PROFILE: '/users/profile',
     FOLLOW: '/users/subscribe',
-    UNFOLLOW: '/users/unsubscribe', // FIX typo
+    UNFOLLOW: '/users/unsubscribe', 
     FOLLOWERS: '/users/subscribers',
-    FOLLOWING: '/users/subscribtions', // FIX typo
+    FOLLOWING: '/users/subscribtions', 
     BY_USERNAME: '/users/username',
     SEARCH: '/users/search', 
   },
@@ -62,11 +59,9 @@ export const API_ENDPOINTS = {
     DELETE: '/reports', 
   },
   ADMIN: {
-    // Analytics
     STATS: '/admin/stats', 
     ANALYTICS: '/admin/analytics',
     
-    // Users Management
     USERS: '/admin/users',
     GET_USER: '/admin/users', 
     BAN_USER: '/admin/ban',
@@ -75,14 +70,12 @@ export const API_ENDPOINTS = {
     PROMOTE_USER: '/admin/promote', 
     DEMOTE_USER: '/admin/demote', 
     
-    // Posts Management
     POSTS: '/posts',
     GET_POST: '/admin/posts', 
     HIDE_POST: '/posts/hide', 
     UNHIDE_POST: '/admin/posts/unhide', 
     DELETE_POST: '/posts',
     
-    // Reports Management
     REPORTS: '/admin/reports',
     RESOLVE_REPORT: '/admin/reports/resolve', 
     DISMISS_REPORT: '/admin/reports/dismiss', 

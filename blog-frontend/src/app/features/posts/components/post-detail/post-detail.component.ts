@@ -25,6 +25,7 @@ import { ReportDialogComponent } from '../../../reporting/components/report-dial
 import { take } from 'rxjs';
 import { CreateReportRequest } from '../../../../core/models/report.interface';
 import { ReportService } from '../../../reporting/services/report.service';
+import { API_BASE_URL } from '../../../../core/constants/api.constants';
 
 @Component({
   selector: 'app-post-detail',
@@ -344,7 +345,7 @@ export class PostDetailComponent implements OnInit {
   getMediaUrl(url: string | undefined): string {
     if (!url) return '';
     if (url.startsWith('http')) return url;
-    return `http://localhost:8080/api/${url}`;
+    return `${API_BASE_URL}/${url}`;
   }
 
   getAuthorInitials(fullName: string): string {

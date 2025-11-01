@@ -9,6 +9,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDividerModule } from '@angular/material/divider';
 import { Comment } from '../../../../core/models/comment.interface';
 import { CommentItemComponent } from '../comment-item/comment-item.component';
+import { API_BASE_URL } from '../../../../core/constants/api.constants';
 
 @Component({
   selector: 'app-comments-section',
@@ -120,6 +121,6 @@ export class CommentsSectionComponent {
 
   getAvatarUrl(url: string): string {
     if (url.startsWith('http')) return url;
-    return `http://localhost:8080/api/${url}`;
+    return `${API_BASE_URL}/${url}`;
   }
 }

@@ -29,7 +29,7 @@ import { Post } from '../../../../core/models/post.interface';
 import { TimeAgoPipe } from '../../../../shared/pipes/time-ago-pipe';
 import { FeedService } from '../../services/feed.service';
 import { UserProfile } from '../../../../core/models/user.interface';
-import { API_ENDPOINTS } from '../../../../core/constants/api.constants';
+import { API_BASE_URL, API_ENDPOINTS } from '../../../../core/constants/api.constants';
 import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
@@ -126,7 +126,7 @@ export class FeedComponent implements OnInit {
   getMediaUrl(url: string | undefined): string {
     if (!url) return '';
     if (url.startsWith('http')) return url;
-    return `http://localhost:8080/api/${url}`;
+    return `${API_BASE_URL}/${url}`;
   }
 
   getAuthorInitials(fullName: string): string {

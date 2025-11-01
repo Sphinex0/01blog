@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class NotificationService {
@@ -39,7 +38,7 @@ public class NotificationService {
      */
     public void createAndSendNewPostNotifications(Post post) {
         User author = post.getUser();
-        Set<User> followers = author.getSubscribers(); // You need to implement this query
+        Set<User> followers = author.getSubscribers();
         
         if (followers.isEmpty()) {
             return;
@@ -48,15 +47,11 @@ public class NotificationService {
         List<Notification> notificationsToSave = new ArrayList<>();
 
         for (User follower : followers) {
-            // 1. Create the notification entity to save in the database
             Notification notification = new Notification(follower, author, post);
             notificationsToSave.add(notification);
 
-            // 2. Create the DTO to be sent over WebSocket
             NotificationResponse notificationResponse = toNotificationResponse(notification);
 
-            // 3. Send the notification directly to the specific follower's queue
-            // Spring automatically maps follower.getUsername() to the correct WebSocket session
             messagingTemplate.convertAndSendToUser(
                 follower.getUsername(),       // The user (principal name) to send to
                 "/queue/new-posts",           // The private destination

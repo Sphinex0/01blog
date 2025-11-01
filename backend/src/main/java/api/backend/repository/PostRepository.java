@@ -17,7 +17,6 @@ import java.util.Set;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
-    // Custom query methods
     List<Post> findByUser(User user);
     
     Optional<Post> findByIdAndIsHiddenFalse(Long id);
@@ -35,6 +34,4 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("SELECT p FROM Post p WHERE p.user IN :subscribedTo AND p.isHidden = false AND p.id < :cursor")
     Page<Post> findPostsBySubscribedTo(@Param("subscribedTo") Set<User> subscribedTo, @Param("cursor") long cursor, Pageable page);
 
-    // Optional: Find visible posts (not hidden)
-    // List<Post> findByHiddenAtIsNull();
 }

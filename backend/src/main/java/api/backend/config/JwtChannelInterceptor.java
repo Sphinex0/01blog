@@ -27,9 +27,7 @@ public class JwtChannelInterceptor implements ChannelInterceptor {
     public Message<?> preSend(@NonNull Message<?> message, @NonNull MessageChannel channel) {
         StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
 
-        // Check if it's a CONNECT frame to perform authentication
         if (accessor != null && StompCommand.CONNECT.equals(accessor.getCommand())) {
-            // "Authorization" header is sent as a native header
             String authHeader = accessor.getFirstNativeHeader("Authorization");
             
             if (authHeader != null && authHeader.startsWith("Bearer ")) {
@@ -42,7 +40,6 @@ public class JwtChannelInterceptor implements ChannelInterceptor {
                         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                             userDetails, null, userDetails.getAuthorities()
                         );
-                        // This is the crucial part: set the user for the WebSocket session
                         accessor.setUser(authentication);
                     }
                 }

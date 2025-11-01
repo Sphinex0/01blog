@@ -242,5 +242,5 @@ export class PostCreateComponent implements OnInit, OnDestroy {
   }
 }
 
-const imageExtensions = new Set(['jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff', 'webp', 'svg']);
+const imageExtensions = new Set(['jpg', 'jpeg', 'png', 'gif', 'webp']);
 const videoExtensions = new Set(['mp4', 'avi', 'mov', 'wmv', 'flv', 'webm', 'mkv', 'm4v']);

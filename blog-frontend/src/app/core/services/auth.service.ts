@@ -6,13 +6,15 @@ import { User, RegisterRequest, LoginRequest, AuthResponse } from '../models/use
 import { ApiResponse } from '../models/api-response.interface';
 import { APP_CONSTANTS, ROUTES } from '../constants/app.constants';
 import { Observable, tap, catchError, throwError, BehaviorSubject } from 'rxjs';
+import { ProfileService } from '../../features/profile/services/profile.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   private readonly authApi = inject(AuthApiService);
   private readonly storage = inject(StorageService);
+  private readonly profileService = inject(ProfileService);
   private readonly router = inject(Router);
 
   // Signals for reactive state management
@@ -24,7 +26,7 @@ export class AuthService {
   readonly currentUser = computed(() => this._currentUser());
   readonly isAuthenticated = computed(() => this._isAuthenticated());
   readonly isLoading = computed(() => this._isLoading());
-  readonly isAdmin = computed(() => this._currentUser()?.role === "ADMIN" || false);
+  readonly isAdmin = computed(() => this._currentUser()?.role === 'ADMIN' || false);
 
   constructor() {
     this.initializeAuth();
@@ -40,14 +42,24 @@ export class AuthService {
     }
   }
 
+  updateUserRole() {
+    if (this._currentUser()) {
+      this.profileService.getUserByUsername(this._currentUser()!.username).subscribe({
+        next: (response) => {
+          if (this._currentUser()?.role != response.role) {
+            this._currentUser.set(response);
+          }
+        },
+      });
+    }
+  }
+
   register(data: RegisterRequest): Observable<AuthResponse> {
     this._isLoading.set(true);
 
     return this.authApi.register(data).pipe(
       tap((response) => {
         if (response) {
-          console.log("inside register tap")
-
           this.handleAuthSuccess(response);
         }
       }),
@@ -63,9 +75,9 @@ export class AuthService {
 
     return this.authApi.login(data).pipe(
       tap((response) => {
-        // if (response.success && response.data) {
+        if (response) {
           this.handleAuthSuccess(response);
-        // }
+        }
       }),
       catchError((error) => {
         this._isLoading.set(false);
@@ -76,16 +88,17 @@ export class AuthService {
 
   logout(): void {
     this._isLoading.set(true);
+    this.handleLogout();
+    
+    // this.authApi.logout().subscribe({
+    //   complete: () => {
+    //     this.handleLogout();
+    //   },
+    //   error: () => {
+    //     this.handleLogout();
+    //   }
+    // });
 
-    this.authApi.logout().subscribe({
-      complete: () => {
-        this.handleLogout();
-      },
-      error: () => {
-        // Even if API call fails, clear local data
-        this.handleLogout();
-      }
-    });
   }
 
   refreshToken(): Observable<ApiResponse<AuthResponse>> {
@@ -111,7 +124,7 @@ export class AuthService {
 
   private handleAuthSuccess(authData: AuthResponse): void {
     // Store tokens and user data
-    console.log("inside handle auth success");
+    console.log('inside handle auth success');
     this.storage.setToken(authData.token);
     this.storage.setRefreshToken(authData.refreshToken);
     this.storage.setUserData(authData.user);
@@ -150,7 +163,6 @@ export class AuthService {
     return this.storage.clearAuth();
   }
 
-
   isTokenExpired(): boolean {
     const token = this.getToken();
     if (!token) return true;
@@ -164,9 +176,8 @@ export class AuthService {
     }
   }
 
-  refreshCurrentUser(user : User): void {
-      this.storage.setUserData(user);
-      this._currentUser.set(user);
-    
+  refreshCurrentUser(user: User): void {
+    this.storage.setUserData(user);
+    this._currentUser.set(user);
   }
 }

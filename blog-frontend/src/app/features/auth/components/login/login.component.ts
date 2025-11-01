@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatBadge, MatBadgeModule } from '@angular/material/badge';
+import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -12,7 +12,6 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { RouterModule } from '@angular/router';
 import { ROUTES } from '../../../../core/constants/app.constants';
 import { AuthService } from '../../../../core/services/auth.service';
-// import { CustomValidators } from '../../../../shared/validators/custom-validators';
 import { LoginRequest } from '../../../../core/models/user.interface';
 
 @Component({
@@ -39,7 +38,6 @@ export class LoginComponent {
   private readonly snackBar = inject(MatSnackBar)
 
   // Signals
-
   readonly hidePassword = signal(true);
   readonly isLoading = this.authService.isLoading;
 
@@ -69,7 +67,6 @@ export class LoginComponent {
 
   onSubmit(): void {
     if (this.loginForm.valid) {
-      // const { registerData } = this.loginForm.value;
       const request: LoginRequest = this.loginForm.value;
 
       this.authService.login(request).subscribe({
@@ -82,7 +79,8 @@ export class LoginComponent {
           }
         },
         error: (error) => {
-          const message = error.error?.message || 'Login failed. Please try again.';
+          const message = error.error || 'Login failed. Please try again.';
+
           this.snackBar.open(message, 'Close', {
             duration: 5000,
             panelClass: ['error-snackbar']

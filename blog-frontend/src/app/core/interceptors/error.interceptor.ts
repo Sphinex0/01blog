@@ -4,19 +4,29 @@ import { catchError, throwError } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../services/auth.service';
 import { ERROR_MESSAGES, HTTP_STATUS_CODES } from '../constants/app.constants';
+import { Router } from '@angular/router';
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const snackBar = inject(MatSnackBar);
   const authService = inject(AuthService);
+  const router = inject(Router);
+
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
       let errorMessage: string = ERROR_MESSAGES.SERVER_ERROR;
 
+
       switch (error.status) {
+        case HTTP_STATUS_CODES.FORBIDDEN:
+          router.navigate([""]);
+          break;
+        case HTTP_STATUS_CODES.LOCKED:
+          errorMessage = error.error;
+          authService.logout();
+          break;
         case HTTP_STATUS_CODES.UNAUTHORIZED:
           errorMessage = ERROR_MESSAGES.UNAUTHORIZED;
-          // Auto logout on 401
           authService.logout();
           break;
         case HTTP_STATUS_CODES.BAD_REQUEST:

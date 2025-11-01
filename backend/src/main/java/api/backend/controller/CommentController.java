@@ -4,15 +4,9 @@ package api.backend.controller;
 import api.backend.model.user.User;
 import api.backend.model.comment.CommentRequest;
 import api.backend.model.comment.CommentResponse;
-import api.backend.model.post.PostRequest;
-import api.backend.model.post.PostResponse;
 import api.backend.service.CommentService;
-import api.backend.service.PostService;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
-import jakarta.validation.Valid;
 
-import org.hibernate.Hibernate;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -25,11 +19,9 @@ import java.util.List;
 @RateLimiter(name = "myApiLimiter")
 public class CommentController {
 
-    private final PostService postService;
     private final CommentService commentService;
 
-    public CommentController(PostService postService, CommentService commentService) {
-        this.postService = postService;
+    public CommentController(CommentService commentService) {
         this.commentService = commentService;
     }
     

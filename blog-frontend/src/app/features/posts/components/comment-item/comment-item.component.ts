@@ -19,6 +19,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { Comment } from '../../../../core/models/comment.interface';
 import { TimeAgoPipe } from '../../../../shared/pipes/time-ago-pipe';
+import { API_BASE_URL } from '../../../../core/constants/api.constants';
 
 @Component({
   selector: 'app-comment-item',
@@ -181,7 +182,7 @@ ngOnChanges(changes: SimpleChanges): void {
 
   getAvatarUrl(url: string): string {
     if (url.startsWith('http')) return url;
-    return `http://localhost:8080/api/${url}`;
+    return `${API_BASE_URL}/${url}`;
   }
 
   getInitials(fullName: string): string {

@@ -6,7 +6,6 @@ import api.backend.model.user.UserResponse;
 
 public record NotificationResponse(
         Long id,
-        // UserResponse recipient,
         UserResponse sender,
         Long postId,
         boolean read,

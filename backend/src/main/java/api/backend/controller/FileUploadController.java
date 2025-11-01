@@ -22,7 +22,7 @@ public class FileUploadController {
 
     private CloudinaryService cloudinaryService;
     private UserService userService;
-    private static List<String> ALLOWED_TYPES_IMAGES = List.of("jpg", "jpeg", "png", "gif", "bmp", "tiff", "webp", "svg");
+    private static List<String> ALLOWED_TYPES_IMAGES = List.of("jpg", "jpeg", "png", "gif", "webp");
     private List<String> ALLOWED_TYPES_VEDIOS = List.of("mp4", "avi", "mov", "wmv", "flv", "webm", "mkv", "m4v");
 
     public FileUploadController(CloudinaryService cloudinaryService, UserService userService) {

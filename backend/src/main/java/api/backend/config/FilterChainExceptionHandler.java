@@ -17,8 +17,6 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class FilterChainExceptionHandler extends OncePerRequestFilter {
 
-    // private final Logger log = LoggerFactory.getLogger(getClass());
-
     @Autowired
     @Qualifier("handlerExceptionResolver")
     private HandlerExceptionResolver resolver;
@@ -30,7 +28,6 @@ public class FilterChainExceptionHandler extends OncePerRequestFilter {
         try {
             filterChain.doFilter(request, response);
         } catch (Exception e) {
-            // log.error("Spring Security Filter Chain Exception:", e);
             resolver.resolveException(request, response, null, e);
         }
     }

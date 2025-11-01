@@ -5,8 +5,6 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import api.backend.model.user.User;
@@ -18,33 +16,16 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
     Optional<User> findByRole(String email);
 
-    
-    
-
     Optional<User> findByUsernameOrEmail(String username, String Email);
 
-    // findAllByIdLessThan
     Page<User> findAllByIdLessThan(Long cursor, Pageable pageable);
 
-    // @Query("SELECT u FROM User u JOIN u.subscribed_to sub WHERE sub.id =
-    // :userId")
-    // Page<User> findSubscribersById(Long userId, Pageable pageable);
     Page<User> findAllBySubscribedToIdAndIdLessThan(Long userId, Long cursor, Pageable pageable);
 
-    // @Query("SELECT u FROM User u JOIN u.subscribers sub WHERE sub.id = :userId")
     Page<User> findAllBySubscribersIdAndIdLessThan(Long userId, Long cursor, Pageable pageable);
 
     Page<User> findByIdLessThanAndFullNameContainingIgnoreCaseOrUsernameContainingIgnoreCase(
              Long cursor ,String fullNameQuery, String usernameQuery, Pageable pageable
     );
 
-
-    // @Query("SELECT u FROM User u WHERE " +
-    //        "(LOWER(u.fullName) LIKE LOWER(CONCAT('%', :query, '%')) OR LOWER(u.username) LIKE LOWER(CONCAT('%', :query, '%'))) " +
-    //        "AND u.id < :cursor")
-    // Page<User> searchByFullNameOrUsernameAndIdLessThan(
-    //         @Param("query") String query,
-    //         @Param("cursor") Long cursor,
-    //         Pageable pageable
-    // );
 }

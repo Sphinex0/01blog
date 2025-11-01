@@ -39,8 +39,10 @@ public class DataLoader implements CommandLineRunner {
     public void run(String... args) {
 
         if (userRepository.count() >= 10) {
-            return; // Prevent reseeding if users already exist
+            return; 
         }
+
+        // password: admin123
         User adminUser = new User("admin", "admin", "admin@gmail.com",
                 "$2a$10$gLOE1XiudLgmuyvhiWl9WOXXEEvqOofpkN9wbXkUynZzAahmq6oV2", "ADMIN", LocalDateTime.now());
         userRepository.save(adminUser);
@@ -61,8 +63,6 @@ public class DataLoader implements CommandLineRunner {
                     String password = faker.internet().password(60, 255);
                     String role = "USER";
                     User user = new User(fullName, username, email, password, role, LocalDateTime.now());
-                    // user.setAvatar(faker.internet().image());
-                    // user.setAvatar(faker.avatar().image());
                     adminUser.getSubscribers().add(user);
                     user.getSubscribedTo().add(adminUser);
                     if (i % 2 == 0) {

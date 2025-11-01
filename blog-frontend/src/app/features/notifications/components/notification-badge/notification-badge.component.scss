@@ -1,15 +1,14 @@
+.notification-badge-btn {
+  position: relative;
 
-    .notification-badge-btn {
-      position: relative;
+  &.active {
+    color: #667eea;
+  }
+}
 
-      &.active {
-        color: #667eea;
-      }
-    }
-
-    :host ::ng-deep {
-      .mat-badge-content {
-        font-weight: 600;
-        font-size: 0.625rem;
-      }
-    }
+:host ::ng-deep {
+  .mat-badge-content {
+    font-weight: 600;
+    font-size: 0.625rem;
+  }
+}

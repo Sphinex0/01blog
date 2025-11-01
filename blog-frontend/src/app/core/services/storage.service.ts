@@ -8,7 +8,6 @@ import { APP_CONSTANTS } from '../constants/app.constants';
 export class StorageService {
 
   setToken(token: string): void {
-    console.log("inside set token")
     localStorage.setItem(APP_CONSTANTS.STORAGE_KEYS.ACCESS_TOKEN, token);
   }
 

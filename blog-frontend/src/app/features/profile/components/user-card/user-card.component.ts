@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { UserProfile } from '../../../../core/models/user.interface';
+import { API_BASE_URL } from '../../../../core/constants/api.constants';
 
 @Component({
   selector: 'app-user-card',
@@ -41,7 +42,7 @@ export class UserCardComponent {
   getAvatarUrl(avatar: string | undefined): string {
     if (!avatar) return '';
     if (avatar.startsWith('http')) return avatar;
-    return `http://localhost:8080/api/${avatar}`;
+    return `${API_BASE_URL}/${avatar}`;
   }
 
   getInitials(fullName: string): string {

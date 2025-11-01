@@ -50,7 +50,7 @@ public class CommentService {
 
         // Update replyCount for the parent if it exists
         if (parent != null) {
-            parent.getReplies().add(savedComment); // Refresh replies
+            parent.getReplies().add(savedComment); 
             commentRepository.save(parent);
         }
         CommentResponse commentResponse = new CommentResponse(
@@ -142,7 +142,6 @@ public class CommentService {
 
     public List<CommentResponse> getTopLevelComments(Long postId, long cursor) {
         Pageable pageable = PageRequest.of(0, 10, Direction.DESC, "id");
-        // , cursor
         return commentRepository.findByPostIdAndParentIsNullAndIdLessThan(postId,cursor, pageable).map(comment -> {
             int replyCount = commentRepository.findByParentId(comment.getId())
                     .size();
@@ -158,7 +157,7 @@ public class CommentService {
                     (UserService.toUserResponse(comment.getUser())),
                     postId,
                     comment.getCreatedAt(),
-                    null, // Top-level comments have no parent
+                    null, 
                     comment.getLikedBy().size(),
                     replyCount,
                     likedByCurrentUser);

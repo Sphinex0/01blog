@@ -22,7 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import api.backend.model.user.BanRequest;
-import api.backend.model.user.DeleteRequest;
 import api.backend.model.user.User;
 import api.backend.model.user.UserResponse;
 import api.backend.repository.UserRepository;
@@ -154,10 +153,9 @@ public class UserService implements UserDetailsService {
         if (cursor == 0) {
             cursor = Long.MAX_VALUE;
         }
+        
         Pageable pageable = PageRequest.of(0, 10, Direction.DESC, "id");
-        System.out.println("###############################################################################################");
-        System.out.println(cursor);
-        System.out.println("###############################################################################################");
+
         return userRepository
                 .findByIdLessThanAndFullNameContainingIgnoreCaseOrUsernameContainingIgnoreCase(cursor, query, query, pageable)
                 .stream()
@@ -198,8 +196,8 @@ public class UserService implements UserDetailsService {
         return "";
     }
 
-    public String unbanUser(DeleteRequest request) {
-        User user = userRepository.findById(request.id()).get();
+    public String unbanUser(long userId) {
+        User user = userRepository.findById(userId).get();
         user.setBannedUntil(null);
         userRepository.save(user);
         return "user unbanned";
@@ -222,6 +220,7 @@ public class UserService implements UserDetailsService {
 
     }
 
+    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsernameOrEmail(username, username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
@@ -240,8 +239,6 @@ public class UserService implements UserDetailsService {
         String currentUsername = currentUser.getUsername();
         boolean currentInSubscribersByUsername = currentUsername != null && user.getSubscribers().stream()
                 .anyMatch(sub -> currentUsername.equals(sub.getUsername()));
-        System.out.println("User avatar: " + user.getId());
-        System.out.println("User avatar: " + user.getAvatar());
         return new UserResponse(
                 user.getId(),
                 user.getFullName(),

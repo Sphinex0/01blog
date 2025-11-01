@@ -15,12 +15,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import api.backend.model.report.ReportResponse;
-import api.backend.model.report.ReviewRequest;
 import api.backend.model.user.AdminUserResponse;
 import api.backend.model.user.BanRequest;
-import api.backend.model.user.DeleteRequest;
 import api.backend.model.user.User;
-import api.backend.model.user.UserResponse;
 import api.backend.service.AdminService;
 import api.backend.service.ReportService;
 import api.backend.service.UserService;
@@ -63,8 +60,8 @@ public class AdminController {
     }
 
     @PatchMapping("/unban")
-    public ResponseEntity<String> unbanUser(@Valid @RequestBody DeleteRequest request) {
-        return ResponseEntity.ok(userService.unbanUser(request));
+    public ResponseEntity<String> unbanUser(@Valid @RequestBody long userId) {
+        return ResponseEntity.ok(userService.unbanUser(userId));
     }
 
     @PatchMapping("/promote/{userId}")

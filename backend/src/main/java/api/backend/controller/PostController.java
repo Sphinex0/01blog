@@ -2,16 +2,12 @@
 package api.backend.controller;
 
 import api.backend.model.user.User;
-import api.backend.model.comment.CommentRequest;
-import api.backend.model.comment.CommentResponse;
 import api.backend.model.post.PostRequest;
 import api.backend.model.post.PostResponse;
-import api.backend.service.CommentService;
 import api.backend.service.PostService;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import jakarta.validation.Valid;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -25,11 +21,9 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
-    private final CommentService commentService;
 
-    public PostController(PostService postService, CommentService commentService) {
+    public PostController(PostService postService) {
         this.postService = postService;
-        this.commentService = commentService;
     }
 
     @PostMapping
@@ -88,42 +82,5 @@ public class PostController {
     public ResponseEntity<String> hidePost(@PathVariable Long id) {
         return ResponseEntity.ok(postService.hidePost(id));
     }
-
-    // @GetMapping("/{id}/comments")
-    // public ResponseEntity<List<CommentResponse>> getTopLevelComments(@PathVariable Long id,
-    //         @RequestParam(defaultValue = "0") long cursor) {
-
-    //             //System.out.println("Fetching comments for post ID: " + id + " with cursor: " + cursor);
-    //     if (cursor == 0) {
-    //         cursor = Long.MAX_VALUE;
-    //     }
-    //     return ResponseEntity.ok(commentService.getTopLevelComments(id, cursor));
-    // }
-
-    // @PostMapping("/{id}/comments")
-    // public ResponseEntity<CommentResponse> addComment(@PathVariable Long id, @RequestBody CommentRequest request,
-    //         @AuthenticationPrincipal User currentUser) {
-    //         CommentResponse comment = commentService.addComment(id, currentUser, request);
-    //         return ResponseEntity.ok(comment);
-    // }
-
-    // @DeleteMapping("/comments/{commentId}")
-    // @PreAuthorize("hasRole('ADMIN') or @commentService.getcommentById(#id).user.id == authentication.principal.id")
-    // public ResponseEntity<Void> deleteComment(@PathVariable Long commentId, @AuthenticationPrincipal User currentUser) {
-    //     return commentService.deleteComment(commentId, currentUser)
-    //             ? ResponseEntity.noContent().build()
-    //             : ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-    // }
-
-    // @GetMapping("/comments/{commentId}/replies")
-    // public ResponseEntity<List<CommentResponse>> getReplies(@PathVariable Long commentId,
-    //         @RequestParam(defaultValue = "0") long cursor) {
-    //     if (cursor == 0) {
-    //         cursor = Long.MAX_VALUE;
-    //     }
-
-    //     List<CommentResponse> replies = commentService.getReplies(commentId, cursor);
-    //     return ResponseEntity.ok(replies);
-    // }
 
 }

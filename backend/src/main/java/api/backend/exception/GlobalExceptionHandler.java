@@ -24,7 +24,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> rateLimitFallback(RequestNotPermitted ex) {
         return new ResponseEntity<>(
                 Map.of("error", "Too many requests. Please try again later."),
-                HttpStatus.TOO_MANY_REQUESTS // This sends the 429 status code
+                HttpStatus.TOO_MANY_REQUESTS 
         );
     }
 
@@ -42,9 +42,15 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
     }
 
-    @ExceptionHandler({ DisabledException.class, AuthorizationDeniedException.class })
+    @ExceptionHandler( AuthorizationDeniedException.class)
     public ResponseEntity<String> handleDisabledException(Exception ex) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(DisabledException.class)
+    public ResponseEntity<String> DisabledException(
+            DisabledException ex) {
+        return ResponseEntity.status(HttpStatus.LOCKED).body("Login failed: " + ex.getMessage());
     }
 
     @ExceptionHandler(InternalAuthenticationServiceException.class)
@@ -52,8 +58,11 @@ public class GlobalExceptionHandler {
             InternalAuthenticationServiceException ex) {
         // Unwrap the cause to get the original DisabledException message
         Throwable cause = ex.getCause();
-        String message = (cause instanceof DisabledException) ? cause.getMessage() : ex.getMessage();
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Login failed: " + message);
+        if (cause instanceof DisabledException){
+            return ResponseEntity.status(HttpStatus.LOCKED).body("Login failed: " +  cause.getMessage());
+        } 
+       
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Login failed: " +  ex.getMessage());
     }
 
     @ExceptionHandler({ IllegalStateException.class, IllegalArgumentException.class, NoSuchElementException.class })

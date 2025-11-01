@@ -16,8 +16,7 @@ import org.hibernate.annotations.OnDeleteAction;
 @Entity
 @Data
 @Table(name = "reports", uniqueConstraints = {
-        @UniqueConstraint(columnNames = { "reporter_id", "reported_id", "post_id" }) // Prevent duplicate reports for
-                                                                                     // the same user and post
+        @UniqueConstraint(columnNames = { "reporter_id", "reported_id", "post_id" })
 })
 public class Report {
 
@@ -39,7 +38,7 @@ public class Report {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
-    private Post post; // Optional post related to the report
+    private Post post; 
 
     @NotBlank(message = "Reason is required")
     @Size(max = 500, message = "Reason cannot exceed 500 characters")

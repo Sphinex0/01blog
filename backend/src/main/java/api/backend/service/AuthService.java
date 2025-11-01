@@ -6,6 +6,7 @@ import api.backend.repository.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -53,7 +54,9 @@ public class AuthService {
                     new UsernamePasswordAuthenticationToken(request.username(), request.password()));
 
             return new AuthResponse(jwtUtil.generateToken((User) auth.getPrincipal()), toUserResponse((User) auth.getPrincipal()));
-        } catch (BadCredentialsException e) {
+        
+        }catch (BadCredentialsException e) {
+            
             throw new BadCredentialsException("Invalid username or password");
         }
     }

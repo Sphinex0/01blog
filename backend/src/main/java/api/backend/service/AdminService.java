@@ -44,8 +44,6 @@ public class AdminService {
         long totalBannedUsers = bannedUsersCount;
         long activeUsers = totalUsers - bannedUsersCount;
 
-        // Posts: prefer repository counts if available, fall back to summing user's
-        // posts
         long totalPosts = 0;
         long postsThisMonth = 0;
         LocalDateTime monthStart = now.withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0).withNano(0);

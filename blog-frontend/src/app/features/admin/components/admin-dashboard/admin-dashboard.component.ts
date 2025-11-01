@@ -26,8 +26,6 @@ import { AdminService } from '../../services/admin.service';
 import { AnalyticsService } from '../../services/analytics.service';
 import { MatDividerModule } from '@angular/material/divider';
 
-// --- Ban Duration Dialog Component ---
-// NOTE: Must be a standalone component or imported module if external.
 @Component({
   selector: 'app-ban-duration-dialog',
   standalone: true,
@@ -96,6 +94,7 @@ export class BanDurationDialog {
     });
   }
 }
+
 // ------------------------------------
 
 @Component({
@@ -111,8 +110,8 @@ export class BanDurationDialog {
     MatDialogModule,
     MatProgressSpinnerModule,
     TimeAgoPipe,
-    MatDividerModule
-],
+    MatDividerModule,
+  ],
   templateUrl: './admin-dashboard.component.html',
   styleUrl: './admin-dashboard.component.scss',
 })
@@ -120,39 +119,38 @@ export class AdminDashboardComponent implements OnInit {
   private readonly adminService = inject(AdminService);
   private readonly analyticsService = inject(AnalyticsService);
   private readonly dialog = inject(MatDialog);
-  private readonly snackBar = inject(MatSnackBar); // Stats
+  private readonly snackBar = inject(MatSnackBar);
 
   readonly stats = signal<AdminStats | null>(null);
-  readonly isLoadingStats = signal(false); // Users (Infinite Scroll)
+  readonly isLoadingStats = signal(false);
 
   readonly users = signal<AdminUserDetails[]>([]);
   readonly isLoadingUsers = signal(false);
   readonly usersTotal = signal(0);
-  readonly usersCursor = signal(0); // ID of the last item fetched
+  readonly usersCursor = signal(0);
   readonly hasMoreUsers = signal(true);
-  readonly usersPageSize = signal(10); // Chunk size // Posts (Infinite Scroll)
+  readonly usersPageSize = signal(10);
 
   readonly posts = signal<AdminPost[]>([]);
   readonly isLoadingPosts = signal(false);
   readonly postsTotal = signal(0);
-  readonly postsCursor = signal(0); // ID of the last item fetched
+  readonly postsCursor = signal(0);
   readonly hasMorePosts = signal(true);
-  readonly postsPageSize = signal(10); // Chunk size // Reports (Infinite Scroll)
+  readonly postsPageSize = signal(10);
 
   readonly reports = signal<Report[]>([]);
   readonly isLoadingReports = signal(false);
   readonly reportsTotal = signal(0);
-  readonly reportsCursor = signal(0); // ID of the last item fetched
+  readonly reportsCursor = signal(0);
   readonly hasMoreReports = signal(true);
-  readonly reportsPageSize = signal(10); // Chunk size
   readonly selectedReportStatus = signal<string>('PENDING');
 
   ngOnInit(): void {
-     this.loadStats();
-    this.loadUsers(true); // Initial load
+    this.loadStats();
+    this.loadUsers(true);
     this.loadPosts(true);
     this.loadReports(true);
-  } // Helper function to get ban status info
+  } 
 
   getBanStatus(user: AdminUserDetails): string {
     if (!user.isBanned) return '';
@@ -161,20 +159,19 @@ export class AdminDashboardComponent implements OnInit {
       const untilDate = new Date(user.bannedUntil);
       const now = new Date();
 
-      // Check for permanent ban (distantly future date, like 100 years from TimeAgoPipe)
       if (TimeAgoPipe.timeUntil(user.bannedUntil) === 'PERMANENT') {
         return 'PERMANENT';
       }
-      // Check if ban is expired
+
       if (untilDate.getTime() <= now.getTime()) {
         return 'EXPIRED';
       }
-      // Show time left
+      
       return TimeAgoPipe.timeUntil(user.bannedUntil);
     }
-    // Fallback for systems only using isBanned=true
+    
     return 'ACTIVE';
-  } // Load Stats
+  } 
 
   loadStats(): void {
     this.isLoadingStats.set(true);
@@ -194,7 +191,7 @@ export class AdminDashboardComponent implements OnInit {
           this.isLoadingStats.set(false);
         },
       });
-  } // --- USERS MANAGEMENT (Optimized State Update) ---
+  }
 
   loadUsers(isInitialLoad: boolean = false): void {
     if (this.isLoadingUsers() || (!this.hasMoreUsers() && !isInitialLoad)) {
@@ -204,7 +201,7 @@ export class AdminDashboardComponent implements OnInit {
     const currentCursor = isInitialLoad ? 0 : this.usersCursor();
 
     this.adminService
-      .getAllUsers(currentCursor, this.usersPageSize())
+      .getAllUsers(currentCursor)
       .pipe(take(1))
       .subscribe({
         next: (data: AdminUserDetails[]) => {
@@ -229,7 +226,6 @@ export class AdminDashboardComponent implements OnInit {
   onUsersScrollBottom(): void {
     if (this.hasMoreUsers() && !this.isLoadingUsers()) {
       setTimeout(() => {
-        // Using setTimeout to allow DOM reflow and prevent re-entrancy
         this.loadUsers();
       });
     }
@@ -237,85 +233,120 @@ export class AdminDashboardComponent implements OnInit {
 
   onBanUser(user: AdminUserDetails | Report['reported']): void {
     // Attempt to find the full user object if only the subset from Report is passed
-    let fullUser = this.users().find(u => u.id === user.id) as AdminUserDetails || user as AdminUserDetails;
-    
+    let fullUser =
+      (this.users().find((u) => u.id === user.id) as AdminUserDetails) ||
+      (user as AdminUserDetails);
+
     // Check if the user is currently banned (or is being treated as banned for the action)
     const isCurrentlyBanned = fullUser.isBanned;
 
     if (isCurrentlyBanned) {
       // UNBAN ACTION
-      this.dialog.open(ConfirmationDialogComponent, {
-        width: '400px',
-        data: {
-          title: 'UNBAN USER',
-          message: `Are you sure you want to unban ${fullUser.username}?`,
-          confirmText: 'UNBAN',
-          cancelText: 'Cancel',
-          type: 'success'
-        }
-      }).afterClosed().pipe(take(1)).subscribe(result => {
-        if (result) {
-          // Call banUser with null date to unban
-          this.adminService.banUser(fullUser.id, null).pipe(take(1)).subscribe({
-            next: () => {
-              this.snackBar.open(SUCCESS_MESSAGES.USER_UNBANNED, 'Close', { duration: 2000 });
-              // Update local state directly: set isBanned=false and clear bannedUntil
-              this.users.update(users => users.map(u => 
-                u.id === fullUser.id ? { ...u, isBanned: false, bannedUntil: null } : u
-              ));
-              this.reports.update((current) =>
-                current.map((r) =>
-                  r.reported && r.reported.id === fullUser.id
-                    ? { ...r, reported: { ...r.reported, isBanned: false, bannedUntil: null } }
-                    : r
-                )
-              );
+      this.dialog
+        .open(ConfirmationDialogComponent, {
+          width: '400px',
+          data: {
+            title: 'UNBAN USER',
+            message: `Are you sure you want to unban ${fullUser.username}?`,
+            confirmText: 'UNBAN',
+            cancelText: 'Cancel',
+            type: 'success',
+          },
+        })
+        .afterClosed()
+        .pipe(take(1))
+        .subscribe((result) => {
+          if (result) {
+            // Call banUser with null date to unban
+            this.adminService
+              .banUser(fullUser.id, null)
+              .pipe(take(1))
+              .subscribe({
+                next: () => {
+                  this.snackBar.open(SUCCESS_MESSAGES.USER_UNBANNED, 'Close', { duration: 2000 });
+                  this.users.update((users) =>
+                    users.map((u) =>
+                      u.id === fullUser.id ? { ...u, isBanned: false, bannedUntil: null } : u
+                    )
+                  );
+                  this.reports.update((current) =>
+                    current.map((r) =>
+                      r.reported && r.reported.id === fullUser.id
+                        ? { ...r, reported: { ...r.reported, isBanned: false, bannedUntil: null } }
+                        : r
+                    )
+                  );
 
-               this.loadStats();
-            },
-            error: () => {
-              this.snackBar.open(`Failed to unban user`, 'Close', { duration: 3000 });
-            }
-          });
-        }
-      });
+                  this.loadStats();
+                },
+                error: () => {
+                  this.snackBar.open(`Failed to unban user`, 'Close', { duration: 3000 });
+                },
+              });
+          }
+        });
     } else {
-      // BAN ACTION - Prompt for duration
-      this.dialog.open(BanDurationDialog, {
-        width: '400px',
-      }).afterClosed().pipe(take(1)).subscribe(dialogResult => {
-        if (dialogResult && (dialogResult.bannedUntil instanceof Date || dialogResult.isPermanent)) {
-          
-          const bannedUntilDate: Date | null = dialogResult.isPermanent ? null : dialogResult.bannedUntil;
-          const isPermanent = dialogResult.isPermanent;
-          const durationDays = dialogResult.durationDays;
+      this.dialog
+        .open(BanDurationDialog, {
+          width: '400px',
+        })
+        .afterClosed()
+        .pipe(take(1))
+        .subscribe((dialogResult) => {
+          if (
+            dialogResult &&
+            (dialogResult.bannedUntil instanceof Date || dialogResult.isPermanent)
+          ) {
+            const bannedUntilDate: Date | null = dialogResult.isPermanent
+              ? null
+              : dialogResult.bannedUntil;
+            const isPermanent = dialogResult.isPermanent;
+            const durationDays = dialogResult.durationDays;
 
-          this.adminService.banUser(fullUser.id, bannedUntilDate).pipe(take(1)).subscribe({
-            next: () => {
-              const message = isPermanent 
-                ? `User ${fullUser.username} permanently banned.` 
-                : `User ${fullUser.username} banned for ${durationDays} days.`;
-                
-              this.snackBar.open(message, 'Close', { duration: 2000 });
-              // Update local state directly: set isBanned=true and bannedUntil date
-              this.users.update(users => users.map(u => 
-                u.id === fullUser.id ? { ...u, isBanned: true, bannedUntil: bannedUntilDate } : u
-              ));
-              this.reports.update((current) =>
-                current.map((r) =>
-                  r.reported && r.reported.id === fullUser.id
-                    ? { ...r, reported: { ...r.reported, isBanned: true, bannedUntil: bannedUntilDate } }
-                    : r
-                )
-              );
-               this.loadStats();
-            },
-            error: (err) => {
-              this.snackBar.open(`Failed to ban user: ${err.error?.message || 'Server error'}`, 'Close', { duration: 3000 });
-            }
-          });
-        }
-      });
+            this.adminService
+              .banUser(fullUser.id, bannedUntilDate)
+              .pipe(take(1))
+              .subscribe({
+                next: () => {
+                  const message = isPermanent
+                    ? `User ${fullUser.username} permanently banned.`
+                    : `User ${fullUser.username} banned for ${durationDays} days.`;
+
+                  this.snackBar.open(message, 'Close', { duration: 2000 });
+                  // Update local state directly: set isBanned=true and bannedUntil date
+                  this.users.update((users) =>
+                    users.map((u) =>
+                      u.id === fullUser.id
+                        ? { ...u, isBanned: true, bannedUntil: bannedUntilDate }
+                        : u
+                    )
+                  );
+                  this.reports.update((current) =>
+                    current.map((r) =>
+                      r.reported && r.reported.id === fullUser.id
+                        ? {
+                            ...r,
+                            reported: {
+                              ...r.reported,
+                              isBanned: true,
+                              bannedUntil: bannedUntilDate,
+                            },
+                          }
+                        : r
+                    )
+                  );
+                  this.loadStats();
+                },
+                error: (err) => {
+                  this.snackBar.open(
+                    `Failed to ban user: ${err.error?.message || 'Server error'}`,
+                    'Close',
+                    { duration: 3000 }
+                  );
+                },
+              });
+          }
+        });
     }
   }
 
@@ -344,7 +375,7 @@ export class AdminDashboardComponent implements OnInit {
                 this.snackBar.open(SUCCESS_MESSAGES.USER_DELETED, 'Close', { duration: 2000 }); // Update local state directly: remove the deleted user
                 this.users.update((current) => current.filter((u) => u.id !== user.id));
                 this.usersTotal.update((count) => Math.max(0, count - 1));
-                 this.loadStats();
+                this.loadStats();
               },
               error: () => {
                 this.snackBar.open('Failed to delete user', 'Close', { duration: 3000 });
@@ -352,7 +383,7 @@ export class AdminDashboardComponent implements OnInit {
             });
         }
       });
-  } // --- ROLE MANAGEMENT ---
+  } 
 
   onPromoteUser(user: AdminUserDetails): void {
     this.adminService
@@ -361,7 +392,6 @@ export class AdminDashboardComponent implements OnInit {
       .subscribe({
         next: () => {
           this.snackBar.open(SUCCESS_MESSAGES.USER_PROMOTED, 'Close', { duration: 2000 });
-          // Update local state directly
           this.users.update((users) =>
             users.map((u) => (u.id === user.id ? { ...u, role: 'ADMIN' } : u))
           );
@@ -379,7 +409,6 @@ export class AdminDashboardComponent implements OnInit {
       .subscribe({
         next: () => {
           this.snackBar.open(SUCCESS_MESSAGES.USER_DEMOTED, 'Close', { duration: 2000 });
-          // Update local state directly
           this.users.update((users) =>
             users.map((u) => (u.id === user.id ? { ...u, role: 'USER' } : u))
           );
@@ -388,7 +417,7 @@ export class AdminDashboardComponent implements OnInit {
           this.snackBar.open('Failed to demote user', 'Close', { duration: 3000 });
         },
       });
-  } // --- POSTS MANAGEMENT (Optimized State Update) ---
+  } 
 
   loadPosts(isInitialLoad: boolean = false): void {
     if (this.isLoadingPosts() || (!this.hasMorePosts() && !isInitialLoad)) {
@@ -398,7 +427,7 @@ export class AdminDashboardComponent implements OnInit {
     const currentCursor = isInitialLoad ? 0 : this.postsCursor();
 
     this.adminService
-      .getAllPosts(currentCursor, this.postsPageSize())
+      .getAllPosts(currentCursor)
       .pipe(take(1))
       .subscribe({
         next: (data: AdminPost[]) => {
@@ -443,7 +472,7 @@ export class AdminDashboardComponent implements OnInit {
         const message = isCurrentlyHidden
           ? SUCCESS_MESSAGES.POST_UNHIDDEN
           : SUCCESS_MESSAGES.POST_HIDDEN;
-        this.snackBar.open(message, 'Close', { duration: 2000 }); // Update local state directly
+        this.snackBar.open(message, 'Close', { duration: 2000 }); 
         this.posts.update((posts) =>
           posts.map((p) => (p.id === post.id ? { ...p, isHidden: !isCurrentlyHidden } : p))
         );
@@ -479,7 +508,7 @@ export class AdminDashboardComponent implements OnInit {
                 this.snackBar.open(SUCCESS_MESSAGES.POST_DELETED, 'Close', { duration: 2000 }); // Update local state directly
                 this.posts.update((current) => current.filter((p) => p.id !== post.id));
                 this.postsTotal.update((count) => Math.max(0, count - 1));
-                 this.loadStats();
+                this.loadStats();
               },
               error: () => {
                 this.snackBar.open('Failed to delete post', 'Close', { duration: 3000 });
@@ -487,7 +516,7 @@ export class AdminDashboardComponent implements OnInit {
             });
         }
       });
-  } // --- REPORTS MANAGEMENT (Optimized State Update) ---
+  }
 
   loadReports(isInitialLoad: boolean = false): void {
     if (this.isLoadingReports() || (!this.hasMoreReports() && !isInitialLoad)) {
@@ -497,7 +526,7 @@ export class AdminDashboardComponent implements OnInit {
     const currentCursor = isInitialLoad ? 0 : this.reportsCursor();
 
     this.adminService
-      .getAllReports(currentCursor, this.reportsPageSize(), this.selectedReportStatus())
+      .getAllReports(currentCursor, this.selectedReportStatus())
       .pipe(take(1))
       .subscribe({
         next: (data: Report[]) => {
@@ -508,7 +537,7 @@ export class AdminDashboardComponent implements OnInit {
             this.reports.update((current) => [...current, ...data]);
           }
 
-          this.hasMoreReports.set(data.length === this.reportsPageSize());
+          this.hasMoreReports.set(data.length === 10);
 
           if (data.length > 0) {
             this.reportsCursor.set(data[data.length - 1].id);
@@ -532,10 +561,10 @@ export class AdminDashboardComponent implements OnInit {
 
   onReportStatusChange(status: string): void {
     this.selectedReportStatus.set(status);
-    this.reportsCursor.set(0); // Reset cursor
-    this.hasMoreReports.set(true); // Reset load state
-    this.reports.set([]); // Clear current list
-    this.loadReports(true); // Trigger new initial load
+    this.reportsCursor.set(0); 
+    this.hasMoreReports.set(true); 
+    this.reports.set([]); 
+    this.loadReports(true); 
   }
 
   onResolveReport(report: Report): void {
@@ -545,11 +574,10 @@ export class AdminDashboardComponent implements OnInit {
       .subscribe({
         next: () => {
           this.snackBar.open(SUCCESS_MESSAGES.REPORT_RESOLVED, 'Close', { duration: 2000 });
-          // Update local state directly: set status to RESOLVED
           this.reports.update((reports) =>
             reports.map((r) => (r.id === report.id ? { ...r, status: 'RESOLVED' as const } : r))
           );
-           this.loadStats();
+          this.loadStats();
         },
         error: () => {
           this.snackBar.open('Failed to resolve report', 'Close', { duration: 3000 });
@@ -564,7 +592,6 @@ export class AdminDashboardComponent implements OnInit {
       .subscribe({
         next: () => {
           this.snackBar.open(SUCCESS_MESSAGES.REPORT_DISMISSED, 'Close', { duration: 2000 });
-          // Update local state directly: set status to DISMISSED
           this.reports.update((reports) =>
             reports.map((r) => (r.id === report.id ? { ...r, status: 'DISMISSED' as const } : r))
           );
@@ -598,7 +625,6 @@ export class AdminDashboardComponent implements OnInit {
             .subscribe({
               next: () => {
                 this.snackBar.open(SUCCESS_MESSAGES.REPORT_DELETED, 'Close', { duration: 2000 });
-                // Update local state directly: remove the report
                 this.reports.update((current) => current.filter((r) => r.id !== report.id));
               },
               error: () => {
@@ -609,60 +635,60 @@ export class AdminDashboardComponent implements OnInit {
       });
   }
 
-  // --- Quick Action Handlers for Reports Tab ---
-  // Quick Ban from Report card
+
   onQuickBanUserFromReport(report: Report) {
-    // We only have subset user data in the report, so we pass it to the main handler.
     this.onBanUser(report.reported);
   }
 
-
-  // Quick Hide Post from Report card
   onQuickHidePostFromReport(report: Report) {
     if (!report.postId) {
       this.snackBar.open('Report is not linked to a post.', 'Close', { duration: 3000 });
       return;
     }
-    
-    // Find the post's current state (isHidden) if possible, otherwise assume not hidden for simplicity
+
     const isCurrentlyHidden = report.postHidden;
 
     const action = isCurrentlyHidden ? 'unhide' : 'hide';
     const request = isCurrentlyHidden
       ? this.adminService.unhidePost(report.postId!)
       : this.adminService.hidePost(report.postId!);
-    
+
     const confirmationMessage = isCurrentlyHidden
       ? `Are you sure you want to unhide post #${report.postId}?`
       : `Are you sure you want to HIDE post #${report.postId}? This will hide it immediately.`;
-    
-    this.dialog.open(ConfirmationDialogComponent, {
-      width: '400px',
-      data: {
-        title: `${action.toUpperCase()} POST`,
-        message: confirmationMessage,
-        confirmText: action.toUpperCase(),
-        cancelText: 'CANCEL',
-        type: isCurrentlyHidden ? 'success' : 'danger'
-      }
-    }).afterClosed().pipe(take(1)).subscribe(dialogResult => {
-      if (dialogResult) {
-        request.pipe(take(1)).subscribe({
-          next: () => {
-            this.snackBar.open(`Post ${action} successful!`, 'Close', { duration: 2000 });
-            
-            // Update local POSTS state directly
-            this.posts.update(posts => posts.map(p => 
-              p.id === report.postId ? { ...p, isHidden: !isCurrentlyHidden } as AdminPost : p
-            ));
-            report.postHidden = !isCurrentlyHidden;
-          },
-          error: () => {
-            this.snackBar.open(`Failed to ${action} post.`, 'Close', { duration: 3000 });
-          }
-        });
-      }
-    });
+
+    this.dialog
+      .open(ConfirmationDialogComponent, {
+        width: '400px',
+        data: {
+          title: `${action.toUpperCase()} POST`,
+          message: confirmationMessage,
+          confirmText: action.toUpperCase(),
+          cancelText: 'CANCEL',
+          type: isCurrentlyHidden ? 'success' : 'danger',
+        },
+      })
+      .afterClosed()
+      .pipe(take(1))
+      .subscribe((dialogResult) => {
+        if (dialogResult) {
+          request.pipe(take(1)).subscribe({
+            next: () => {
+              this.snackBar.open(`Post ${action} successful!`, 'Close', { duration: 2000 });
+
+              this.posts.update((posts) =>
+                posts.map((p) =>
+                  p.id === report.postId ? ({ ...p, isHidden: !isCurrentlyHidden } as AdminPost) : p
+                )
+              );
+              report.postHidden = !isCurrentlyHidden;
+            },
+            error: () => {
+              this.snackBar.open(`Failed to ${action} post.`, 'Close', { duration: 3000 });
+            },
+          });
+        }
+      });
   }
 
   getMediaUrl(url: string | undefined): string {

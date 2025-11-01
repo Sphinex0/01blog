@@ -11,6 +11,7 @@ import { ProfileService } from '../../services/profile.service';
 import { SubscriptionService } from '../../services/subscription.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { UserProfile } from '../../../../core/models/user.interface';
+import { API_BASE_URL } from '../../../../core/constants/api.constants';
 
 @Component({
   selector: 'app-profile-users',
@@ -153,7 +154,7 @@ export class ProfileUsersComponent implements OnInit {
   getAvatarUrl(avatar: string | undefined): string {
     if (!avatar) return '';
     if (avatar.startsWith('http')) return avatar;
-    return `http://localhost:8080/api/${avatar}`;
+    return `${API_BASE_URL}/${avatar}`;
   }
 
   getInitials(fullName: string): string {

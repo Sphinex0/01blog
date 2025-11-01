@@ -246,4 +246,5 @@ CMD ["nginx", "-g", "daemon off;"]
 ### Backend Configuration
 ```typescript
 // API Base URL
-const API_BASE_URL = 'http://localhost:8080/
+const API_BASE_URL = 'http://localhost:8080/'
+```

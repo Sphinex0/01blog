@@ -7,6 +7,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatRippleModule } from '@angular/material/core';
 import { Notification } from '../../../../core/models/notification.interface';
 import { TimeAgoPipe } from '../../../../shared/pipes/time-ago-pipe';
+import { API_BASE_URL } from '../../../../core/constants/api.constants';
 // import { TimeAgoPipe } from '../../../../shared/pipes/time-ago.pipe';
 
 @Component({
@@ -63,7 +64,7 @@ export class NotificationItemComponent {
     getMediaUrl(url: string | undefined): string {
     if (!url) return '';
     if (url.startsWith('http')) return url;
-    return `http://localhost:8080/api/${url}`;
+    return `${API_BASE_URL}/${url}`;
   }
 
   getAuthorInitials(fullName: string): string {

@@ -20,14 +20,11 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final FilterChainExceptionHandler filterChainExceptionHandler;
-    // private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
-    // private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter, FilterChainExceptionHandler filterChainExceptionHandler) {
 
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.filterChainExceptionHandler = filterChainExceptionHandler;
-        // this.customAuthenticationEntryPoint = customAuthenticationEntryPoint;
     }
 
     @Bean
@@ -45,14 +42,12 @@ public class SecurityConfig {
                     CorsConfiguration config = new CorsConfiguration();
                     config.addAllowedOrigin("http://localhost:4200");
                     config.addAllowedOrigin("http://localhost:8000");
-                    config.addAllowedOrigin("http://localhost"); // Also allow base localhost
+                    // config.addAllowedOrigin("http://localhost"); // Also allow base localhost
                     config.addAllowedMethod("*");
                     config.addAllowedHeader("*");
                     config.setAllowCredentials(true);
                     return config;
                 }))
-                // .exceptionHandling(exceptions -> exceptions
-                //         .authenticationEntryPoint(customAuthenticationEntryPoint)) // Add custom handler
                 .addFilterBefore(filterChainExceptionHandler, LogoutFilter.class)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 

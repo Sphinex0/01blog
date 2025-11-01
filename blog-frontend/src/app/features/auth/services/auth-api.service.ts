@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { RegisterRequest, LoginRequest, AuthResponse } from '../../../core/models/user.interface';
+import { RegisterRequest, LoginRequest, AuthResponse, UserProfile } from '../../../core/models/user.interface';
 import { ApiResponse } from '../../../core/models/api-response.interface';
 import { API_BASE_URL, API_ENDPOINTS } from '../../../core/constants/api.constants';
 
@@ -54,4 +54,7 @@ export class AuthApiService {
       { token, newPassword }
     );
   }
+
+
+
 }

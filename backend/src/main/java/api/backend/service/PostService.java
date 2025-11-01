@@ -6,7 +6,6 @@ import java.util.List;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -27,16 +26,13 @@ public class PostService {
     private UserRepository userRepository;
     private NotificationRepository notificationRepository;
     private final NotificationService notificationService;
-    private final SimpMessagingTemplate messagingTemplate; // For sending WebSocket messages
 
     PostService(PostRepository postRepository, UserRepository userRepository,
-            NotificationRepository notificationRepository, NotificationService notificationService,
-            SimpMessagingTemplate messagingTemplate) {
+            NotificationRepository notificationRepository, NotificationService notificationService) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.notificationRepository = notificationRepository;
         this.notificationService = notificationService;
-        this.messagingTemplate = messagingTemplate;
     }
 
     public List<PostResponse> getAllPosts(long cursor) {
@@ -71,27 +67,14 @@ public class PostService {
         return postRepository.findById(id).get();
     }
 
-    // public PostResponse createPost(PostRequest request, long userId) {
-    //     User user = userRepository.findById(userId).get();
-    //     Post post = new Post(user, request.title(), request.content(), LocalDateTime.now());
-    //     post = postRepository.save(post);
-    //     sendNotifications(post);
-    //     return toPostResponse(post);
-    // }
 
     @Transactional
     public PostResponse createPost(PostRequest postRequest, User currentUser) {
-        // Post post = new Post();
-        // post.setTitle(postRequest.title());
-        // post.setContent(postRequest.content());
-        // post.setUser(currentUser);
+
         User user = userRepository.findById(currentUser.getId()).get();
         Post post = new Post(user, postRequest.title(), postRequest.content(), LocalDateTime.now());
         Post savedPost = postRepository.save(post);
 
-        // --- WebSocket Notification Logic ---
-        // 1. Create and save notifications for followers in the database.
-        // 2. This method should return a DTO for the broadcast.
         notificationService.createAndSendNewPostNotifications(savedPost);
         
         return toPostResponse(post);
@@ -101,7 +84,7 @@ public class PostService {
         User currentUser = post.getUser();
         for (User user : currentUser.getSubscribers()) {
             Notification notification = new Notification(user, currentUser, post);
-            // user.getNotifications().add(notification);
+            
             notificationRepository.save(notification);
         }
     }

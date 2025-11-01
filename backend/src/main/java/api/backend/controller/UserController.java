@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/users") // Define a specific path
+@RequestMapping("/api/users") 
 @RateLimiter(name = "myApiLimiter")
 public class UserController {
 
@@ -49,7 +49,6 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    // --- NEW SEARCH ENDPOINT ---
     @GetMapping("/search")
     public ResponseEntity<List<UserResponse>> searchUsers(
             @RequestParam("q") String query,
@@ -117,13 +116,11 @@ public class UserController {
         return ResponseEntity.ok(Map.of("action", userService.subscribe(subscribedTo)));
     }
 
-    // Updated endpoint to submit a report
     @PostMapping("/{reportedId}/report")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<ReportResponse> submitReport(@RequestParam Long postId, @PathVariable Long reportedId,
             @RequestBody ReportRequest request, @AuthenticationPrincipal User currentUser) {
         try {
-            // Fetch the reported user (assuming report targets the post author for now)
             Post post = postService.getPostEntityById(postId);
 
             User reported = post.getUser();
