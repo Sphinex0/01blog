@@ -12,6 +12,7 @@ import { SubscriptionService } from '../../services/subscription.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { UserProfile } from '../../../../core/models/user.interface';
 import { API_BASE_URL } from '../../../../core/constants/api.constants';
+import { InfiniteScrollDirective } from '../../../../shared/directives/infinite-scroll.directive';
 
 @Component({
   selector: 'app-profile-users',
@@ -23,6 +24,7 @@ import { API_BASE_URL } from '../../../../core/constants/api.constants';
     MatProgressSpinnerModule,
     MatListModule,
     MatDividerModule,
+    InfiniteScrollDirective,
   ],
   templateUrl: './profile-users.component.html',
   styleUrl: './profile-users.component.scss',
@@ -58,15 +60,6 @@ export class ProfileUsersComponent implements OnInit {
         this.loadFollowers();
       }
     });
-  }
-
-  onTriggerVisible(): void {
-    if (this.isLoading()) return;
-    if (!this.hasMore()) return;
-    setTimeout(() => {
-      this.loadFollowers();
-    }, 0);
-
   }
 
   loadFollowers(): void {

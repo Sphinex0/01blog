@@ -12,6 +12,7 @@ import { Notification } from '../../../../core/models/notification.interface';
 import { NotificationItemComponent } from '../notification-item/notification-item.component';
 import { ConfirmationDialogComponent } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { InfiniteScrollDirective } from '../../../../shared/directives/infinite-scroll.directive';
 
 @Component({
   selector: 'app-notification-list',
@@ -24,6 +25,7 @@ import { MatDialog } from '@angular/material/dialog';
     MatDividerModule,
     MatTabsModule,
     NotificationItemComponent,
+    InfiniteScrollDirective,
   ],
   templateUrl: './notification-list.component.html',
   styleUrl: './notification-list.component.scss'
@@ -57,15 +59,6 @@ export class NotificationListComponent implements OnInit {
     // this.notificationService.getUnreadCount().subscribe();
   }
   
-
-  onTriggerVisible(): void {
-    setTimeout(() => {
-      if (this.hasMore() && !this.isLoading()) {
-        this.loadNotifications();
-      }
-    });
-  }
-
 
   loadNotifications(): void {
     this.notificationService.getNotifications(this.cursor()).subscribe({

@@ -62,17 +62,11 @@
           >
           </app-notification-item>
           <mat-divider></mat-divider>
-          @if (notification == notifications()[notifications().length - 1]) {
-          <div #loadTrigger class="load-trigger"></div>
-          @defer (on viewport(loadTrigger)) {
-          {{ onTriggerVisible() }}
-          } @placeholder {
-          <div class="load-more-indicator">
-            <mat-spinner diameter="32"></mat-spinner>
-            <p>Loading more posts...</p>
-          </div>
-          } } 
-        }
+          }
+          <!-- Infinite Scroll Trigger -->
+          @if (hasMore() && !isLoading()) {
+            <div class="load-trigger" appInfiniteScroll (scrolled)="loadNotifications()"></div>
+          }
         </div>
       </mat-tab>
     </mat-tab-group>

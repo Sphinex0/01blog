@@ -10,6 +10,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { Comment } from '../../../../core/models/comment.interface';
 import { CommentItemComponent } from '../comment-item/comment-item.component';
 import { API_BASE_URL } from '../../../../core/constants/api.constants';
+import { InfiniteScrollDirective } from '../../../../shared/directives/infinite-scroll.directive';
 
 @Component({
   selector: 'app-comments-section',
@@ -23,7 +24,8 @@ import { API_BASE_URL } from '../../../../core/constants/api.constants';
     MatInputModule,
     MatProgressSpinnerModule,
     MatDividerModule,
-    CommentItemComponent
+    CommentItemComponent,
+    InfiniteScrollDirective,
   ],
   templateUrl: './comments-section.component.html',
   styleUrl: './comments-section.component.scss'
@@ -92,7 +94,7 @@ export class CommentsSectionComponent {
       content: ['', [Validators.required, Validators.maxLength(500)]]
     });
   }
-  onTriggerVisible(): void {
+  loadMoreComments(): void {
     if (!this.isLoading() && this.comments().length < this.totalCount()) {
       const lastComment = this.comments()[this.comments().length - 1];
       this.getComments.emit(lastComment);

@@ -62,17 +62,13 @@
   <div class="users-grid">
     @for (user of users(); track user.id) {
     <app-user-card [user]="user" (followToggle)="onFollowToggle($event)"> </app-user-card>
-    @if (user == users()[users().length - 1]) {
-    <div #loadTrigger class="load-trigger"></div>
-    @defer (on viewport(loadTrigger)) {
-    {{ onTriggerVisible() }}
-    } @placeholder {
-    <div class="load-more-indicator">
-      <mat-spinner diameter="32"></mat-spinner>
-      <p>Loading more posts...</p>
-    </div>
-    } } }
+    }
   </div>
+
+  <!-- Infinite Scroll Trigger -->
+  @if (hasMore() && !isLoading()) {
+    <div class="load-trigger" appInfiniteScroll (scrolled)="loadUsers()"></div>
+  }
 
   <!-- Loading More Indicator -->
   @if (isLoading() && users().length > 0) {

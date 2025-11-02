@@ -81,19 +81,12 @@
               (editComment)="editComment.emit($event)"
               (openSidebar)="openSidebarForComment($event)"
             />
-
-              @if (comment == comments()[comments().length - 1]) {
-              <div #loadTrigger class="load-trigger"></div>
-              @defer (on viewport(loadTrigger)) {
-              {{ onTriggerVisible() }}
-              } @placeholder {
-              <div class="load-more-indicator">
-                <mat-spinner diameter="32"></mat-spinner>
-                <p>Loading more posts...</p>
-              </div>
-              } }
           }
         </div>
+        <!-- Infinite Scroll Trigger -->
+        @if (!isLoading() && comments().length < totalCount()) {
+          <div class="load-trigger" appInfiniteScroll (scrolled)="loadMoreComments()"></div>
+        }
       }
     </div>
 

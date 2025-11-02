@@ -3,19 +3,7 @@ import {
   OnInit,
   inject,
   signal,
-  HostListener,
-  AfterViewInit,
-  ViewChild,
-  ElementRef,
-  OnDestroy,
-  effect,
-  Directive,
-  Output,
-  EventEmitter,
-  input,
   Input,
-  OnChanges,
-  SimpleChanges,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
@@ -31,6 +19,7 @@ import { FeedService } from '../../services/feed.service';
 import { UserProfile } from '../../../../core/models/user.interface';
 import { API_BASE_URL, API_ENDPOINTS } from '../../../../core/constants/api.constants';
 import { AuthService } from '../../../../core/services/auth.service';
+import { InfiniteScrollDirective } from '../../../../shared/directives/infinite-scroll.directive';
 
 @Component({
   selector: 'app-feed',
@@ -44,6 +33,7 @@ import { AuthService } from '../../../../core/services/auth.service';
     MatRippleModule,
     MatChipsModule,
     TimeAgoPipe,
+    InfiniteScrollDirective,
   ],
 
   templateUrl: './feed.component.html',
@@ -53,7 +43,6 @@ export class FeedComponent implements OnInit {
   private readonly feedService = inject(FeedService);
   private readonly authService = inject(AuthService);
 
-  @ViewChild('loadMoreTrigger') loadMoreTrigger?: ElementRef;
 
   private readonly router = inject(Router);
 
@@ -77,13 +66,6 @@ export class FeedComponent implements OnInit {
 
 
 
-  onTriggerVisible(): void {
-    if (this.hasMore() && !this.isLoading() && !this.isLoadingMore()) {
-      setTimeout(() => {
-        this.loadMore();
-      }, 0);
-    }
-  }
 
   refreshFeed(): void {
     this.isRefreshing.set(true);
@@ -109,9 +91,9 @@ export class FeedComponent implements OnInit {
     }
 
     // Reset loading state after a delay
-    setTimeout(() => {
+    // setTimeout(() => {
       this.isLoadingMore.set(false);
-    }, 500);
+    // }, 500);
   }
 
   onLikePost(post: Post, event: Event): void {

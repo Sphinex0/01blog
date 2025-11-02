@@ -93,19 +93,12 @@
       </div>
     </div>
     <mat-divider></mat-divider>
-    @if (user == users()[users().length - 1]) {
-    <div #loadTrigger class="load-trigger"></div>
-    <!-- Intersection Observer Trigger with @defer -->
-    @defer (on viewport(loadTrigger)) {
-    <!-- <div #loadTrigger class="load-trigger"></div> -->
-    {{ onTriggerVisible() }}
-    } @placeholder {
-    <!-- <div style="height: 1px;"></div> -->
-    <div class="load-more-indicator">
-      <mat-spinner diameter="32"></mat-spinner>
-      <p>Loading more posts...</p>
-    </div>
-    } } } @if (!hasMore() && !isLoading()) {
+    } 
+    <!-- Infinite Scroll Trigger -->
+    @if (hasMore() && !isLoading()) {
+      <div class="load-trigger" appInfiniteScroll (scrolled)="loadFollowers()"></div>
+    }
+    @if (!hasMore() && !isLoading()) {
     <div class="end-of-feed">
       <mat-icon>check_circle</mat-icon>
       <p>You're all caught up!</p>

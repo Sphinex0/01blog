@@ -152,17 +152,14 @@
       </div>
     </article>
 
-    @if (post == posts()[posts().length - 1]) {
-    <div #loadTrigger class="load-trigger"></div>
-    @defer (on viewport(loadTrigger)) {
-    {{ onTriggerVisible() }}
-    } @placeholder {
-    <div class="load-more-indicator">
-      <mat-spinner diameter="32"></mat-spinner>
-      <p>Loading more posts...</p>
-    </div>
-    } } }
+    }
   </div>
+
+  <!-- Infinite Scroll Trigger -->
+  @if (hasMore() && !isLoading() && !isLoadingMore()) {
+    <div class="load-trigger" appInfiniteScroll (scrolled)="loadMore()"></div>
+  }
+
 
   <!-- Load More Indicator -->
   @if (isLoadingMore() || (isLoading() && posts().length > 0)) {

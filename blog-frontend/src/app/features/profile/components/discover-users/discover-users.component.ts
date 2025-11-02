@@ -15,6 +15,7 @@ import { ProfileService } from '../../services/profile.service';
 import { UserProfile } from '../../../../core/models/user.interface';
 import { UserCardComponent } from '../user-card/user-card.component';
 import { SubscriptionService } from '../../services/subscription.service';
+import { InfiniteScrollDirective } from '../../../../shared/directives/infinite-scroll.directive';
 
 @Component({
   selector: 'app-discover-users',
@@ -29,6 +30,7 @@ import { SubscriptionService } from '../../services/subscription.service';
     MatProgressSpinnerModule,
     MatChipsModule,
     UserCardComponent,
+    InfiniteScrollDirective,
   ],
   templateUrl: './discover-users.component.html',
   styleUrl: './discover-users.component.scss',
@@ -64,15 +66,6 @@ export class DiscoverUsersComponent implements OnInit {
         this.hasMore.set(true);
         this.loadUsers(true);
       });
-  }
-
-  onTriggerVisible(): void {
-    // This is called by the @defer block when the trigger is visible
-    if (this.hasMore() && !this.isLoading()) {
-      setTimeout(() => {
-        this.loadUsers();
-      });
-    }
   }
 
   loadUsers(isInitialLoad: boolean = false): void {
