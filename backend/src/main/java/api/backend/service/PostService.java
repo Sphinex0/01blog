@@ -9,12 +9,10 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import api.backend.model.notification.Notification;
 import api.backend.model.post.Post;
 import api.backend.model.post.PostRequest;
 import api.backend.model.post.PostResponse;
 import api.backend.model.user.User;
-import api.backend.repository.NotificationRepository;
 import api.backend.repository.PostRepository;
 import api.backend.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -24,14 +22,12 @@ public class PostService {
 
     private PostRepository postRepository;
     private UserRepository userRepository;
-    private NotificationRepository notificationRepository;
     private final NotificationService notificationService;
 
     PostService(PostRepository postRepository, UserRepository userRepository,
-            NotificationRepository notificationRepository, NotificationService notificationService) {
+            NotificationService notificationService) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
-        this.notificationRepository = notificationRepository;
         this.notificationService = notificationService;
     }
 
@@ -80,30 +76,17 @@ public class PostService {
         return toPostResponse(post);
     }
 
-    public void sendNotifications(Post post) {
-        User currentUser = post.getUser();
-        for (User user : currentUser.getSubscribers()) {
-            Notification notification = new Notification(user, currentUser, post);
-            
-            notificationRepository.save(notification);
-        }
-    }
-
     public String deletePost(long id) {
         postRepository.findById(id).get();
         postRepository.deleteById(id);
-        // return "Post deleted";
-        return "";
+        return "Post deleted successfully";
     }
 
     public String hidePost(long id) {
-        postRepository.findById(id).map(existingPost -> {
-            existingPost.setHidden(!existingPost.isHidden());
-            return postRepository.save(existingPost);
-        }).get();
-
-        // return "Post hidden";
-        return "";
+        Post post = postRepository.findById(id).get();
+        post.setHidden(!post.isHidden());
+        postRepository.save(post);
+        return post.isHidden() ? "Post hidden successfully" : "Post unhidden successfully";
     }
 
     public PostResponse updatePost(Long id, PostRequest request) {
@@ -141,10 +124,8 @@ public class PostService {
     }
 
     public PostResponse toPostResponse(Post post) {
-        long user_id = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
-        User user = userRepository.findById(user_id)
-                .orElseThrow(() -> new IllegalArgumentException("No authenticated user found"));
-        boolean likedByCurrentUser = post.getLikedBy().contains(user);
+        User currentUser = getCurrentUser();
+        boolean likedByCurrentUser = post.getLikedBy().contains(currentUser);
 
         return new PostResponse(
                 post.getId(),
@@ -156,6 +137,12 @@ public class PostService {
                 post.getCommentsCount(),
                 likedByCurrentUser,
                 post.isHidden());
+    }
+
+    private User getCurrentUser() {
+        long userId = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("No authenticated user found"));
     }
 
 }

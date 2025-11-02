@@ -81,6 +81,7 @@ export class CommentsSectionComponent {
     console.log('Opening sidebar for comment ID:', comment.id);
     // this.sidebarComment.set(comment);
     this.sidebarCommentId.set(comment.id);
+    this.prevSidebarCommentsQueue.set([]);
   }
 
   // Form

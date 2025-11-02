@@ -13,6 +13,7 @@ import { PostService } from '../../services/post.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Post } from '../../../../core/models/post.interface';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-post-create',
@@ -203,7 +204,8 @@ export class PostCreateComponent implements OnInit, OnDestroy {
 
     } catch (error) {
       console.error('Failed to save post:', error);
-      this.snackBar.open('An error occurred while saving.', 'Close', {
+      const message = error as HttpErrorResponse;
+      this.snackBar.open((message.error.content+"" ||'An error occurred while saving.'), 'Close', {
         duration: 3000,
         panelClass: ['error-snackbar'],
       });

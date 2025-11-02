@@ -68,7 +68,7 @@ export class ProfileService {
     const params = new HttpParams().set('cursor', cursor);
 
     return this.http.get<UserProfile[]>(
-      `${this.baseUrl}${API_ENDPOINTS.USERS.FOLLOWERS}/${userId}`,
+      `${this.baseUrl}${API_ENDPOINTS.SUBSCRIPTIONS.FOLLOWERS}/${userId}`,
       { params }
     );
   }
@@ -80,7 +80,7 @@ export class ProfileService {
     const params = new HttpParams().set('cursor', cursor);
 
     return this.http.get<UserProfile[]>(
-      `${this.baseUrl}${API_ENDPOINTS.USERS.FOLLOWING}/${userId}`,
+      `${this.baseUrl}${API_ENDPOINTS.SUBSCRIPTIONS.FOLLOWING}/${userId}`,
       { params }
     );
   }

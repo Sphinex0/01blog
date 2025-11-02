@@ -11,6 +11,7 @@ import api.backend.model.user.User;
 
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -33,5 +34,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Query("SELECT p FROM Post p WHERE p.user IN :subscribedTo AND p.isHidden = false AND p.id < :cursor")
     Page<Post> findPostsBySubscribedTo(@Param("subscribedTo") Set<User> subscribedTo, @Param("cursor") long cursor, Pageable page);
+
+    long countByCreatedAtAfter(LocalDateTime date);
 
 }

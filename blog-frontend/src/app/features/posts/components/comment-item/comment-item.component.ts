@@ -122,6 +122,8 @@ ngOnChanges(changes: SimpleChanges): void {
     this.showReplyForm.update((v) => !v);
     if (!this.showReplyForm()) {
       this.replyForm.reset();
+    }else{
+      this.getReplies.emit(this.comment());
     }
   }
 
@@ -138,8 +140,8 @@ ngOnChanges(changes: SimpleChanges): void {
       });
       this.replyForm.reset();
       this.showReplyForm.set(false);
-      // this.showReplies.set(true);
-      this.toggleReplies();
+      this.showReplies.set(true);
+      // this.toggleReplies();
       
     }
   }

@@ -17,7 +17,7 @@ export class SubscriptionService {
   TogglefollowUser(userId: number): Observable<{ action: string }> {
     console.log('Following user with ID:', userId);
     return this.http.post<{ action: string }>(
-      `${this.baseUrl}${API_ENDPOINTS.USERS.FOLLOW}/${userId}`,
+      `${this.baseUrl}${API_ENDPOINTS.SUBSCRIPTIONS.FOLLOW}/${userId}`,
       {responseType: 'text'}
     );
   }
@@ -27,7 +27,7 @@ export class SubscriptionService {
    */
   unfollowUser(userId: number): Observable<void> {
     return this.http.delete<void>(
-      `${this.baseUrl}${API_ENDPOINTS.USERS.UNFOLLOW}/${userId}`
+      `${this.baseUrl}${API_ENDPOINTS.SUBSCRIPTIONS.UNFOLLOW}/${userId}`
     );
   }
 

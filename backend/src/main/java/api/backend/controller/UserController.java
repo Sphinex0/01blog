@@ -55,13 +55,6 @@ public class UserController {
             @RequestParam(defaultValue = "0") long cursor) {
 
         List<UserResponse> users = userService.searchUsers(query, cursor);
-        if (users != null && !users.isEmpty()) {
-            long firstId = users.get(0).id();
-            long lastId = users.get(users.size() - 1).id();
-            System.out.println("First id: " + firstId + ", Last id: " + lastId);
-        } else {
-            System.out.println("No users found");
-        }
         return ResponseEntity.ok(users);
     }
 
@@ -69,16 +62,6 @@ public class UserController {
     public ResponseEntity<UserResponse> getUser(@PathVariable String username) {
         UserResponse user = userService.getUserByUsername(username);
         return ResponseEntity.ok(user);
-    }
-
-    @GetMapping("/notifications")
-    public ResponseEntity<List<NotificationResponse>> getAllNotifications(@AuthenticationPrincipal User user,
-            @RequestParam(defaultValue = "0") long cursor) {
-        if (cursor == 0) {
-            cursor = Long.MAX_VALUE;
-        }
-        List<NotificationResponse> users = notificationService.getNotificationByUserId(user.getId(), cursor);
-        return ResponseEntity.ok(users);
     }
 
     @GetMapping("/username/{username}/posts")
@@ -89,49 +72,6 @@ public class UserController {
         }
         List<PostResponse> posts = postService.getPostsByUsername(cursor, username);
         return ResponseEntity.ok(posts);
-    }
-
-    @GetMapping("/subscribers/{userId}")
-    public ResponseEntity<List<UserResponse>> getAllsubscribers(@PathVariable long userId,
-            @RequestParam(defaultValue = "0") long cursor) {
-        if (cursor == 0) {
-            cursor = Long.MAX_VALUE;
-        }
-        return ResponseEntity.ok(userService.getSubscribers(userId, cursor));
-    }
-
-    @GetMapping("/subscribtions/{userId}")
-    public ResponseEntity<List<UserResponse>> getAllsubscribedTo(@PathVariable long userId,
-            @RequestParam(defaultValue = "0") long cursor) {
-        if (cursor == 0) {
-            cursor = Long.MAX_VALUE;
-        }
-        return ResponseEntity.ok(userService.getSubscribtions(userId, cursor));
-    }
-
-    @PostMapping("/subscribe/{subscribedTo}")
-    public ResponseEntity<Map<String, String>> subscribe(@Valid @PathVariable long subscribedTo,
-            @AuthenticationPrincipal User currentUser) {
-
-        return ResponseEntity.ok(Map.of("action", userService.subscribe(subscribedTo)));
-    }
-
-    @PostMapping("/{reportedId}/report")
-    @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<ReportResponse> submitReport(@RequestParam Long postId, @PathVariable Long reportedId,
-            @RequestBody ReportRequest request, @AuthenticationPrincipal User currentUser) {
-        try {
-            Post post = postService.getPostEntityById(postId);
-
-            User reported = post.getUser();
-            if (!reported.getId().equals(reportedId)) {
-                throw new IllegalStateException("Reported user does not match post author");
-            }
-            ReportResponse report = reportService.submitReport(currentUser, reported, request);
-            return ResponseEntity.ok(report);
-        } catch (IllegalStateException e) {
-            return ResponseEntity.badRequest().body(null);
-        }
     }
 
 }

@@ -23,7 +23,7 @@ public class FileUploadController {
     private CloudinaryService cloudinaryService;
     private UserService userService;
     private static List<String> ALLOWED_TYPES_IMAGES = List.of("jpg", "jpeg", "png", "gif", "webp");
-    private List<String> ALLOWED_TYPES_VEDIOS = List.of("mp4", "avi", "mov", "wmv", "flv", "webm", "mkv", "m4v");
+    private List<String> ALLOWED_TYPES_VIDEOS = List.of("mp4", "avi", "mov", "wmv", "flv", "webm", "mkv", "m4v");
 
     public FileUploadController(CloudinaryService cloudinaryService, UserService userService) {
         this.cloudinaryService = cloudinaryService;
@@ -38,7 +38,7 @@ public class FileUploadController {
             String ext = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
             if (ALLOWED_TYPES_IMAGES.contains(ext)) {
                 resourceType = "image";
-            } else if (ALLOWED_TYPES_VEDIOS.contains(ext)) {
+            } else if (ALLOWED_TYPES_VIDEOS.contains(ext)) {
                 resourceType = "video";
             } else {
                 throw new IllegalArgumentException("type not allowed");

@@ -4,7 +4,6 @@ import api.backend.model.notification.Notification;
 import api.backend.model.notification.NotificationResponse;
 import api.backend.model.post.Post;
 import api.backend.model.user.User;
-import api.backend.model.user.UserResponse;
 import api.backend.repository.NotificationRepository;
 import api.backend.repository.UserRepository;
 
@@ -22,12 +21,10 @@ import java.util.Set;
 public class NotificationService {
 
     private final NotificationRepository notificationRepository;
-    private final UserRepository userRepository;
     private final SimpMessagingTemplate messagingTemplate; // Inject the template
 
     public NotificationService(NotificationRepository notificationRepository, UserRepository userRepository, SimpMessagingTemplate messagingTemplate) {
         this.notificationRepository = notificationRepository;
-        this.userRepository = userRepository;
         this.messagingTemplate = messagingTemplate;
     }
 
@@ -85,45 +82,16 @@ public class NotificationService {
                 .map(this::toNotificationResponse).toList();
     }
 
-    public boolean markAsRead(Long id) {
-        return notificationRepository.findById(id)
-                .map(notification -> {
-                    notification.setRead(true);
-                    notificationRepository.save(notification);
-                    return true;
-                }).get();
-    }
-
     public NotificationResponse toNotificationResponse(Notification notification) {
         return new NotificationResponse(
                 notification.getId(),
-                toUserResponse(notification.getPost().getUser()),
+                UserService.toUserResponse(notification.getPost().getUser()),
                 notification.getPost().getId(),
                 notification.isRead(),
                 notification.getCreatedAt());
     }
 
     public void markAllAsRead(long userId) {
-        // List<Notification> notifications = notificationRepository.findByReceiverIdAndReadFalse(userId);
-        // for (Notification notification : notifications) {
-        //     notification.setRead(true);
-        // }
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-                user.getNotifications().forEach(notification -> notification.setRead(true));
-                userRepository.save(user);
-        // notificationRepository.saveAll(notifications);
-    }
-
-    public static UserResponse toUserResponse(User user) {
-        return new UserResponse(
-                user.getId(),
-                user.getFullName(),
-                user.getUsername(),
-                user.getEmail(),
-                user.getRole(),
-                user.getAvatar(),
-                user.getCreatedAt(),
-                0, 0, 0, false);
+        notificationRepository.markAllAsRead(userId);
     }
 }

@@ -59,8 +59,8 @@ public class AdminController {
         return ResponseEntity.ok(userService.banUser(request));
     }
 
-    @PatchMapping("/unban")
-    public ResponseEntity<String> unbanUser(@Valid @RequestBody long userId) {
+    @PatchMapping("/unban/{userId}")
+    public ResponseEntity<String> unbanUser(@PathVariable long userId) {
         return ResponseEntity.ok(userService.unbanUser(userId));
     }
 
@@ -95,7 +95,7 @@ public class AdminController {
     }
 
     @GetMapping("/stats")
-    public ResponseEntity<Object> getMethodName() {
+    public ResponseEntity<Object> getAdminStats() {
         return ResponseEntity.ok(adminService.getAdminStats());
     }
     

@@ -16,10 +16,6 @@ export const API_ENDPOINTS = {
   USERS: {
     PROFILE: '/users/profile',
     UPDATE_PROFILE: '/users/profile',
-    FOLLOW: '/users/subscribe',
-    UNFOLLOW: '/users/unsubscribe', 
-    FOLLOWERS: '/users/subscribers',
-    FOLLOWING: '/users/subscribtions', 
     BY_USERNAME: '/users/username',
     SEARCH: '/users/search', 
   },
@@ -44,7 +40,7 @@ export const API_ENDPOINTS = {
     REPLIES: '/comments/replies',
   },
   NOTIFICATIONS: {
-    GET_ALL: '/users/notifications',
+    GET_ALL: '/notifications',
     MARK_AS_READ: '/notifications/read',
     MARK_ALL_AS_READ: '/notifications/read-all',
     UNREAD_COUNT: '/notifications/unread-count',
@@ -86,6 +82,12 @@ export const API_ENDPOINTS = {
     LOCAL_UPLOAD: '/media/local/upload',
     DELETE: '/media/delete',
     GET: '/media', 
+  },
+  SUBSCRIPTIONS: {
+    FOLLOW: '/subscriptions/subscribe',
+    UNFOLLOW: '/subscriptions/unsubscribe', 
+    FOLLOWERS: '/subscriptions/subscribers',
+    FOLLOWING: '/subscriptions/subscribtions', 
   }
 } as const;
 

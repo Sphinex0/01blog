@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
+import api.backend.model.user.AdminUserResponse;
 import api.backend.model.user.BanRequest;
 import api.backend.model.user.User;
 import api.backend.model.user.UserResponse;
@@ -29,6 +32,8 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class UserService implements UserDetailsService {
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
+
     private final UserRepository userRepository;
     @Value("${app.upload.dir}")
     private String uploadDir;
@@ -97,13 +102,12 @@ public class UserService implements UserDetailsService {
 
                 // Delete the file if it exists
                 Files.deleteIfExists(oldFilePath);
-                System.out.println("Successfully deleted old avatar: " + oldFilePath);
+                logger.info("Successfully deleted old avatar: {}", oldFilePath);
 
             } catch (IOException e) {
                 // Log the error, but don't stop the upload.
                 // The new file is more important.
-                System.err.println("Error deleting old avatar: " + e.getMessage());
-                e.printStackTrace();
+                logger.error("Error deleting old avatar: {}", e.getMessage(), e);
             }
         }
         // --- End Deletion Logic ---
@@ -127,12 +131,12 @@ public class UserService implements UserDetailsService {
             user.setAvatar(newAvatarUrl);
             this.userRepository.save(user);
 
-            System.out.println("Data successfully written to: " + newFilePath);
+            logger.info("Data successfully written to: {}", newFilePath);
             return user.getAvatar();
 
         } catch (Exception e) {
             // This is a critical error, so we throw an exception
-            e.printStackTrace();
+            logger.error("Error uploading new file: {}", e.getMessage(), e);
             throw new RuntimeException("Error uploading new file: " + e.getMessage(), e);
         }
     }
@@ -176,47 +180,42 @@ public class UserService implements UserDetailsService {
     }
 
     public String deleteUser(long userId) {
-        userRepository.findById(userId).get();
+        userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
         userRepository.deleteById(userId);
-        // return "user deleted";
-        return "";
+        return "User deleted successfully";
     }
 
     public String banUser(BanRequest request) {
-        User user = userRepository.findById(request.id()).get();
+        User user = userRepository.findById(request.id()).orElseThrow(() -> new IllegalArgumentException("User not found"));
         if (request.until() == null) {
             user.setBannedUntil(LocalDateTime.parse("2000-01-01T00:00:00"));
             userRepository.save(user);
-            // return "user unbanned";
-            return "";
+            return "User unbanned successfully";
         }
         user.setBannedUntil(request.until());
         userRepository.save(user);
-        // return "user banned until " + request.until();
-        return "";
+        return "User banned until " + request.until();
     }
 
     public String unbanUser(long userId) {
-        User user = userRepository.findById(userId).get();
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
         user.setBannedUntil(null);
         userRepository.save(user);
-        return "user unbanned";
+        return "User unbanned successfully";
     }
 
     public String promoteUser(long userId) {
-        User user = userRepository.findById(userId).get();
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
         user.setRole("ADMIN");
         userRepository.save(user);
-        // return "user " + user.getUsername() + " promoted";
-        return "";
+        return "User " + user.getUsername() + " promoted to ADMIN";
     }
 
     public String demoteUser(long userId) {
-        User user = userRepository.findById(userId).get();
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
         user.setRole("USER");
         userRepository.save(user);
-        // return "user " + user.getUsername() + " demoted";
-        return "";
+        return "User " + user.getUsername() + " demoted to USER";
 
     }
 
@@ -235,10 +234,17 @@ public class UserService implements UserDetailsService {
     }
 
     public static UserResponse toUserResponse(User user) {
-        User currentUser = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        String currentUsername = currentUser.getUsername();
-        boolean currentInSubscribersByUsername = currentUsername != null && user.getSubscribers().stream()
-                .anyMatch(sub -> currentUsername.equals(sub.getUsername()));
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User currentUser = null;
+        if (principal instanceof User) {
+            currentUser = (User) principal;
+        }
+        boolean currentInSubscribersByUsername = false;
+        if (currentUser != null) {
+            String currentUsername = currentUser.getUsername();
+            currentInSubscribersByUsername = user.getSubscribers().stream()
+                    .anyMatch(sub -> currentUsername.equals(sub.getUsername()));
+        }
         return new UserResponse(
                 user.getId(),
                 user.getFullName(),
@@ -251,6 +257,34 @@ public class UserService implements UserDetailsService {
                 user.getSubscribers().size(),
                 user.getSubscribedTo().size(),
                 currentInSubscribersByUsername);
+    }
+
+    public static AdminUserResponse toAdminUserResponse(User user) {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User currentUser = null;
+        if (principal instanceof User) {
+            currentUser = (User) principal;
+        }
+        boolean currentInSubscribersByUsername = false;
+        if (currentUser != null) {
+            String currentUsername = currentUser.getUsername();
+            currentInSubscribersByUsername = user.getSubscribers().stream()
+                    .anyMatch(sub -> currentUsername.equals(sub.getUsername()));
+        }
+        return new AdminUserResponse(
+                user.getId(),
+                user.getFullName(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getRole(),
+                user.getAvatar(),
+                user.getCreatedAt(),
+                user.getPosts().size(),
+                user.getSubscribers().size(),
+                user.getSubscribedTo().size(),
+                currentInSubscribersByUsername,
+                user.getBannedUntil() != null && user.getBannedUntil().isAfter(LocalDateTime.now()),
+                user.getBannedUntil());
     }
 
 }

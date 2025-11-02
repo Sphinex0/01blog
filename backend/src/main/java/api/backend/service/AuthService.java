@@ -53,23 +53,11 @@ public class AuthService {
             var auth = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.username(), request.password()));
 
-            return new AuthResponse(jwtUtil.generateToken((User) auth.getPrincipal()), toUserResponse((User) auth.getPrincipal()));
+            return new AuthResponse(jwtUtil.generateToken((User) auth.getPrincipal()), UserService.toUserResponse((User) auth.getPrincipal()));
         
         }catch (BadCredentialsException e) {
             
             throw new BadCredentialsException("Invalid username or password");
         }
-    }
-
-    public static UserResponse toUserResponse(User user) {
-        return new UserResponse(
-                user.getId(),
-                user.getFullName(),
-                user.getUsername(),
-                user.getEmail(),
-                user.getRole(),
-                user.getAvatar(),
-                user.getCreatedAt(),
-                0,0,0,false);
     }
 }

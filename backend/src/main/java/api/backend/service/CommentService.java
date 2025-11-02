@@ -50,7 +50,7 @@ public class CommentService {
 
         // Update replyCount for the parent if it exists
         if (parent != null) {
-            parent.getReplies().add(savedComment); 
+            parent.setRepliesCount(parent.getRepliesCount() + 1);
             commentRepository.save(parent);
         }
         CommentResponse commentResponse = new CommentResponse(
@@ -101,12 +101,12 @@ public class CommentService {
                     commentRepository.delete(comment);
                     // Update commentsCount in Post
                     postRepository.findById(comment.getPost().getId()).ifPresent(post -> {
-                        post.setCommentsCount(Math.max(0, post.getCommentsCount() - 1 - countReplies(comment)));
+                        post.setCommentsCount(Math.max(0, post.getCommentsCount() - 1 - comment.getRepliesCount()));
                         postRepository.save(post);
                     });
                     // Update replyCount for the parent if it exists
                     if (comment.getParent() != null) {
-                        comment.getParent().getReplies().remove(comment);
+                        comment.getParent().setRepliesCount(comment.getParent().getRepliesCount() - 1);
                         commentRepository.save(comment.getParent());
                     }
                     return true;
@@ -121,12 +121,8 @@ public class CommentService {
         Pageable pageable = PageRequest.of(0, 10, Direction.DESC,"id");
 
         return commentRepository.findByParentIdAndIdLessThan(commentId, cursor, pageable).map(comment -> {
-            int replyCount = commentRepository.findByParentId(comment.getId()).size();
-
-            long user_id = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
-            User user = userRepository.findById(user_id)
-                    .orElseThrow(() -> new IllegalArgumentException("No authenticated user found"));
-            boolean likedByCurrentUser = comment.getLikedBy().contains(user);
+            User currentUser = getCurrentUser();
+            boolean likedByCurrentUser = comment.getLikedBy().contains(currentUser);
             return new CommentResponse(
                     comment.getId(),
                     comment.getContent(),
@@ -135,7 +131,7 @@ public class CommentService {
                     comment.getCreatedAt(),
                     comment.getParent() != null ? comment.getParent().getId() : null,
                     comment.getLikedBy().size(),
-                    replyCount,
+                    comment.getRepliesCount(),
                     likedByCurrentUser);
         }).toList();
     }
@@ -143,13 +139,8 @@ public class CommentService {
     public List<CommentResponse> getTopLevelComments(Long postId, long cursor) {
         Pageable pageable = PageRequest.of(0, 10, Direction.DESC, "id");
         return commentRepository.findByPostIdAndParentIsNullAndIdLessThan(postId,cursor, pageable).map(comment -> {
-            int replyCount = commentRepository.findByParentId(comment.getId())
-                    .size();
-
-            long user_id = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
-            User user = userRepository.findById(user_id)
-                    .orElseThrow(() -> new IllegalArgumentException("No authenticated user found"));
-            boolean likedByCurrentUser = comment.getLikedBy().contains(user);
+            User currentUser = getCurrentUser();
+            boolean likedByCurrentUser = comment.getLikedBy().contains(currentUser);
 
             return new CommentResponse(
                     comment.getId(),
@@ -159,16 +150,14 @@ public class CommentService {
                     comment.getCreatedAt(),
                     null, 
                     comment.getLikedBy().size(),
-                    replyCount,
+                    comment.getRepliesCount(),
                     likedByCurrentUser);
         }).toList();
     }
 
-    private int countReplies(Comment comment) {
-        int count = comment.getReplies().size();
-        for (Comment reply : comment.getReplies()) {
-            count += countReplies(reply);
-        }
-        return count;
+    private User getCurrentUser() {
+        long userId = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("No authenticated user found"));
     }
 }

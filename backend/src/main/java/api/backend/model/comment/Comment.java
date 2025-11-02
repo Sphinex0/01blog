@@ -64,6 +64,9 @@ public class Comment {
     @JsonIgnore
     private List<User> likedBy = new ArrayList<>();
 
+    @Column(nullable = false, columnDefinition = "integer default 0")
+    private int repliesCount = 0;
+
     // Default constructor for JPA
     public Comment() {
     }

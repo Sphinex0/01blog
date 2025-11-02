@@ -84,7 +84,7 @@ export class RegisterComponent {
           }
         },
         error: (error) => {
-          const message = error.error?.message || 'Registration failed. Please try again.';
+          const message = error.error || 'Registration failed. Please try again.';
           this.snackBar.open(message, 'Close', {
             duration: 5000,
             panelClass: ['error-snackbar'],

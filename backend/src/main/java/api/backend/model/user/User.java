@@ -82,11 +82,11 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private List<Post> posts;
+    private List<Post> posts = new ArrayList<>();
 
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL, orphanRemoval = true)
     // @JsonIgnore
-    private List<Notification> notifications;
+    private List<Notification> notifications = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(name = "subscription", joinColumns = @JoinColumn(name = "subscribed_to"), inverseJoinColumns = @JoinColumn(name = "subscriber_id"), uniqueConstraints = {

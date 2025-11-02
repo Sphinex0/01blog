@@ -35,56 +35,18 @@ public class ReportService {
         this.userRepository = userRepository;
     }
 
-    public ReportResponse submitReport(User reporter, User reported, ReportRequest request) {
-
-        Post post = null;
-        if (request.reportedPostId() != null) {
-            post = postRepository.findById(request.reportedPostId())
-                    .orElseThrow(() -> new IllegalStateException("Post not found"));
-        }
-
-        Report report = new Report(reporter, reported, post, request.reason());
-        Report savedReport = reportRepository.save(report);
-        return new ReportResponse(
-                savedReport.getId(),
-                toUserResponse(savedReport.getReporter()),
-                toAdminUserResponse(savedReport.getReported()),     
-                savedReport.getReason(),
-                savedReport.getStatus().name(),
-                savedReport.getCreatedAt(),
-                savedReport.getReviewedAt(),
-                request.reportedPostId(), false);
-    }
-
+    @Transactional
     public ReportResponse getReportById(Long id) {
         Report report = reportRepository.findById(id).get();
         return toReportResponse(report);
     }
 
-    // public String reviewReport(Long id, User reviewer, Report.Status newStatus) {
-    //     return reportRepository.findById(id)
-    //             .map(report -> {
-    //                 report.setStatus(newStatus);
-    //                 report.setReviewedAt(LocalDateTime.now());
-    //                 reportRepository.save(report);
-    //                 return "Report reviewed";
-    //             }).get();
-    // }
-
     public String resolveReport(Long id, User reviewer) {
-        return reportRepository.findById(id)
-                .map(report -> {
-                    report.setStatus(Report.Status.RESOLVED);
-                    report.setReviewedAt(LocalDateTime.now());
-                    // hide the associated post if any
-                    // if (report.getPost() != null) {
-                    //     Post p = report.getPost();
-                    //     p.setHidden(true);
-                    //     postRepository.save(p);
-                    // }
-                    reportRepository.save(report);
-                    return "";
-                }).orElseThrow(() -> new IllegalStateException("Report not found"));
+        Report report = reportRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Report not found"));
+        report.setStatus(Report.Status.RESOLVED);
+        report.setReviewedAt(LocalDateTime.now());
+        reportRepository.save(report);
+        return "Report resolved successfully";
     }
 
     @Transactional
@@ -115,15 +77,14 @@ public class ReportService {
     }
 
     public String dismissReport(Long id, User reviewer) {
-        return reportRepository.findById(id)
-                .map(report -> {
-                    report.setStatus(Report.Status.DISMISSED);
-                    report.setReviewedAt(LocalDateTime.now());
-                    reportRepository.save(report);
-                    return "";
-                }).orElseThrow(() -> new IllegalStateException("Report not found"));
+        Report report = reportRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Report not found"));
+        report.setStatus(Report.Status.DISMISSED);
+        report.setReviewedAt(LocalDateTime.now());
+        reportRepository.save(report);
+        return "Report dismissed successfully";
     }
 
+    @Transactional
     public List<ReportResponse> getAllReports(long cursor) {
         Pageable pageable = PageRequest.of(0, 10, Direction.DESC, "id");
 
@@ -131,47 +92,19 @@ public class ReportService {
     }
 
     public ReportResponse toReportResponse(Report report) {
+        User reporter = userRepository.findById(report.getReporter().getId())
+                .orElseThrow(() -> new EntityNotFoundException("Reporter not found"));
+        User reported = userRepository.findById(report.getReported().getId())
+                .orElseThrow(() -> new EntityNotFoundException("Reported user not found"));
+
         return new ReportResponse(report.getId(),
-                toUserResponse(report.getReporter()),
-                toAdminUserResponse(report.getReported()),
+                UserService.toUserResponse(reporter),
+                UserService.toAdminUserResponse(reported),
                 report.getReason(),
                 report.getStatus().toString(),
                 report.getCreatedAt(),
                 report.getReviewedAt(),
                 (report.getPost() != null ? report.getPost().getId() : null),
                 (report.getPost() != null ? report.getPost().isHidden() : false));
-    }
-
-    public static AdminUserResponse toAdminUserResponse(User user) {
-        User currentUser = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        String currentUsername = currentUser.getUsername();
-        boolean currentInSubscribersByUsername = currentUsername != null && user.getSubscribers().stream()
-                .anyMatch(sub -> currentUsername.equals(sub.getUsername()));
-        return new AdminUserResponse(
-                user.getId(),
-                user.getFullName(),
-                user.getUsername(),
-                user.getEmail(),
-                user.getRole(),
-                user.getAvatar(),
-                user.getCreatedAt(),
-                user.getPosts().size(),
-                user.getSubscribers().size(),
-                user.getSubscribedTo().size(),
-                currentInSubscribersByUsername,
-                LocalDateTime.now().isBefore(user.getBannedUntil()),
-                user.getBannedUntil());
-    }
-
-    public static UserResponse toUserResponse(User user) {
-        return new UserResponse(
-                user.getId(),
-                user.getFullName(),
-                user.getUsername(),
-                user.getEmail(),
-                user.getRole(),
-                user.getAvatar(),
-                user.getCreatedAt(),
-                0, 0, 0, false);
     }
 }

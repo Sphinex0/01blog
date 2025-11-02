@@ -52,14 +52,14 @@ public class CommentController {
     }
 
     @DeleteMapping("/{commentId}")
-    @PreAuthorize("hasRole('ADMIN') or @commentService.getcommentById(#id).user.id == authentication.principal.id")
+    @PreAuthorize("hasRole('ADMIN') or @commentService.getCommentById(#commentId).user.id == authentication.principal.id")
     public ResponseEntity<Void> deleteComment(@PathVariable Long commentId, @AuthenticationPrincipal User currentUser) {
         commentService.deleteComment(commentId, currentUser);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{commentId}")
-    @PreAuthorize("hasRole('ADMIN') or @commentService.getcommentById(#id).user.id == authentication.principal.id")
+    @PreAuthorize("hasRole('ADMIN') or @commentService.getCommentById(#commentId).user.id == authentication.principal.id")
     public ResponseEntity<Void> updateComment(@PathVariable Long commentId, @RequestBody CommentRequest request,
             @AuthenticationPrincipal User currentUser) {
         commentService.updateComment(commentId, currentUser.getId(), request);

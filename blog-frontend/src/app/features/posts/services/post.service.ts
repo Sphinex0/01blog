@@ -40,15 +40,15 @@ export class PostService {
   /**
    * Delete post
    */
-  deletePost(postId: number): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}${API_ENDPOINTS.POSTS.DELETE}/${postId}`);
+  deletePost(postId: number): Observable<string> {
+    return this.http.delete(`${this.baseUrl}${API_ENDPOINTS.POSTS.DELETE}/${postId}`, { responseType: 'text' });
   }
 
   /**
    * Like a post
    */
-  likePost(postId: number): Observable<ApiResponse<void>> {
-    return this.http.post<ApiResponse<void>>(
+  likePost(postId: number): Observable<number> {
+    return this.http.post<number>(
       `${this.baseUrl}${API_ENDPOINTS.POSTS.LIKE}/${postId}`,
       {}
     );
