@@ -1,26 +1,15 @@
 package api.backend.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import api.backend.model.notification.NotificationResponse;
-import api.backend.model.post.Post;
 import api.backend.model.post.PostResponse;
-import api.backend.model.report.ReportRequest;
-import api.backend.model.report.ReportResponse;
-import api.backend.model.user.User;
 import api.backend.model.user.UserResponse;
-import api.backend.service.NotificationService;
 import api.backend.service.PostService;
-import api.backend.service.ReportService;
 import api.backend.service.UserService;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
-import jakarta.validation.Valid;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users") 
@@ -29,15 +18,10 @@ public class UserController {
 
     private final UserService userService;
     private final PostService postService;
-    private final ReportService reportService;
-    private final NotificationService notificationService;
 
-    public UserController(UserService userService, PostService postService, ReportService reportService,
-            NotificationService notificationService) {
+    public UserController(UserService userService, PostService postService) {
         this.userService = userService;
         this.postService = postService;
-        this.reportService = reportService;
-        this.notificationService = notificationService;
     }
 
     @GetMapping

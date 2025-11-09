@@ -17,15 +17,21 @@ import java.util.function.Function;
 
 @Component
 public class JwtUtil {
-    @Value("${jwt.secret}")
-    private String secret;
+//    private final String secret;
+    private final Long expiration;
+    private final SecretKey signingKey; 
 
-    @Value("${jwt.expiration}")
-    private Long expiration;
+    // 2. Use Constructor Injection
+    public JwtUtil(
+            @Value("${jwt.secret}") String secret,
+            @Value("${jwt.expiration}") Long expiration
+    ) {
+        // this.secret = secret;
+        this.expiration = expiration;
 
-    private SecretKey getSigningKey() {
+        // 3. Calculate the key one time and store it
         byte[] keyBytes = secret.getBytes(StandardCharsets.UTF_8);
-        return Keys.hmacShaKeyFor(keyBytes);
+        this.signingKey = Keys.hmacShaKeyFor(keyBytes);
     }
 
     public String generateToken(UserDetails userDetails) {
@@ -36,34 +42,35 @@ public class JwtUtil {
                 .claim("id", user.getId())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + expiration))
-                .signWith(getSigningKey(), Jwts.SIG.HS512)
+                .signWith(signingKey, Jwts.SIG.HS512)
                 .compact();
     }
 
-    public String getUsernameFromToken(String token) {
-        return getClaimFromToken(token, Claims::getSubject);
-    }
+    // public String getUsernameFromToken(String token) {
+    //     return getClaimFromToken(token, Claims::getSubject);
+    // }
 
-    public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = getAllClaimsFromToken(token);
-        return claimsResolver.apply(claims);
-    }
+    // public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
+    //     final Claims claims = validateAndExtractAllClaims(token);
+    //     return claimsResolver.apply(claims);
+    // }
 
-    private Claims getAllClaimsFromToken(String token) {
-        SecretKey key = getSigningKey();
-        Jws<Claims> jws = Jwts.parser()
-                .verifyWith(key)
+    /**
+     * Validates the token and extracts all claims.
+     * This is the ONLY method that should parse the token.
+     * It will throw an exception if the signature or expiry is invalid.
+     */
+    public Claims validateAndExtractAllClaims(String token) {
+
+        return Jwts.parser()
+                .verifyWith(signingKey)
                 .build()
-                .parseSignedClaims(token);
-        return jws.getPayload();
+                .parseSignedClaims(token)
+                .getPayload();
     }
 
-    public boolean validateToken(String token) {
-        try {
-            getAllClaimsFromToken(token);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+    // Helper method that uses the one above
+    public String getUsername(Claims claims) {
+        return claims.getSubject();
     }
 }
