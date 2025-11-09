@@ -47,7 +47,6 @@ services:
     container_name: blog-frontend
     ports:
       # --- CHANGE THIS LINE ---
-      # Old: - "80:80"
       - "8000:80" # New: Map host port 8000 to container port 80
     depends_on:
       - backend

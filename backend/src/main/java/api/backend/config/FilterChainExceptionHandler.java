@@ -2,7 +2,6 @@ package api.backend.config;
 
 import java.io.IOException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
@@ -17,9 +16,14 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class FilterChainExceptionHandler extends OncePerRequestFilter {
 
-    @Autowired
-    @Qualifier("handlerExceptionResolver")
-    private HandlerExceptionResolver resolver;
+    
+    private final HandlerExceptionResolver resolver;
+
+    public FilterChainExceptionHandler(
+            @Qualifier("handlerExceptionResolver") HandlerExceptionResolver resolver
+    ) {
+        this.resolver = resolver;
+    }
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,  @NonNull FilterChain filterChain)

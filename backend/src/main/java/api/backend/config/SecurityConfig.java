@@ -48,7 +48,7 @@ public class SecurityConfig {
                     config.setAllowCredentials(true);
                     return config;
                 }))
-                .addFilterBefore(filterChainExceptionHandler, LogoutFilter.class)
+                // .addFilterBefore(filterChainExceptionHandler, LogoutFilter.class)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
