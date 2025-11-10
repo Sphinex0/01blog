@@ -4,13 +4,16 @@ import api.backend.model.post.Post;
 import api.backend.model.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.LocalDateTime;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
-@Data
+@Setter
+@Getter
 @Table(name = "notifications")
 public class Notification {
 
@@ -43,7 +46,6 @@ public class Notification {
 
     public Notification() {}
 
-    // Updated constructor
     public Notification(User receiver, User sender, Post post) {
         this.receiver = receiver;
         this.sender = sender;

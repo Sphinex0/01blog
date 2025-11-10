@@ -2,9 +2,8 @@ package api.backend.model.user;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Builder.Default;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -26,12 +25,12 @@ import api.backend.model.notification.Notification;
 import api.backend.model.post.Post;
 
 @Entity
-@Data
+@Setter
+@Getter
 @Table(name = "users", uniqueConstraints = {
         @UniqueConstraint(columnNames = "username"),
         @UniqueConstraint(columnNames = "email")
 })
-@EqualsAndHashCode(exclude = { "subscribers", "subscribedTo" })
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -89,9 +88,6 @@ public class User implements UserDetails {
     private List<Notification> notifications = new ArrayList<>();
 
     @ManyToMany
-    @JoinTable(name = "subscription", joinColumns = @JoinColumn(name = "subscribed_to"), inverseJoinColumns = @JoinColumn(name = "subscriber_id"), uniqueConstraints = {
-            @UniqueConstraint(columnNames = { "subscriber_id", "subscribed_to" })
-    })
     @JsonIgnore
     private Set<User> subscribers = new HashSet<>();
 

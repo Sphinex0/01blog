@@ -6,7 +6,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -14,7 +15,8 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
-@Data
+@Setter
+@Getter
 @Table(name = "reports", uniqueConstraints = {
         @UniqueConstraint(columnNames = { "reporter_id", "reported_id", "post_id" })
 })
@@ -74,4 +76,6 @@ public class Report {
         this.createdAt = LocalDateTime.now();
         this.status = Status.PENDING;
     }
+
+    
 }

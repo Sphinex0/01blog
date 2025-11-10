@@ -4,9 +4,7 @@ import api.backend.model.post.Post;
 import api.backend.model.report.Report;
 import api.backend.model.report.ReportRequest;
 import api.backend.model.report.ReportResponse;
-import api.backend.model.user.AdminUserResponse;
 import api.backend.model.user.User;
-import api.backend.model.user.UserResponse;
 import api.backend.repository.PostRepository;
 import api.backend.repository.ReportRepository;
 import api.backend.repository.UserRepository;
@@ -16,7 +14,6 @@ import jakarta.transaction.Transactional;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;

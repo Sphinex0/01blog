@@ -17,19 +17,15 @@ import java.util.function.Function;
 
 @Component
 public class JwtUtil {
-//    private final String secret;
     private final Long expiration;
     private final SecretKey signingKey; 
 
-    // 2. Use Constructor Injection
     public JwtUtil(
             @Value("${jwt.secret}") String secret,
             @Value("${jwt.expiration}") Long expiration
     ) {
-        // this.secret = secret;
         this.expiration = expiration;
 
-        // 3. Calculate the key one time and store it
         byte[] keyBytes = secret.getBytes(StandardCharsets.UTF_8);
         this.signingKey = Keys.hmacShaKeyFor(keyBytes);
     }

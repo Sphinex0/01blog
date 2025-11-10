@@ -6,7 +6,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,9 +19,9 @@ import org.hibernate.annotations.OnDeleteAction;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Data
+@Setter
+@Getter
 @Table(name = "comments")
-
 public class Comment {
 
     @Id
@@ -58,9 +59,6 @@ public class Comment {
     private List<Comment> replies = new ArrayList<>();
 
     @ManyToMany
-    @JoinTable(name = "comment_likes", joinColumns = @JoinColumn(name = "comment_id"), inverseJoinColumns = @JoinColumn(name = "user_id"), uniqueConstraints = {
-            @UniqueConstraint(columnNames = { "comment_id", "user_id" })
-    })
     @JsonIgnore
     private List<User> likedBy = new ArrayList<>();
 

@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import api.backend.model.report.Report;
 import api.backend.model.user.AdminUserResponse;
-import api.backend.model.user.User;
 import api.backend.model.user.UserReportSummary;
 import api.backend.repository.PostRepository;
 import api.backend.repository.ReportRepository;
