@@ -22,7 +22,6 @@ public class SecurityConfig {
     private final FilterChainExceptionHandler filterChainExceptionHandler;
 
     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter, FilterChainExceptionHandler filterChainExceptionHandler) {
-
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.filterChainExceptionHandler = filterChainExceptionHandler;
     }
