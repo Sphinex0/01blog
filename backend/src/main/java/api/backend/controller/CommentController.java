@@ -5,7 +5,6 @@ import api.backend.model.user.User;
 import api.backend.model.comment.CommentRequest;
 import api.backend.model.comment.CommentResponse;
 import api.backend.service.CommentService;
-import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,7 +15,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/comments")
-@RateLimiter(name = "myApiLimiter")
 public class CommentController {
 
     private final CommentService commentService;

@@ -3,7 +3,6 @@ package api.backend.controller;
 import api.backend.model.user.User;
 import api.backend.model.user.UserResponse;
 import api.backend.service.UserService;
-import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -14,7 +13,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/subscriptions")
-@RateLimiter(name = "myApiLimiter")
 public class SubscriptionController {
 
     private final UserService userService;

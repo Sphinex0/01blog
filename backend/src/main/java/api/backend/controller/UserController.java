@@ -7,13 +7,11 @@ import api.backend.model.post.PostResponse;
 import api.backend.model.user.UserResponse;
 import api.backend.service.PostService;
 import api.backend.service.UserService;
-import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/users") 
-@RateLimiter(name = "myApiLimiter")
 public class UserController {
 
     private final UserService userService;

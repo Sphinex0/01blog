@@ -47,7 +47,7 @@ export class AdminService {
    * @param userId The ID of the user to ban/unban.
    * @param bannedUntil The calculated expiration date (ISO string) or null to unban.
    */
-  banUser(userId: number, bannedUntil: Date | null): Observable<void> {
+  banUser(userId: number, bannedUntil: Date | null): Observable<String> {
     const endpoint = `${this.baseUrl}${API_ENDPOINTS.ADMIN.BAN_USER}`;
 
     // Format the date to an ISO string, or use null for the payload
@@ -55,11 +55,11 @@ export class AdminService {
 
     const payload: BanRequestPayload = { id: userId, until: untilString };
 
-    return this.http.patch<void>(endpoint, payload);
+    return this.http.patch<String>(endpoint, payload, {responseType: 'text' as 'json'});
   }
 
   // We keep this as a convenience method for the component logic
-  unbanUser(userId: number): Observable<void> {
+  unbanUser(userId: number): Observable<String> {
     return this.banUser(userId, null);
   }
 

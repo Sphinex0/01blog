@@ -21,13 +21,11 @@ import api.backend.model.user.User;
 import api.backend.service.AdminService;
 import api.backend.service.ReportService;
 import api.backend.service.UserService;
-import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/admin")
 @PreAuthorize("hasRole('ADMIN')")
-@RateLimiter(name = "myApiLimiter")
 public class AdminController {
 
     UserService userService;

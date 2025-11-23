@@ -24,11 +24,13 @@ public class Notification {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "recipient_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private User receiver; // The user receiving the notification
     
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sender_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private User sender; // The user who triggered the notification
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -13,24 +13,17 @@ import io.github.resilience4j.ratelimiter.RateLimiterRegistry;
 @Service
 public class RateLimiterService {
 
-    // Holds a separate limiter for every IP address
-    public final Map<String, RateLimiter> limiters = new ConcurrentHashMap<>();
-    
+
     // Factory to create new limiters
     private final RateLimiterConfig config = RateLimiterConfig.custom()
-        .limitRefreshPeriod(Duration.ofMinutes(1))
+        .limitRefreshPeriod(Duration.ofSeconds(1))
         .limitForPeriod(10) // 10 attempts per IP
         .timeoutDuration(Duration.ZERO)
         .build();
 
     private final RateLimiterRegistry registry = RateLimiterRegistry.of(config);
 
-    public boolean allowRequest(String ipAddress) {
-        // Get the limiter for this specific IP, or create it if it doesn't exist
-        RateLimiter limiter = limiters.computeIfAbsent(ipAddress, 
-            key -> registry.rateLimiter(key));
-
-        // Try to acquire a permission
-        return limiter.acquirePermission();
+    public RateLimiter allowRequest(String ipAddress) {
+        return registry.rateLimiter(ipAddress);
     }
 }

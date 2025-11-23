@@ -15,11 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 import api.backend.model.notification.NotificationResponse;
 import api.backend.model.user.User;
 import api.backend.service.NotificationService;
-import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 
 @RestController
 @RequestMapping("/api/notifications")
-@RateLimiter(name = "myApiLimiter")
 public class NotificationController {
     private final NotificationService notificationService;
 
