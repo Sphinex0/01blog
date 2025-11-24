@@ -63,22 +63,22 @@ export class AdminService {
     return this.banUser(userId, null);
   }
 
-  deleteUser(userId: number): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}${API_ENDPOINTS.ADMIN.DELETE_USER}/${userId}`);
+  deleteUser(userId: number): Observable<String> {
+    return this.http.delete<String>(`${this.baseUrl}${API_ENDPOINTS.ADMIN.DELETE_USER}/${userId}`,{responseType: 'text' as 'json'});
   }
 
   /**
    * Promotes a user to ADMIN role.
    */
-  promoteUser(userId: number): Observable<void> {
-    return this.http.patch<void>(`${this.baseUrl}${API_ENDPOINTS.ADMIN.PROMOTE_USER}/${userId}`, {});
+  promoteUser(userId: number): Observable<String> {
+    return this.http.patch<String>(`${this.baseUrl}${API_ENDPOINTS.ADMIN.PROMOTE_USER}/${userId}`,{} ,{responseType: 'text' as 'json'});
   }
   /**
    * Demotes a user to USER role.
    */
 
-  demoteUser(userId: number): Observable<void> {
-    return this.http.patch<void>(`${this.baseUrl}${API_ENDPOINTS.ADMIN.DEMOTE_USER}/${userId}`, {});
+  demoteUser(userId: number): Observable<String> {
+    return this.http.patch<String>(`${this.baseUrl}${API_ENDPOINTS.ADMIN.DEMOTE_USER}/${userId}`,{}, {responseType: 'text' as 'json'});
   }
 
   // Posts Management
@@ -96,16 +96,16 @@ export class AdminService {
     return this.http.get<AdminPost>(`${this.baseUrl}${API_ENDPOINTS.ADMIN.GET_POST}/${postId}`);
   }
 
-  hidePost(postId: number): Observable<void> {
-    return this.http.patch<void>(`${this.baseUrl}${API_ENDPOINTS.ADMIN.HIDE_POST}/${postId}`, {});
+  hidePost(postId: number): Observable<String> {
+    return this.http.patch<String>(`${this.baseUrl}${API_ENDPOINTS.ADMIN.HIDE_POST}/${postId}`, {}, {responseType: 'text' as 'json'});
   }
 
-  unhidePost(postId: number): Observable<void> {
+  unhidePost(postId: number): Observable<String> {
     return this.hidePost(postId);
   }
 
-  deletePost(postId: number): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}${API_ENDPOINTS.ADMIN.DELETE_POST}/${postId}`);
+  deletePost(postId: number): Observable<String> {
+    return this.http.delete<String>(`${this.baseUrl}${API_ENDPOINTS.ADMIN.DELETE_POST}/${postId}`, {responseType: 'text' as 'json'});
   }
 
   // Reports Management
@@ -119,17 +119,19 @@ export class AdminService {
     return this.http.get<Report[]>(`${this.baseUrl}${API_ENDPOINTS.ADMIN.REPORTS}`, { params });
   }
 
-  resolveReport(reportId: number): Observable<void> {
-    return this.http.patch<void>(
+  resolveReport(reportId: number): Observable<String> {
+    return this.http.patch<String>(
       `${this.baseUrl}${API_ENDPOINTS.ADMIN.RESOLVE_REPORT}/${reportId}`,
-      {}
+      {},
+      {responseType: 'text' as 'json'}
     );
   }
 
-  dismissReport(reportId: number): Observable<void> {
-    return this.http.patch<void>(
+  dismissReport(reportId: number): Observable<String> {
+    return this.http.patch<String>(
       `${this.baseUrl}${API_ENDPOINTS.ADMIN.DISMISS_REPORT}/${reportId}`,
-      {}
+      {},
+      {responseType: 'text' as 'json'}
     );
   }
 

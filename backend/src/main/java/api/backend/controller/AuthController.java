@@ -12,7 +12,6 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/auth")
-// @RateLimiter(name = "myApiLimiter")
 public class AuthController {
 
     private final AuthService authService;
@@ -29,7 +28,6 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request, HttpServletRequest servletRequest) {
-        String ip = servletRequest.getRemoteAddr();
         AuthResponse response = authService.login(request);
         return ResponseEntity.ok(response);
     }

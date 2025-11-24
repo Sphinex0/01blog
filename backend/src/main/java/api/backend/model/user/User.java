@@ -21,7 +21,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import api.backend.model.comment.Comment;
-import api.backend.model.like.Like;
+import api.backend.model.like.CommentLike;
 import api.backend.model.notification.Notification;
 import api.backend.model.post.Post;
 
@@ -99,7 +99,7 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
-    private Set<Like> likes = new HashSet<>();
+    private Set<CommentLike> commentLikes = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();

@@ -65,7 +65,7 @@ public class CommentController {
     }
 
     @PatchMapping("/like/{id}")
-    public ResponseEntity<Boolean> likeComment(@PathVariable Long id, @AuthenticationPrincipal User user) {
+    public ResponseEntity<Integer> likeComment(@PathVariable Long id, @AuthenticationPrincipal User user) {
         return ResponseEntity.ok(commentService.likeComment(id, user.getId()));
     }
 

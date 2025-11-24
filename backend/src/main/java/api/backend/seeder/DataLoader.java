@@ -39,7 +39,7 @@ public class DataLoader implements CommandLineRunner {
     public void run(String... args) {
 
         if (userRepository.count() >= 10) {
-            return; 
+            return;
         }
 
         // password: admin123
@@ -81,7 +81,7 @@ public class DataLoader implements CommandLineRunner {
                 String title = faker.leagueOfLegends().quote();
                 Post post = new Post(user, title, content, LocalDateTime.now());
                 postRepository.save(post);
-                Notification notification = new Notification(adminUser,post.getUser(), post);
+                Notification notification = new Notification(adminUser, post.getUser(), post);
                 notificationRepository.save(notification);
             });
         });
@@ -107,6 +107,9 @@ public class DataLoader implements CommandLineRunner {
                             faker.leagueOfLegends().quote(),
                             topLevelComment);
                     commentRepository.save(reply);
+                    
+                    topLevelComment.setRepliesCount(topLevelComment.getRepliesCount() + 1);
+                    commentRepository.save(topLevelComment);
 
                     post.setCommentsCount(post.getCommentsCount() + 1);
                     postRepository.save(post);

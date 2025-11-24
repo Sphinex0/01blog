@@ -1,5 +1,6 @@
 package api.backend.model.comment;
 
+import api.backend.model.like.CommentLike;
 import api.backend.model.post.Post;
 import api.backend.model.user.User;
 import jakarta.persistence.*;
@@ -10,8 +11,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -55,15 +56,18 @@ public class Comment {
     @JoinColumn(name = "parent_id")
     private Comment parent;
 
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    private List<Comment> replies = new ArrayList<>();
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Comment> replies = new HashSet<>();
 
-    @ManyToMany
+    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
-    private List<User> likedBy = new ArrayList<>();
+    private Set<CommentLike> likes = new HashSet<>();
 
     @Column(nullable = false, columnDefinition = "integer default 0")
     private int repliesCount = 0;
+
+    @Column(nullable = false, columnDefinition = "integer default 0")
+    private int likesCount = 0;
 
     // Default constructor for JPA
     public Comment() {

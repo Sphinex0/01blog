@@ -3,11 +3,13 @@ package api.backend.service;
 import api.backend.model.comment.Comment;
 import api.backend.model.comment.CommentRequest;
 import api.backend.model.comment.CommentResponse;
+import api.backend.model.like.CommentLike;
 import api.backend.model.post.Post;
 import api.backend.model.user.User;
 import api.backend.repository.CommentRepository;
 import api.backend.repository.PostRepository;
 import api.backend.repository.UserRepository;
+import api.backend.repository.like.CommentLikeRepository;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CommentService {
@@ -23,12 +26,14 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final CommentLikeRepository commentLikeRepository;
 
     public CommentService(CommentRepository commentRepository, PostRepository postRepository,
-            UserRepository userRepository) {
+            UserRepository userRepository, CommentLikeRepository commentLikeRepository) {
         this.commentRepository = commentRepository;
         this.postRepository = postRepository;
         this.userRepository = userRepository;
+        this.commentLikeRepository = commentLikeRepository;
     }
 
     public CommentResponse addComment(Long postId, long userId, CommentRequest request) {
@@ -60,8 +65,8 @@ public class CommentService {
                 postId,
                 savedComment.getCreatedAt(),
                 request.parentId(),
-                0,
-                0,
+                savedComment.getLikesCount(),
+                savedComment.getRepliesCount(),
                 false);
 
         return commentResponse;
@@ -78,21 +83,26 @@ public class CommentService {
     }
 
     // likeComment
-    public boolean likeComment(Long commentId, long userId) {
+    public int likeComment(Long commentId, long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("No authenticated user found"));
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("Target comment not found"));
 
-        return commentRepository.findById(commentId)
-                .map(comment -> {
-                    if (comment.getLikedBy().contains(user)) {
-                        comment.getLikedBy().remove(user);
-                        commentRepository.save(comment);
-                        return false;
-                    }
-                    comment.getLikedBy().add(user);
-                    commentRepository.save(comment);
-                    return true;
-                }).get();
+        Optional<CommentLike> existingLike = commentLikeRepository.findByCommentIdAndUserId(commentId, userId);
+
+        if (existingLike.isPresent()) {
+            commentLikeRepository.delete(existingLike.get());
+            comment.setLikesCount(comment.getLikesCount() - 1);
+            commentRepository.save(comment);
+            return -1;
+        } else {
+            CommentLike newLike = new CommentLike(user, comment);
+            commentLikeRepository.save(newLike);
+            comment.setLikesCount(comment.getLikesCount() + 1);
+            commentRepository.save(comment);
+            return 1;
+        }
     }
 
     public boolean deleteComment(Long commentId, User currentUser) {
@@ -122,7 +132,7 @@ public class CommentService {
 
         return commentRepository.findByParentIdAndIdLessThan(commentId, cursor, pageable).map(comment -> {
             User currentUser = getCurrentUser();
-            boolean likedByCurrentUser = comment.getLikedBy().contains(currentUser);
+            boolean likedByCurrentUser = commentLikeRepository.findByCommentIdAndUserId(comment.getId(), currentUser.getId()).isPresent();
             return new CommentResponse(
                     comment.getId(),
                     comment.getContent(),
@@ -130,7 +140,7 @@ public class CommentService {
                     comment.getPost().getId(),
                     comment.getCreatedAt(),
                     comment.getParent() != null ? comment.getParent().getId() : null,
-                    comment.getLikedBy().size(),
+                    comment.getLikesCount(),
                     comment.getRepliesCount(),
                     likedByCurrentUser);
         }).toList();
@@ -140,7 +150,7 @@ public class CommentService {
         Pageable pageable = PageRequest.of(0, 10, Direction.DESC, "id");
         return commentRepository.findByPostIdAndParentIsNullAndIdLessThan(postId,cursor, pageable).map(comment -> {
             User currentUser = getCurrentUser();
-            boolean likedByCurrentUser = comment.getLikedBy().contains(currentUser);
+            boolean likedByCurrentUser = commentLikeRepository.findByCommentIdAndUserId(comment.getId(), currentUser.getId()).isPresent();
 
             return new CommentResponse(
                     comment.getId(),
@@ -149,7 +159,7 @@ public class CommentService {
                     postId,
                     comment.getCreatedAt(),
                     null, 
-                    comment.getLikedBy().size(),
+                    comment.getLikesCount(),
                     comment.getRepliesCount(),
                     likedByCurrentUser);
         }).toList();

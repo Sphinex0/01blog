@@ -2,7 +2,7 @@ package api.backend.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -10,14 +10,12 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import api.backend.model.like.Like;
 import api.backend.model.post.Post;
 import api.backend.model.post.PostRequest;
 import api.backend.model.post.PostResponse;
 import api.backend.model.user.User;
 import api.backend.repository.PostRepository;
 import api.backend.repository.UserRepository;
-import api.backend.repository.like.LikeRepository;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -26,14 +24,12 @@ public class PostService {
     private PostRepository postRepository;
     private UserRepository userRepository;
     private final NotificationService notificationService;
-    private final LikeRepository likeRepository;
 
     PostService(PostRepository postRepository, UserRepository userRepository,
-            NotificationService notificationService, LikeRepository likeRepository) {
+            NotificationService notificationService) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.notificationService = notificationService;
-        this.likeRepository = likeRepository;
     }
 
     public List<PostResponse> getAllPosts(long cursor) {
@@ -110,16 +106,14 @@ public class PostService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("Target post not found"));
 
-        Optional<Like> existingLike = likeRepository.findByUserIdAndPostId(userId, postId);
-
-        if (existingLike.isPresent()) {
-            likeRepository.delete(existingLike.get());
+        Set<User> likes = post.getLikes();
+        if (likes.contains(user)) {
+            likes.remove(user);
             post.setLikesCount(post.getLikesCount() - 1);
             postRepository.save(post);
             return -1;
         } else {
-            Like newLike = new Like(user, post);
-            likeRepository.save(newLike);
+            likes.add(user);
             post.setLikesCount(post.getLikesCount() + 1);
             postRepository.save(post);
             return 1;
@@ -128,7 +122,10 @@ public class PostService {
 
     public PostResponse toPostResponse(Post post) {
         User currentUser = getCurrentUser();
-        boolean likedByCurrentUser = likeRepository.findByUserIdAndPostId(currentUser.getId(), post.getId()).isPresent();
+        boolean likedByCurrentUser = false;
+        if (currentUser != null) {
+            likedByCurrentUser = post.getLikes().contains(currentUser);
+        }
 
         return new PostResponse(
                 post.getId(),

@@ -47,6 +47,7 @@ public class NotificationService {
             Notification notification = new Notification(follower, author, post);
             notificationsToSave.add(notification);
 
+            notification = notificationRepository.save(notification);
             NotificationResponse notificationResponse = toNotificationResponse(notification);
 
             messagingTemplate.convertAndSendToUser(
@@ -56,8 +57,6 @@ public class NotificationService {
             );
         }
 
-        // 4. Save all notifications to the database
-        notificationRepository.saveAll(notificationsToSave);
     }
 
     public long getUnreadCountByUserId(long userID) {
