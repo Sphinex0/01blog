@@ -1,8 +1,6 @@
 import {
   Directive,
   ElementRef,
-  EventEmitter,
-  Output,
   inject,
   OnInit,
   OnDestroy,
@@ -11,7 +9,6 @@ import {
 
 @Directive({
   selector: '[appInfiniteScroll]',
-  standalone: true,
 })
 export class InfiniteScrollDirective implements OnInit, OnDestroy {
   scrolled = output<void>();

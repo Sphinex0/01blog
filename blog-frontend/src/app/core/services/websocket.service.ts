@@ -13,13 +13,15 @@ export class WebSocketService {
   private stompClient: Client;
   
   private newPostSubject = new Subject<Notification>();
-  public newPost$ = this.newPostSubject.asObservable();
+  public newPost$ = this.newPostSubject;
 
   // UPDATED: Subscribe to the user-specific queue instead of a public topic
   private readonly newPostTopic = '/user/queue/new-posts'; 
 
   constructor() {
+    
     this.stompClient = new Client({
+      
       brokerURL: WS_BASE_URL,
       reconnectDelay: 5000,
       heartbeatIncoming: 4000,
