@@ -101,6 +101,11 @@ public class User implements UserDetails {
     @JsonIgnore
     private Set<CommentLike> commentLikes = new HashSet<>();
 
+    @ManyToMany(mappedBy = "likes")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
+    private Set<Post> likedPosts = new HashSet<>();
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 

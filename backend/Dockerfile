@@ -7,7 +7,7 @@ COPY src ./src
 RUN mvn clean package -DskipTests
 
 # Stage 2: Run the application using a lightweight JRE
-FROM openjdk:17-jdk-slim
+FROM eclipse-temurin:17-jre
 WORKDIR /app
 # Copy the built JAR from the 'build' stage to the final image
 COPY --from=build /app/target/*.jar app.jar

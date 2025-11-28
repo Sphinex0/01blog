@@ -75,6 +75,7 @@ public class Post {
     @JoinTable(name = "post_likes",
             joinColumns = @JoinColumn(name = "post_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     private Set<User> likes = new HashSet<>();
 

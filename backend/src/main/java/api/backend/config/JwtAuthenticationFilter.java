@@ -37,6 +37,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     protected boolean costumeShouldNotFilter(@NonNull HttpServletRequest request) throws ServletException {
         String path = request.getRequestURI();
+        if (path == null) {
+            return false;
+        }
         return pathMatcher.match("/api/auth/**", path) ||
                 pathMatcher.match("/api/images/**", path) ||
                 pathMatcher.match("/api/ws/**", path);
@@ -78,9 +81,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private String getClientIP(HttpServletRequest request) {
         String xfHeader = request.getHeader("X-Forwarded-For");
-        System.out.println("################################################");
-        System.out.println("X-Forwarded-For: " + xfHeader);
-        System.out.println("Remote Addr: " + request.getRemoteAddr());
+
         if (xfHeader == null) {
             return request.getRemoteAddr();
         }
