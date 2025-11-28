@@ -5,6 +5,7 @@ import {
   signal,
   Input,
   input,
+  OnChanges,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
@@ -40,7 +41,7 @@ import { InfiniteScrollDirective } from '../../../../shared/directives/infinite-
   templateUrl: './feed.component.html',
   styleUrl: './feed.component.scss',
 })
-export class FeedComponent implements OnInit {
+export class FeedComponent implements OnInit, OnChanges {
   private readonly feedService = inject(FeedService);
   private readonly authService = inject(AuthService);
 
@@ -60,7 +61,13 @@ export class FeedComponent implements OnInit {
   readonly isLoadingMore = signal(false);
 
   ngOnInit(): void {
-    console.log('FeedComponent initialized');
+    // console.log('FeedComponent initialized');
+    // this.feedService.clearFeed();
+    // this.loadMore();
+  }
+
+  ngOnChanges(): void {
+    console.log('FeedComponent changes detected');
     this.feedService.clearFeed();
     this.loadMore();
   }

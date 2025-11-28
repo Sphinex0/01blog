@@ -199,7 +199,7 @@ onReportUser(): void {
       }
     });
 
-    dialogRef.afterClosed().pipe(take(1)).subscribe(reason => {
+    dialogRef.afterClosed().subscribe(reason => {
       if (reason) {
         const request: CreateReportRequest = {
           reportedUserId: user.id,

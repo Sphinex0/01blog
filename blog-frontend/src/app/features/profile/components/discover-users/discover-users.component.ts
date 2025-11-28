@@ -87,7 +87,7 @@ export class DiscoverUsersComponent implements OnInit {
       apiCall = this.profileService.getAllUsers(currentCursor);
     }
 
-    apiCall.pipe(take(1)).subscribe({
+    apiCall.subscribe({
       next: (response) => {
         if (response && response.length > 0) {
           if (currentCursor === 0) {

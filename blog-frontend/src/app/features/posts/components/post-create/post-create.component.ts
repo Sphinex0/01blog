@@ -14,6 +14,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Post } from '../../../../core/models/post.interface';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { HttpErrorResponse } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-post-create',
@@ -91,11 +92,8 @@ export class PostCreateComponent implements OnInit, OnDestroy {
     if (!file || (!file.type.startsWith('image/') && !file.type.startsWith('video/'))) {
         return;
     }
-    // Create a temporary local "blob" URL for the file for previewing
     const localUrl = URL.createObjectURL(file);
-    // Add the file to our pending map, keyed by its local URL
     this.pendingFiles.set(localUrl, file);
-    // Insert markdown for the preview using the local URL
     if (file.type.startsWith('image/')) {
         this.insertMarkdownImage(localUrl);
     } else if (file.type.startsWith('video/')) {
@@ -118,7 +116,6 @@ export class PostCreateComponent implements OnInit, OnDestroy {
     const pastedText = clipboardData?.getData('text/plain');
 
     if (pastedText) {
-      // Keep existing logic for pasting external URLs
       try {
         const url = new URL(pastedText);
         if (this.isImage(url.pathname)) {
@@ -132,7 +129,6 @@ export class PostCreateComponent implements OnInit, OnDestroy {
         return;
       }
     } else if (clipboardData?.items) {
-      // Handle pasted files
       for (const item of Array.from(clipboardData.items)) {
         if (item.kind === 'file') {
           event.preventDefault();
@@ -155,7 +151,7 @@ export class PostCreateComponent implements OnInit, OnDestroy {
     }
   }
 
-  // --- REVISED SUBMIT LOGIC ---
+  
 
   async onSubmit() {
     this.postForm.markAllAsTouched();
@@ -174,7 +170,7 @@ export class PostCreateComponent implements OnInit, OnDestroy {
           return content.includes(localUrl) && (this.isImage(file.name) || this.isVideo(file.name));
         }).map(
           ([localUrl, file]) =>
-            this.postService.uploadFile(file).toPromise().then(response => {
+            firstValueFrom(this.postService.uploadFile(file)).then(response => {
                 // IMPORTANT: Revoke the local URL to free up memory
                 URL.revokeObjectURL(localUrl);
                 return { localUrl, remoteUrl: response?.url };
@@ -198,9 +194,11 @@ export class PostCreateComponent implements OnInit, OnDestroy {
         ? this.postService.updatePost(currentPost.id, postData)
         : this.postService.savePost(postData);
 
-      const savedpost = await saveOrUpdate$.toPromise();
-      this.snackBar.open('Post saved successfully!', 'Close', { duration: 3000 });
-      this.router.navigate(["posts", savedpost?.id])
+      const savedpost = await firstValueFrom(saveOrUpdate$);
+      this.snackBar.open('Post saved successfully!', 'View', { duration: 100000, panelClass: ['success-snackbar'] }).onAction().subscribe(()=>{
+        this.router.navigate(["posts", savedpost?.id])
+      });
+      // this.router.navigate(["posts", savedpost?.id])
 
     } catch (error) {
       console.error('Failed to save post:', error);

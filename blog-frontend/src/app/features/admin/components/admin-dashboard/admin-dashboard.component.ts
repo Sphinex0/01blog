@@ -8,8 +8,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { take } from 'rxjs';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 
@@ -29,28 +28,15 @@ import { MatDividerModule } from '@angular/material/divider';
 @Component({
   selector: 'app-ban-duration-dialog',
   standalone: true,
-  template: `
-    <h2 mat-dialog-title class="pixel-dialog-title">BAN USER</h2>
-    <mat-dialog-content>
-      <p>
-        Enter the duration (in days) for the ban. Leave blank or enter 0 for a **Permanent Ban**.
-      </p>
-      <mat-form-field appearance="outline" style="width: 100%;">
-        <mat-label>Ban Duration (Days)</mat-label>
-        <input
-          matInput
-          type="number"
-          [(ngModel)]="durationDays"
-          min="0"
-          placeholder="e.g., 7 for one week"
-        />
-      </mat-form-field>
-    </mat-dialog-content>
-    <mat-dialog-actions align="end">
-      <button mat-button (click)="dialogRef.close()">CANCEL</button>
-      <button mat-raised-button color="warn" (click)="confirmBan()">CONFIRM BAN</button>
-    </mat-dialog-actions>
-  `,
+  // 💡 Modern Imports (FormsModule removed)
+  imports: [
+    MatDialogModule,
+    MatButtonModule,
+    MatInputModule,
+    MatFormFieldModule,
+    ReactiveFormsModule, // 💡 Mandatory for formControl
+  ],
+  // The styles are unchanged from your original component
   styles: [
     `
       .pixel-dialog-title {
@@ -68,29 +54,80 @@ import { MatDividerModule } from '@angular/material/divider';
       }
     `,
   ],
-  imports: [MatDialogModule, MatButtonModule, MatInputModule, MatFormFieldModule, FormsModule],
+  // 💡 Using formControl and modern bindings
+  template: `
+    <h2 mat-dialog-title class="pixel-dialog-title">BAN USER</h2>
+    <mat-dialog-content>
+      <p>
+        Enter the duration (in days) for the ban. Leave blank or enter 0 for a
+        <strong [class.is-permanent]="isPermanent()">
+          {{ isPermanent() ? 'PERMANENT BAN' : 'Temporary Ban' }} </strong
+        >.
+      </p>
+      <mat-form-field appearance="outline" style="width: 100%;">
+        <mat-label>Ban Duration (Days)</mat-label>
+        <input
+          matInput
+          type="number"
+          [formControl]="durationControl"
+          min="0"
+          placeholder="e.g., 7 for one week"
+        />
+        @if (isPermanent()) {
+        <mat-hint>Ban will be permanent.</mat-hint>
+        }
+      </mat-form-field>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+      <button mat-button (click)="dialogRef.close()">CANCEL</button>
+      <button
+        mat-raised-button
+        color="warn"
+        (click)="confirmBan()"
+        [disabled]="durationControl.invalid"
+      >
+        CONFIRM BAN
+      </button>
+    </mat-dialog-actions>
+  `,
 })
 export class BanDurationDialog {
   readonly dialogRef = inject(MatDialogRef<BanDurationDialog>);
-  durationDays: number | undefined = 7;
+
+  // It holds number or null (if the field is empty)
+  public durationControl = new FormControl<number | null>(7, {
+    nonNullable: false,
+    validators: [Validators.min(0)], // Enforce non-negative input
+  });
+
+  // 💡 Computed property for derived state
+  isPermanent = () => {
+    const value = this.durationControl.value;
+    return value === null || value <= 0;
+  };
 
   confirmBan(): void {
-    // If duration is 0 or undefined, treat as permanent (represented by null in API, but date logic is safer)
-    if (this.durationDays === undefined || this.durationDays <= 0) {
-      // Use a distant future date (e.g., 100 years) to represent "Permanent"
+    const durationDays = this.durationControl.value;
+
+    if (durationDays === null || durationDays <= 0) {
+      // Logic for Permanent Ban
       const permanentDate = new Date(new Date().setFullYear(new Date().getFullYear() + 100));
-      this.dialogRef.close({ bannedUntil: permanentDate, isPermanent: true });
+
+      this.dialogRef.close({
+        bannedUntil: permanentDate,
+        isPermanent: true,
+      });
       return;
     }
 
-    // Calculate the future date based on durationDays
+    // Logic for Temporary Ban
     const bannedUntil = new Date();
-    bannedUntil.setDate(bannedUntil.getDate() + this.durationDays);
+    bannedUntil.setDate(bannedUntil.getDate() + durationDays);
 
     this.dialogRef.close({
       bannedUntil: bannedUntil,
       isPermanent: false,
-      durationDays: this.durationDays,
+      durationDays: durationDays,
     });
   }
 }
@@ -150,7 +187,7 @@ export class AdminDashboardComponent implements OnInit {
     this.loadUsers(true);
     this.loadPosts(true);
     this.loadReports(true);
-  } 
+  }
 
   getBanStatus(user: AdminUserDetails): string {
     if (!user.isBanned) return '';
@@ -166,18 +203,18 @@ export class AdminDashboardComponent implements OnInit {
       if (untilDate.getTime() <= now.getTime()) {
         return 'EXPIRED';
       }
-      
+
       return TimeAgoPipe.timeUntil(user.bannedUntil);
     }
-    
+
     return 'ACTIVE';
-  } 
+  }
 
   loadStats(): void {
     this.isLoadingStats.set(true);
     this.analyticsService
       .getStats()
-      .pipe(take(1))
+
       .subscribe({
         next: (stats) => {
           this.stats.set(stats);
@@ -202,7 +239,7 @@ export class AdminDashboardComponent implements OnInit {
 
     this.adminService
       .getAllUsers(currentCursor)
-      .pipe(take(1))
+
       .subscribe({
         next: (data: AdminUserDetails[]) => {
           if (currentCursor === 0) {
@@ -254,13 +291,13 @@ export class AdminDashboardComponent implements OnInit {
           },
         })
         .afterClosed()
-        .pipe(take(1))
+
         .subscribe((result) => {
           if (result) {
             // Call banUser with null date to unban
             this.adminService
               .banUser(fullUser.id, null)
-              .pipe(take(1))
+
               .subscribe({
                 next: () => {
                   this.snackBar.open(SUCCESS_MESSAGES.USER_UNBANNED, 'Close', { duration: 2000 });
@@ -291,7 +328,7 @@ export class AdminDashboardComponent implements OnInit {
           width: '400px',
         })
         .afterClosed()
-        .pipe(take(1))
+
         .subscribe((dialogResult) => {
           if (
             dialogResult &&
@@ -305,7 +342,7 @@ export class AdminDashboardComponent implements OnInit {
 
             this.adminService
               .banUser(fullUser.id, bannedUntilDate)
-              .pipe(take(1))
+
               .subscribe({
                 next: () => {
                   const message = isPermanent
@@ -364,12 +401,12 @@ export class AdminDashboardComponent implements OnInit {
 
     dialogRef
       .afterClosed()
-      .pipe(take(1))
+
       .subscribe((result) => {
         if (result) {
           this.adminService
             .deleteUser(user.id)
-            .pipe(take(1))
+
             .subscribe({
               next: () => {
                 this.snackBar.open(SUCCESS_MESSAGES.USER_DELETED, 'Close', { duration: 2000 }); // Update local state directly: remove the deleted user
@@ -383,41 +420,67 @@ export class AdminDashboardComponent implements OnInit {
             });
         }
       });
-  } 
+  }
 
   onPromoteUser(user: AdminUserDetails): void {
-    this.adminService
-      .promoteUser(user.id)
-      .pipe(take(1))
-      .subscribe({
-        next: () => {
-          this.snackBar.open(SUCCESS_MESSAGES.USER_PROMOTED, 'Close', { duration: 2000 });
-          this.users.update((users) =>
-            users.map((u) => (u.id === user.id ? { ...u, role: 'ADMIN' } : u))
-          );
+    this.dialog
+      .open(ConfirmationDialogComponent, {
+        width: '400px',
+        data: {
+          title: 'PROMOTE USER',
+          message: `Are you sure you want to promote ${user.username} to an admin?`,
+          confirmText: 'PROMOTE',
+          cancelText: 'CANCEL',
+          type: 'primary',
         },
-        error: () => {
-          this.snackBar.open('Failed to promote user', 'Close', { duration: 3000 });
-        },
+      })
+      .afterClosed()
+      .subscribe((result) => {
+        if (result) {
+          this.adminService.promoteUser(user.id).subscribe({
+            next: () => {
+              this.snackBar.open(SUCCESS_MESSAGES.USER_PROMOTED, 'Close', { duration: 2000 });
+              this.users.update((users) =>
+                users.map((u) => (u.id === user.id ? { ...u, role: 'ADMIN' } : u))
+              );
+            },
+            error: () => {
+              this.snackBar.open('Failed to promote user', 'Close', { duration: 3000 });
+            },
+          });
+        }
       });
   }
 
   onDemoteUser(user: AdminUserDetails): void {
-    this.adminService
-      .demoteUser(user.id)
-      .pipe(take(1))
-      .subscribe({
-        next: () => {
-          this.snackBar.open(SUCCESS_MESSAGES.USER_DEMOTED, 'Close', { duration: 2000 });
-          this.users.update((users) =>
-            users.map((u) => (u.id === user.id ? { ...u, role: 'USER' } : u))
-          );
+    this.dialog
+      .open(ConfirmationDialogComponent, {
+        width: '400px',
+        data: {
+          title: 'DEMOTE USER',
+          message: `Are you sure you want to demote ${user.username} to a regular user?`,
+          confirmText: 'DEMOTE',
+          cancelText: 'CANCEL',
+          type: 'primary',
         },
-        error: () => {
-          this.snackBar.open('Failed to demote user', 'Close', { duration: 3000 });
-        },
+      })
+      .afterClosed()
+      .subscribe((result) => {
+        if (result) {
+          this.adminService.demoteUser(user.id).subscribe({
+            next: () => {
+              this.snackBar.open(SUCCESS_MESSAGES.USER_DEMOTED, 'Close', { duration: 2000 });
+              this.users.update((users) =>
+                users.map((u) => (u.id === user.id ? { ...u, role: 'USER' } : u))
+              );
+            },
+            error: () => {
+              this.snackBar.open('Failed to demote user', 'Close', { duration: 3000 });
+            },
+          });
+        }
       });
-  } 
+  }
 
   loadPosts(isInitialLoad: boolean = false): void {
     if (this.isLoadingPosts() || (!this.hasMorePosts() && !isInitialLoad)) {
@@ -428,7 +491,7 @@ export class AdminDashboardComponent implements OnInit {
 
     this.adminService
       .getAllPosts(currentCursor)
-      .pipe(take(1))
+
       .subscribe({
         next: (data: AdminPost[]) => {
           if (currentCursor === 0) {
@@ -467,20 +530,36 @@ export class AdminDashboardComponent implements OnInit {
       ? this.adminService.unhidePost(post.id)
       : this.adminService.hidePost(post.id);
 
-    request.pipe(take(1)).subscribe({
-      next: () => {
-        const message = isCurrentlyHidden
-          ? SUCCESS_MESSAGES.POST_UNHIDDEN
-          : SUCCESS_MESSAGES.POST_HIDDEN;
-        this.snackBar.open(message, 'Close', { duration: 2000 }); 
-        this.posts.update((posts) =>
-          posts.map((p) => (p.id === post.id ? { ...p, isHidden: !isCurrentlyHidden } : p))
-        );
-      },
-      error: () => {
-        this.snackBar.open(`Failed to ${action} post`, 'Close', { duration: 3000 });
-      },
-    });
+    this.dialog
+      .open(ConfirmationDialogComponent, {
+        width: '400px',
+        data: {
+          title: `${action.toUpperCase()} POST`,
+          message: `Are you sure you want to ${action} the post titled "${post.title}"?`,
+          confirmText: action.toUpperCase(),
+          cancelText: 'CANCEL',
+          type: isCurrentlyHidden ? 'success' : 'danger',
+        },
+      })
+      .afterClosed()
+      .subscribe((result) => {
+        if (result) {
+          request.subscribe({
+            next: () => {
+              const message = isCurrentlyHidden
+                ? SUCCESS_MESSAGES.POST_UNHIDDEN
+                : SUCCESS_MESSAGES.POST_HIDDEN;
+              this.snackBar.open(message, 'Close', { duration: 2000 });
+              this.posts.update((posts) =>
+                posts.map((p) => (p.id === post.id ? { ...p, isHidden: !isCurrentlyHidden } : p))
+              );
+            },
+            error: () => {
+              this.snackBar.open(`Failed to ${action} post`, 'Close', { duration: 3000 });
+            },
+          });
+        }
+      });
   }
 
   onDeletePost(post: AdminPost): void {
@@ -497,12 +576,12 @@ export class AdminDashboardComponent implements OnInit {
 
     dialogRef
       .afterClosed()
-      .pipe(take(1))
+
       .subscribe((result) => {
         if (result) {
           this.adminService
             .deletePost(post.id)
-            .pipe(take(1))
+
             .subscribe({
               next: () => {
                 this.snackBar.open(SUCCESS_MESSAGES.POST_DELETED, 'Close', { duration: 2000 }); // Update local state directly
@@ -527,7 +606,7 @@ export class AdminDashboardComponent implements OnInit {
 
     this.adminService
       .getAllReports(currentCursor, this.selectedReportStatus())
-      .pipe(take(1))
+
       .subscribe({
         next: (data: Report[]) => {
           if (currentCursor === 0) {
@@ -561,16 +640,16 @@ export class AdminDashboardComponent implements OnInit {
 
   onReportStatusChange(status: string): void {
     this.selectedReportStatus.set(status);
-    this.reportsCursor.set(0); 
-    this.hasMoreReports.set(true); 
-    this.reports.set([]); 
-    this.loadReports(true); 
+    this.reportsCursor.set(0);
+    this.hasMoreReports.set(true);
+    this.reports.set([]);
+    this.loadReports(true);
   }
 
   onResolveReport(report: Report): void {
     this.adminService
       .resolveReport(report.id)
-      .pipe(take(1))
+
       .subscribe({
         next: () => {
           this.snackBar.open(SUCCESS_MESSAGES.REPORT_RESOLVED, 'Close', { duration: 2000 });
@@ -588,7 +667,7 @@ export class AdminDashboardComponent implements OnInit {
   onDismissReport(report: Report): void {
     this.adminService
       .dismissReport(report.id)
-      .pipe(take(1))
+
       .subscribe({
         next: () => {
           this.snackBar.open(SUCCESS_MESSAGES.REPORT_DISMISSED, 'Close', { duration: 2000 });
@@ -616,12 +695,12 @@ export class AdminDashboardComponent implements OnInit {
 
     dialogRef
       .afterClosed()
-      .pipe(take(1))
+
       .subscribe((result) => {
         if (result) {
           this.adminService
             .deleteReport(report.id)
-            .pipe(take(1))
+
             .subscribe({
               next: () => {
                 this.snackBar.open(SUCCESS_MESSAGES.REPORT_DELETED, 'Close', { duration: 2000 });
@@ -634,7 +713,6 @@ export class AdminDashboardComponent implements OnInit {
         }
       });
   }
-
 
   onQuickBanUserFromReport(report: Report) {
     this.onBanUser(report.reported);
@@ -669,10 +747,10 @@ export class AdminDashboardComponent implements OnInit {
         },
       })
       .afterClosed()
-      .pipe(take(1))
+
       .subscribe((dialogResult) => {
         if (dialogResult) {
-          request.pipe(take(1)).subscribe({
+          request.subscribe({
             next: () => {
               this.snackBar.open(`Post ${action} successful!`, 'Close', { duration: 2000 });
 

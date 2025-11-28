@@ -61,7 +61,7 @@ export interface ConfirmationDialogData {
       display: flex;
       align-items: center;
       justify-content: center;
-      border-radius: 50%;
+      border-radius: 0;
 
       mat-icon {
         font-size: 2rem;

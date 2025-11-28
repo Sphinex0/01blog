@@ -39,7 +39,9 @@ export const appConfig: ApplicationConfig = {
       useValue: {
         duration: 4000,
         horizontalPosition: 'right',
-        verticalPosition: 'bottom'
+        verticalPosition: 'bottom',
+        // apply a default panel class so we can style snackbar container globally
+        panelClass: ['no-radius']
       }
     }
   ],

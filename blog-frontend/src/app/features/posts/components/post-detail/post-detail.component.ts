@@ -174,7 +174,7 @@ export class PostDetailComponent implements OnInit {
       }
     });
 
-    dialogRef.afterClosed().pipe(take(1)).subscribe(reason => {
+    dialogRef.afterClosed().subscribe(reason => {
       if (reason) {
         const request: CreateReportRequest = {
           reportedPostId: post.id,

@@ -69,7 +69,8 @@
 // Post Detail
 .post-detail {
   background: white;
-  border-radius: 16px;
+  // border-radius: 16px;
+  border-radius: 0;
   padding: 2rem;
   border: 1px solid #f0f0f0;
 }
@@ -91,7 +92,7 @@
 .author-avatar {
   width: 48px;
   height: 48px;
-  border-radius: 50%;
+  border-radius: 0;
   overflow: hidden;
   flex-shrink: 0;
   text-decoration: none;
@@ -163,7 +164,7 @@
 // Post Media
 .post-media {
   margin: 2rem 0;
-  border-radius: 12px;
+  border-radius: 0;
   overflow: hidden;
   background: #f9fafb;
 }
@@ -262,7 +263,7 @@ mat-divider {
 .form-avatar {
   width: 40px;
   height: 40px;
-  border-radius: 50%;
+  border-radius: 0;
   overflow: hidden;
   flex-shrink: 0;
 
@@ -338,7 +339,7 @@ mat-divider {
   display: flex;
   gap: 1rem;
   padding: 1rem;
-  border-radius: 12px;
+  border-radius: 0;
   background: #f9fafb;
   transition: background 0.2s ease;
 
@@ -350,7 +351,7 @@ mat-divider {
 .comment-avatar {
   width: 40px;
   height: 40px;
-  border-radius: 50%;
+  border-radius: 0;
   overflow: hidden;
   flex-shrink: 0;
   text-decoration: none;
@@ -440,7 +441,7 @@ mat-divider {
 
   .post-detail {
     padding: 1.5rem 1rem;
-    border-radius: 12px;
+    border-radius: 0;
   }
 
   .post-title {

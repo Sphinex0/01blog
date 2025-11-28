@@ -35,7 +35,6 @@ import { ROUTES } from '../../../../core/constants/app.constants';
 export class RegisterComponent {
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
-  private readonly router = inject(Router);
   private readonly snackBar = inject(MatSnackBar);
 
   // Signals
