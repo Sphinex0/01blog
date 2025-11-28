@@ -3,9 +3,8 @@ import { Router } from '@angular/router';
 import { AuthApiService } from '../../features/auth/services/auth-api.service';
 import { StorageService } from './storage.service';
 import { User, RegisterRequest, LoginRequest, AuthResponse } from '../models/user.interface';
-import { ApiResponse } from '../models/api-response.interface';
-import { APP_CONSTANTS, ROUTES } from '../constants/app.constants';
-import { Observable, tap, catchError, throwError, BehaviorSubject } from 'rxjs';
+import { ROUTES } from '../constants/app.constants';
+import { Observable, tap, catchError, throwError } from 'rxjs';
 import { ProfileService } from '../../features/profile/services/profile.service';
 
 @Injectable({
@@ -88,45 +87,13 @@ export class AuthService {
 
   logout(): void {
     this._isLoading.set(true);
-    this.handleLogout();
-    
-    // this.authApi.logout().subscribe({
-    //   complete: () => {
-    //     this.handleLogout();
-    //   },
-    //   error: () => {
-    //     this.handleLogout();
-    //   }
-    // });
+    this.handleLogout();    
 
-  }
-
-  refreshToken(): Observable<ApiResponse<AuthResponse>> {
-    const refreshToken = this.storage.getRefreshToken();
-
-    if (!refreshToken) {
-      this.handleLogout();
-      return throwError(() => new Error('No refresh token available'));
-    }
-
-    return this.authApi.refreshToken(refreshToken).pipe(
-      tap((response) => {
-        if (response.success && response.data) {
-          this.handleAuthSuccess(response.data);
-        }
-      }),
-      catchError((error) => {
-        this.handleLogout();
-        return throwError(() => error);
-      })
-    );
   }
 
   private handleAuthSuccess(authData: AuthResponse): void {
     // Store tokens and user data
-    console.log('inside handle auth success');
     this.storage.setToken(authData.token);
-    this.storage.setRefreshToken(authData.refreshToken);
     this.storage.setUserData(authData.user);
 
     // Update signals
@@ -151,29 +118,11 @@ export class AuthService {
     this.router.navigate([ROUTES.AUTH.LOGIN]);
   }
 
-  updateUserProfile(user: User): void {
-    this._currentUser.set(user);
-    this.storage.setUserData(user);
-  }
-
   getToken(): string | null {
     return this.storage.getToken();
   }
   removeToken() {
     return this.storage.clearAuth();
-  }
-
-  isTokenExpired(): boolean {
-    const token = this.getToken();
-    if (!token) return true;
-
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      const currentTime = Math.floor(Date.now() / 1000);
-      return payload.exp < currentTime;
-    } catch {
-      return true;
-    }
   }
 
   refreshCurrentUser(user: User): void {

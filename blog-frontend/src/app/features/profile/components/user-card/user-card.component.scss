@@ -93,7 +93,7 @@
   font-size: 12px;
   color: var(--pixel-text-primary);
   text-decoration: none;
-  text-transform: uppercase;
+  // text-transform: uppercase;
   word-break: break-word;
   transition: color 0.1s ease;
 
@@ -107,7 +107,7 @@
   font-family: 'Press Start 2P', cursive;
   font-size: 9px;
   color: var(--pixel-text-secondary);
-  text-transform: uppercase;
+  // text-transform: uppercase;
 }
 
 .bio {
@@ -159,7 +159,7 @@
   font-family: 'Press Start 2P', cursive;
   font-size: 7px;
   color: var(--pixel-text-muted);
-  text-transform: uppercase;
+  // text-transform: uppercase;
   letter-spacing: 1px;
 }
 
@@ -177,7 +177,7 @@
   padding: 10px 16px;
   font-family: 'Press Start 2P', cursive;
   font-size: 9px;
-  text-transform: uppercase;
+  // text-transform: uppercase;
   text-align: center;
   border: 3px solid var(--pixel-border);
   cursor: pointer;

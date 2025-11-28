@@ -1,10 +1,8 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, tap, catchError, throwError } from 'rxjs';
+import { Observable, tap, throwError } from 'rxjs';
 import { Post } from '../../../core/models/post.interface';
-import { ApiResponse, PaginatedResponse } from '../../../core/models/api-response.interface';
 import { API_BASE_URL, API_ENDPOINTS } from '../../../core/constants/api.constants';
-import { APP_CONSTANTS } from '../../../core/constants/app.constants';
 
 @Injectable({
   providedIn: 'root',
@@ -62,14 +60,7 @@ export class FeedService {
     });
   }
 
-  /**
-   * Load next page of posts
-   */
-  // loadMore(): void {
-  //   if (!this._isLoading() && this._hasMore()) {
-  //     this.getFeed().subscribe();
-  //   }
-  // }
+
 
   /**
    * Refresh feed (pull-to-refresh)
@@ -82,9 +73,9 @@ export class FeedService {
   /**
    * Like a post
    */
-  likePost(postId: number): Observable<ApiResponse<void>> {
+  likePost(postId: number): Observable<void> {
     return this.http
-      .post<ApiResponse<void>>(`${this.baseUrl}${API_ENDPOINTS.POSTS.LIKE}/${postId}`, {})
+      .post<void>(`${this.baseUrl}${API_ENDPOINTS.POSTS.LIKE}/${postId}`, {})
       .pipe(
         tap(() => {
           // Update post in local state
@@ -102,9 +93,9 @@ export class FeedService {
   /**
    * Unlike a post
    */
-  unlikePost(postId: number): Observable<ApiResponse<void>> {
+  unlikePost(postId: number): Observable<void> {
     return this.http
-      .post<ApiResponse<void>>(`${this.baseUrl}${API_ENDPOINTS.POSTS.LIKE}/${postId}`, {})
+      .post<void>(`${this.baseUrl}${API_ENDPOINTS.POSTS.LIKE}/${postId}`, {})
       .pipe(
         tap(() => {
           // Update post in local state
@@ -122,16 +113,16 @@ export class FeedService {
   /**
    * Toggle like on a post
    */
-  toggleLike(postId: number, isCurrentlyLiked: boolean): Observable<ApiResponse<void>> {
+  toggleLike(postId: number, isCurrentlyLiked: boolean): Observable<void> {
     return isCurrentlyLiked ? this.unlikePost(postId) : this.likePost(postId);
   }
 
   /**
    * Get all posts (public feed)
    */
-  getAllPosts(page: number = 1): Observable<ApiResponse<PaginatedResponse<Post>>> {
+  getAllPosts(page: number = 1): Observable<Post[]> {
     const params = new HttpParams().set('page', page.toString());
-    return this.http.get<ApiResponse<PaginatedResponse<Post>>>(
+    return this.http.get<Post[]>(
       `${this.baseUrl}${API_ENDPOINTS.POSTS.GET_ALL}`,
       { params }
     );

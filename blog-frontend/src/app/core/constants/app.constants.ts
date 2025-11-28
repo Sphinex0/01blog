@@ -3,7 +3,6 @@ export const APP_CONSTANTS = {
   VERSION: '1.0.0',
   STORAGE_KEYS: {
     ACCESS_TOKEN: 'blog_access_token',
-    REFRESH_TOKEN: 'blog_refresh_token',
     USER_DATA: 'blog_user_data',
     THEME: 'blog_app_theme',
   },
@@ -45,7 +44,6 @@ export const ROUTES = {
     BASE: '/auth',
     LOGIN: '/auth/login',
     REGISTER: '/auth/register',
-    FORGOT_PASSWORD: '/auth/forgot-password',
   },
   HOME: '/',
   PROFILE: {

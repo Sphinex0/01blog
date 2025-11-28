@@ -19,15 +19,15 @@
   <!-- Desktop Navigation -->
   <nav class="desktop-nav">
     <a mat-button routerLink="/" routerLinkActive="active-link" class="pixel-nav-btn" [routerLinkActiveOptions]="{ exact: true }">
-      <!-- <span class="nav-icon">🏠</span> -->
+      <!-- <span class="nav-icon"><mat-icon>home</mat-icon></span> -->
       <span>HOME</span>
     </a>
     <a mat-button routerLink="/users" routerLinkActive="active-link" class="pixel-nav-btn">
-      <!-- <span class="nav-icon">🔍</span> -->
+      <!-- <span class="nav-icon"><mat-icon>search</mat-icon></span> -->
       <span>USERS</span>
     </a>
     <a mat-button routerLink="/posts/create" routerLinkActive="active-link" class="pixel-nav-btn">
-      <!-- <span class="nav-icon">➕</span> -->
+      <!-- <span class="nav-icon"><mat-icon>add</mat-icon></span> -->
       <span>CREATE</span>
     </a>
   </nav>
@@ -59,7 +59,7 @@
       <mat-divider></mat-divider>
       
       <a mat-menu-item [routerLink]="'/users/profile/'+user.username" class="pixel-menu-item">
-        <span class="menu-icon">👤</span>
+        <span class="menu-icon"><mat-icon>person</mat-icon></span>
         MY PROFILE
       </a>
       
@@ -71,7 +71,7 @@
       @if (user.role === 'ADMIN') {
         <mat-divider></mat-divider>
         <a mat-menu-item routerLink="/admin" class="pixel-menu-item">
-          <span class="menu-icon">👑</span>
+          <span class="menu-icon"><mat-icon>admin_panel_settings</mat-icon></span>
           ADMIN PANEL
         </a>
       }
@@ -79,7 +79,7 @@
       <mat-divider></mat-divider>
       
       <button mat-menu-item (click)="onLogout()" class="pixel-menu-item logout">
-        <span class="menu-icon">🚪</span>
+        <span class="menu-icon"><mat-icon>logout</mat-icon></span>
         LOGOUT
       </button>
     </mat-menu>

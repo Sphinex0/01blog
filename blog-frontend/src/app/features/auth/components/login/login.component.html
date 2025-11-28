@@ -38,7 +38,7 @@
           class="input-toggle"
           (click)="togglePasswordVisibility()"
           [attr.aria-label]="hidePassword() ? 'Show password' : 'Hide password'">
-          <span class="toggle-icon">{{ hidePassword() ? '👁️' : '🔒' }}</span>
+          <span class="toggle-icon"><mat-icon> {{ hidePassword() ? 'visibility' : 'visibility_off' }}</mat-icon></span>
         </button>
       </div>
       @if (hasFieldError('password')) {
@@ -52,18 +52,14 @@
       class="pixel-btn pixel-btn-primary"
       [disabled]="loginForm.invalid || isLoading()">
       @if (isLoading()) {
-        <span class="btn-spinner">⏳</span>
+        
+        <span class="btn-spinner"><mat-icon>hourglass_empty</mat-icon></span>
         <span>LOGGING IN...</span>
       } @else {
-        <span class="btn-icon">▶</span>
+        <span class="btn-icon"><mat-icon>play_arrow</mat-icon></span>
         <span>LOGIN</span>
       }
     </button>
-
-    <!-- Forgot Password Link -->
-    <div class="form-link-container">
-      <a href="#" class="form-link">FORGOT PASSWORD?</a>
-    </div>
 
   </form>
 
@@ -76,7 +72,7 @@
       DON'T HAVE AN ACCOUNT?
     </p>
     <a [routerLink]="registerRoute" class="pixel-btn pixel-btn-secondary">
-      <span class="btn-icon">+</span>
+      <span class="btn-icon"><mat-icon>add</mat-icon></span>
       <span>CREATE ACCOUNT</span>
     </a>
   </div>

@@ -1,7 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ApiResponse } from '../../../core/models/api-response.interface';
 import { API_BASE_URL, API_ENDPOINTS } from '../../../core/constants/api.constants';
 
 @Injectable({
@@ -31,12 +30,5 @@ export class SubscriptionService {
     );
   }
 
-  /**
-   * Check if current user is following a specific user
-   */
-  isFollowing(userId: number): Observable<ApiResponse<{ isFollowing: boolean }>> {
-    return this.http.get<ApiResponse<{ isFollowing: boolean }>>(
-      `${this.baseUrl}/users/${userId}/is-following`
-    );
-  }
+
 }

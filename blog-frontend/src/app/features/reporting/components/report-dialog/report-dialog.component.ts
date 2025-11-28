@@ -65,7 +65,7 @@ export interface ReportDialogData {
     }
     h2 {
       font-size: 14px;
-      text-transform: uppercase;
+      // text-transform: uppercase;
       color: var(--pixel-error);
     }
     p {

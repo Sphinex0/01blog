@@ -15,14 +15,6 @@ export class StorageService {
     return localStorage.getItem(APP_CONSTANTS.STORAGE_KEYS.ACCESS_TOKEN);
   }
 
-  setRefreshToken(token: string): void {
-    localStorage.setItem(APP_CONSTANTS.STORAGE_KEYS.REFRESH_TOKEN, token);
-  }
-
-  getRefreshToken(): string | null {
-    return localStorage.getItem(APP_CONSTANTS.STORAGE_KEYS.REFRESH_TOKEN);
-  }
-
   setUserData(user: User): void {
     localStorage.setItem(APP_CONSTANTS.STORAGE_KEYS.USER_DATA, JSON.stringify(user));
   }
@@ -42,7 +34,6 @@ export class StorageService {
 
   clearAuth(): void {
     localStorage.removeItem(APP_CONSTANTS.STORAGE_KEYS.ACCESS_TOKEN);
-    localStorage.removeItem(APP_CONSTANTS.STORAGE_KEYS.REFRESH_TOKEN);
     localStorage.removeItem(APP_CONSTANTS.STORAGE_KEYS.USER_DATA);
   }
 

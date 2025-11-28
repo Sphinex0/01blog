@@ -2,7 +2,6 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { UserProfile, UpdateUserRequest } from '../../../core/models/user.interface';
-import { ApiResponse } from '../../../core/models/api-response.interface';
 import { API_BASE_URL, API_ENDPOINTS } from '../../../core/constants/api.constants';
 
 @Injectable({

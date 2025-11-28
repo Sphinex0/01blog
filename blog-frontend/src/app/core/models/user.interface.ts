@@ -7,11 +7,11 @@ export interface User {
   bio?: string;
   role: 'USER' | 'ADMIN';
   isActive: boolean;
-  isBanned?: boolean; // ADD THIS
-  bannedUntil?: Date | string | null; // <-- NEW: Date ban expires
+  isBanned?: boolean; 
+  bannedUntil?: Date | string | null; 
   createdAt: Date;
   updatedAt: Date;
-  lastLoginAt?: Date; // ADD THIS
+  lastLoginAt?: Date; 
 }
 
 export interface UserProfile extends User {
@@ -21,7 +21,6 @@ export interface UserProfile extends User {
   isFollowed?: boolean;
 }
 
-// ADD THIS: For admin user management
 export interface AdminUserDetails extends UserProfile {
   reportCount?: number;
 }
@@ -40,7 +39,6 @@ export interface LoginRequest {
 
 export interface AuthResponse {
   token: string;
-  refreshToken: string;
   user: User;
   expiresIn: number;
 }

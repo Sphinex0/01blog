@@ -11,11 +11,11 @@ export interface Report {
     fullName: string;
   };
   reason: string;
-  status: 'PENDING' | 'RESOLVED' | 'DISMISSED'; // CHANGE to uppercase
+  status: 'PENDING' | 'RESOLVED' | 'DISMISSED'; 
   createdAt: Date;
   resolvedAt?: Date;
-  resolvedBy?: string; // ADD THIS
-  postId?: number | null; // <-- NEW: Optional ID if a post was reported
+  resolvedBy?: string; 
+  postId?: number | null; 
   postHidden:boolean;
 }
 

@@ -1,16 +1,11 @@
 import { ApplicationConfig } from '@angular/core';
-import { provideRouter, UrlSerializer, withComponentInputBinding, withRouterConfig } from '@angular/router';
+import { provideRouter, UrlSerializer  } from '@angular/router';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { provideServiceWorker } from '@angular/service-worker';
-import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
 
 import { routes } from './app.routes';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { errorInterceptor } from './core/interceptors/error.interceptor';
-import { loadingInterceptor } from './core/interceptors/loading.interceptor';
-// import { environment } from '../environments/environment';
 import { provideMarkdown } from "ngx-markdown" 
 import { CustomUrlSerializer } from './core/config/custom-url-serializer';
 
@@ -26,7 +21,6 @@ export const appConfig: ApplicationConfig = {
       withInterceptors([
         authInterceptor,
         errorInterceptor,
-        loadingInterceptor,
       ])
     ),
 

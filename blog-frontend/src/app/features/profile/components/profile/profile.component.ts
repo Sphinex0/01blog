@@ -91,8 +91,8 @@ export class ProfileComponent implements OnInit {
 
     this.postService.getPostsByUser(userId).subscribe({
       next: (response) => {
-        if (response.success && response.data) {
-          this.posts.set(response.data);
+        if (response) {
+          this.posts.set(response);
         }
         this.isLoadingPosts.set(false);
       },

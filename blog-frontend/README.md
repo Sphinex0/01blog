@@ -47,7 +47,7 @@ src/app/
 │   ├── directives/      # Auto-resize, infinite scroll
 │   └── validators/      # Custom form validators
 ├── features/            # Feature modules
-│   ├── auth/           # Login, register, forgot password
+│   ├── auth/           # Login, register
 │   ├── home/           # Dashboard, feed, sidebar
 │   ├── posts/          # CRUD operations, comments, media
 │   ├── profile/        # User profiles, followers, following
@@ -158,7 +158,6 @@ src/assets/styles/
 
 ## 🛡️ Security Features
 
-- **JWT Authentication** with refresh tokens
 - **Route Guards** for access control (auth, admin, no-auth)
 - **HTTP Interceptors** for automatic token attachment
 - **Input Validation** with custom validators

@@ -2,7 +2,6 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Post, CreatePostRequest, UpdatePostRequest } from '../../../core/models/post.interface';
-import { ApiResponse } from '../../../core/models/api-response.interface';
 import { API_BASE_URL, API_ENDPOINTS } from '../../../core/constants/api.constants';
 
 @Injectable({
@@ -54,27 +53,9 @@ export class PostService {
     );
   }
 
-  /**
-   * Unlike a post
-   */
-  // unlikePost(postId: number): Observable<ApiResponse<void>> {
-  //   return this.http.delete<ApiResponse<void>>(
-  //     `${this.baseUrl}${API_ENDPOINTS.POSTS.UNLIKE}/${postId}`
-  //   );
-  // }
-
-  /**
-   * Toggle like on a post
-   */
-  // toggleLike(postId: number, isCurrentlyLiked: boolean): Observable<ApiResponse<void>> {
-  //   return isCurrentlyLiked ? this.unlikePost(postId) : this.likePost(postId);
-  // }
-
-  /**
-   * Get posts by user
-   */
-  getPostsByUser(userId: number): Observable<ApiResponse<Post[]>> {
-    return this.http.get<ApiResponse<Post[]>>(
+  
+  getPostsByUser(userId: number): Observable<Post[]> {
+    return this.http.get<Post[]>(
       `${this.baseUrl}${API_ENDPOINTS.POSTS.BY_USER}/${userId}`
     );
   }

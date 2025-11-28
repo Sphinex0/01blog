@@ -1,7 +1,6 @@
 package api.backend.config;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,7 +12,6 @@ import api.backend.model.user.User;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
-import java.util.function.Function;
 
 @Component
 public class JwtUtil {
@@ -41,21 +39,7 @@ public class JwtUtil {
                 .signWith(signingKey, Jwts.SIG.HS512)
                 .compact();
     }
-
-    // public String getUsernameFromToken(String token) {
-    //     return getClaimFromToken(token, Claims::getSubject);
-    // }
-
-    // public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
-    //     final Claims claims = validateAndExtractAllClaims(token);
-    //     return claimsResolver.apply(claims);
-    // }
-
-    /**
-     * Validates the token and extracts all claims.
-     * This is the ONLY method that should parse the token.
-     * It will throw an exception if the signature or expiry is invalid.
-     */
+ 
     public Claims validateAndExtractAllClaims(String token) {
 
         return Jwts.parser()

@@ -27,7 +27,7 @@
     font-family: 'Press Start 2P', cursive;
     font-size: 10px;
     color: var(--pixel-text-secondary);
-    text-transform: uppercase;
+    // text-transform: uppercase;
     animation: pixelPulse 2s steps(4) infinite;
   }
 }
@@ -68,7 +68,7 @@
   font-family: 'Press Start 2P', cursive;
   font-size: 16px;
   color: var(--pixel-text-primary);
-  text-transform: uppercase;
+  // text-transform: uppercase;
   letter-spacing: 1px;
 }
 
@@ -87,7 +87,7 @@
   padding: 12px 24px;
   font-family: 'Press Start 2P', cursive;
   font-size: 10px;
-  text-transform: uppercase;
+  // text-transform: uppercase;
   background: var(--pixel-primary);
   color: white;
   border: 3px solid var(--pixel-primary-dark);
@@ -134,7 +134,7 @@
   font-family: 'Press Start 2P', cursive;
   font-size: 14px;
   color: var(--pixel-text-primary);
-  text-transform: uppercase;
+  // text-transform: uppercase;
   letter-spacing: 2px;
   background: var(--pixel-bg-secondary);
   border: 3px solid var(--pixel-border);

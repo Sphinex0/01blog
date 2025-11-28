@@ -29,7 +29,7 @@
   font-family: 'Press Start 2P', cursive;
   font-size: 16px;
   color: var(--pixel-text-primary);
-  text-transform: uppercase;
+  // text-transform: uppercase;
   letter-spacing: 2px;
 }
 
@@ -62,7 +62,7 @@
   border: 2px solid var(--pixel-border);
   color: var(--pixel-text-primary);
   box-shadow: 3px 3px 0 var(--pixel-shadow);
-  text-transform: uppercase;
+  // text-transform: uppercase;
   transition: all 0.1s ease;
 
   mat-icon {
@@ -93,7 +93,7 @@
     color: var(--pixel-text-secondary);
     font-family: 'Press Start 2P', cursive;
     font-size: 10px;
-    text-transform: uppercase;
+    // text-transform: uppercase;
   }
 }
 
@@ -127,7 +127,7 @@
   font-family: 'Press Start 2P', cursive;
   font-size: 14px;
   color: var(--pixel-text-primary);
-  text-transform: uppercase;
+  // text-transform: uppercase;
 }
 
 .empty-state p {
@@ -174,7 +174,8 @@
     .tab-label {
       font-family: 'Press Start 2P', cursive;
       font-size: 9px;
-      text-transform: uppercase;
+      color: var(--pixel-text-primary);
+      // text-transform: uppercase;
     }
 
     .tab-count {
@@ -236,7 +237,7 @@
     margin: 0;
     font-family: 'Press Start 2P', cursive;
     font-size: 9px;
-    text-transform: uppercase;
+    // text-transform: uppercase;
   }
 }
 

@@ -23,7 +23,7 @@
     margin: 0;
     font-family: 'Press Start 2P', cursive;
     font-size: 10px;
-    text-transform: uppercase;
+    // text-transform: uppercase;
   }
 }
 
@@ -42,7 +42,7 @@
   font-family: 'Press Start 2P', cursive;
   font-size: 20px;
   color: var(--pixel-text-primary);
-  text-transform: uppercase;
+  // text-transform: uppercase;
   letter-spacing: 2px;
 }
 
@@ -51,7 +51,7 @@
   font-family: 'Press Start 2P', cursive;
   font-size: 10px;
   color: var(--pixel-text-secondary);
-  text-transform: uppercase;
+  // text-transform: uppercase;
 }
 
 // Search Section
@@ -121,7 +121,7 @@
     color: var(--pixel-text-secondary);
     font-family: 'Press Start 2P', cursive;
     font-size: 10px;
-    text-transform: uppercase;
+    // text-transform: uppercase;
   }
 }
 
@@ -163,7 +163,7 @@
   font-family: 'Press Start 2P', cursive;
   font-size: 14px;
   color: var(--pixel-text-primary);
-  text-transform: uppercase;
+  // text-transform: uppercase;
 }
 
 .error-state p {
@@ -187,7 +187,7 @@
   cursor: pointer;
   transition: all 0.1s ease;
   box-shadow: 4px 4px 0 var(--pixel-shadow);
-  text-transform: uppercase;
+  // text-transform: uppercase;
 
   mat-icon {
     margin-right: 0.5rem;
@@ -236,7 +236,7 @@
   font-family: 'Press Start 2P', cursive;
   font-size: 16px;
   color: var(--pixel-text-primary);
-  text-transform: uppercase;
+  // text-transform: uppercase;
 }
 
 .empty-state p {
@@ -260,7 +260,7 @@
   cursor: pointer;
   transition: all 0.1s ease;
   box-shadow: 4px 4px 0 var(--pixel-shadow);
-  text-transform: uppercase;
+  // text-transform: uppercase;
 
   mat-icon {
     margin-right: 0.5rem;

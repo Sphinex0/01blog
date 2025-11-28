@@ -17,16 +17,4 @@ export class AnalyticsService {
     );
   }
 
-  getAnalytics(): Observable<AnalyticsData> {
-    return this.http.get<AnalyticsData>(
-      `${this.baseUrl}${API_ENDPOINTS.ADMIN.ANALYTICS}`
-    );
-  }
-
-  getMostReportedUsers(limit: number = 5): Observable<UserReportSummary[]> {
-    return this.http.get<UserReportSummary[]>(
-      `${this.baseUrl}${API_ENDPOINTS.ADMIN.ANALYTICS}/most-reported`,
-      { params: { limit: limit.toString() } }
-    );
-  }
 }

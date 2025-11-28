@@ -32,16 +32,6 @@ export const postRoutes: Routes = [
           ),
         title: '01Blog - Post',
       },
-      //   {
-      //     path: 'forgot-password',
-      //     loadComponent: () => import('./components/forgot-password/forgot-password').then(c => c.ForgotPassword),
-      //     title: '01Blog - Forgot Password'
-      //   },
-      //   {
-      //     path: '',
-      //     redirectTo: 'login',
-      //     pathMatch: 'full'
-      //   }
     ],
   },
 ];

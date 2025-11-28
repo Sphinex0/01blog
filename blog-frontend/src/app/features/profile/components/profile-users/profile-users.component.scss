@@ -60,7 +60,7 @@
   font-family: 'Press Start 2P', cursive;
   font-size: 16px;
   color: var(--pixel-text-primary);
-  text-transform: uppercase;
+  // text-transform: uppercase;
   letter-spacing: 2px;
 }
 
@@ -69,7 +69,7 @@
   font-family: 'Press Start 2P', cursive;
   font-size: 10px;
   color: var(--pixel-text-secondary);
-  text-transform: uppercase;
+  // text-transform: uppercase;
 }
 
 // Loading State
@@ -96,7 +96,7 @@
     font-family: 'Press Start 2P', cursive;
     font-size: 10px;
     color: var(--pixel-text-secondary);
-    text-transform: uppercase;
+    // text-transform: uppercase;
     animation: pixelPulse 2s steps(4) infinite;
   }
 }
@@ -137,7 +137,7 @@
   font-family: 'Press Start 2P', cursive;
   font-size: 14px;
   color: var(--pixel-text-primary);
-  text-transform: uppercase;
+  // text-transform: uppercase;
 }
 
 .error-state p {
@@ -155,7 +155,7 @@
   padding: 12px 24px;
   font-family: 'Press Start 2P', cursive;
   font-size: 10px;
-  text-transform: uppercase;
+  // text-transform: uppercase;
   background: var(--pixel-primary);
   color: white;
   border: 3px solid var(--pixel-primary-dark);
@@ -212,7 +212,7 @@
   font-family: 'Press Start 2P', cursive;
   font-size: 16px;
   color: var(--pixel-text-primary);
-  text-transform: uppercase;
+  // text-transform: uppercase;
 }
 
 .empty-state p {
@@ -311,7 +311,7 @@
   font-family: 'Press Start 2P', cursive;
   font-size: 11px;
   color: var(--pixel-text-primary);
-  text-transform: uppercase;
+  // text-transform: uppercase;
   word-break: break-word;
   transition: color 0.1s ease;
 }
@@ -321,7 +321,7 @@
   font-family: 'Press Start 2P', cursive;
   font-size: 9px;
   color: var(--pixel-text-secondary);
-  text-transform: uppercase;
+  // text-transform: uppercase;
 }
 
 .bio {
@@ -344,7 +344,7 @@
 .follow-btn {
   font-family: 'Press Start 2P', cursive;
   font-size: 9px;
-  text-transform: uppercase;
+  // text-transform: uppercase;
   padding: 10px 16px;
   background: var(--pixel-primary);
   color: white;
@@ -392,7 +392,7 @@
 .self-tag {
   font-family: 'Press Start 2P', cursive;
   font-size: 9px;
-  text-transform: uppercase;
+  // text-transform: uppercase;
   padding: 10px 16px;
   background: var(--pixel-bg-tertiary);
   color: var(--pixel-text-secondary);
@@ -444,7 +444,7 @@
     font-family: 'Press Start 2P', cursive;
     font-size: 9px;
     color: var(--pixel-text-secondary);
-    text-transform: uppercase;
+    // text-transform: uppercase;
   }
 }
 
@@ -469,7 +469,7 @@
     margin: 0;
     font-family: 'Press Start 2P', cursive;
     font-size: 10px;
-    text-transform: uppercase;
+    // text-transform: uppercase;
   }
 }
 

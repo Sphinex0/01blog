@@ -82,7 +82,7 @@ import { MatButtonModule } from '@angular/material/button';
         font-family: 'Press Start 2P', cursive;
         font-size: 16px;
         color: white;
-        text-transform: uppercase;
+        // text-transform: uppercase;
         letter-spacing: 2px;
       }
     }
@@ -93,7 +93,7 @@ import { MatButtonModule } from '@angular/material/button';
       a {
         font-family: 'Press Start 2P', cursive;
         font-size: 10px;
-        text-transform: uppercase;
+        // text-transform: uppercase;
         margin: 0.5rem 1rem;
         padding: 12px 16px;
         border: 2px solid transparent;

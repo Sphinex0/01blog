@@ -165,7 +165,7 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: normal;
   line-height: 1.4;
   color: var(--pixel-text-primary);
-  text-transform: uppercase;
+  // text-transform: uppercase;
   letter-spacing: 2px;
 }
 
@@ -199,7 +199,7 @@ a {
   padding: 12px 24px;
   font-family: 'Press Start 2P', cursive;
   font-size: 10px;
-  text-transform: uppercase;
+  // text-transform: uppercase;
   color: var(--pixel-text-primary);
   background: var(--pixel-bg-secondary);
   border: 3px solid var(--pixel-border);
@@ -295,7 +295,7 @@ a {
   padding: 4px 8px;
   font-family: 'Press Start 2P', cursive;
   font-size: 8px;
-  text-transform: uppercase;
+  // text-transform: uppercase;
   background: var(--pixel-accent);
   border: 2px solid var(--pixel-border);
   box-shadow: 2px 2px 0 var(--pixel-shadow);

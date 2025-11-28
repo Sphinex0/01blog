@@ -20,7 +20,7 @@
   font-family: 'Press Start 2P', cursive;
   font-size: 18px;
   color: var(--pixel-text-primary);
-  text-transform: uppercase;
+  // // text-transform: uppercase;
   letter-spacing: 2px;
 }
 
@@ -29,7 +29,7 @@
   font-family: 'Press Start 2P', cursive;
   font-size: 9px;
   color: var(--pixel-text-secondary);
-  text-transform: uppercase;
+  // // text-transform: uppercase;
 }
 
 // Pixel Form
@@ -50,7 +50,7 @@
   font-family: 'Press Start 2P', cursive;
   font-size: 9px;
   color: var(--pixel-text-primary);
-  text-transform: uppercase;
+  // // text-transform: uppercase;
   letter-spacing: 1px;
 }
 
@@ -71,7 +71,7 @@
   border: 3px solid var(--pixel-border);
   box-shadow: inset 2px 2px 0 var(--pixel-shadow-inner);
   transition: all 0.1s ease;
-  text-transform: uppercase;
+  // // text-transform: uppercase;
 
   &::placeholder {
     color: var(--pixel-text-muted);
@@ -134,7 +134,7 @@
   font-family: 'Press Start 2P', cursive;
   font-size: 7px;
   color: var(--pixel-error);
-  text-transform: uppercase;
+  // // text-transform: uppercase;
   padding: 0.5rem;
   background: var(--pixel-bg-tertiary);
   border: 2px solid var(--pixel-error);
@@ -163,7 +163,7 @@
     font-family: 'Press Start 2P', cursive;
     font-size: 9px;
     color: var(--pixel-text-primary);
-    text-transform: uppercase;
+    // // text-transform: uppercase;
   }
 }
 
@@ -182,7 +182,7 @@
     font-family: 'Press Start 2P', cursive;
     font-size: 7px;
     color: var(--pixel-text-muted);
-    text-transform: uppercase;
+    // // text-transform: uppercase;
     transition: color 0.2s ease;
 
     &.valid {
@@ -209,7 +209,7 @@
   padding: 14px 24px;
   font-family: 'Press Start 2P', cursive;
   font-size: 10px;
-  text-transform: uppercase;
+  // // text-transform: uppercase;
   text-decoration: none;
   border: 3px solid var(--pixel-border);
   cursor: pointer;
@@ -272,7 +272,7 @@
   font-size: 8px;
   color: var(--pixel-primary);
   text-decoration: none;
-  text-transform: uppercase;
+  // // text-transform: uppercase;
   transition: color 0.1s ease;
 
   &:hover {
@@ -321,7 +321,7 @@
   font-family: 'Press Start 2P', cursive;
   font-size: 8px;
   color: var(--pixel-text-muted);
-  text-transform: uppercase;
+  // // text-transform: uppercase;
   background: var(--pixel-bg-secondary);
   padding: 0 1rem;
   position: relative;
@@ -333,7 +333,7 @@
   font-family: 'Press Start 2P', cursive;
   font-size: 9px;
   color: var(--pixel-text-secondary);
-  text-transform: uppercase;
+  // // text-transform: uppercase;
   text-align: center;
 }
 

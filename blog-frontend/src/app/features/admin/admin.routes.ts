@@ -13,30 +13,6 @@ export const adminRoutes: Routes = [
         title: '01Blog - Admin Dashboard'
       },
       {
-        path: 'users',
-        loadComponent: () =>
-          import('./components/user-management/user-management').then((c) => c.UserManagement),
-        title: '01Blog - User Management'
-      },
-      {
-        path: 'posts',
-        loadComponent: () =>
-          import('./components/post-management/post-management').then((c) => c.PostManagement),
-        title: '01Blog - Post Management'
-      },
-      {
-        path: 'reports',
-        loadComponent: () =>
-          import('./components/report-management/report-management').then((c) => c.ReportManagement),
-        title: '01Blog - Report Management'
-      },
-      {
-        path: 'analytics',
-        loadComponent: () =>
-          import('./components/analytics/analytics').then((c) => c.Analytics),
-        title: '01Blog - Analytics'
-      },
-      {
         path: '**',
         redirectTo: ''
       }

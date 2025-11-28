@@ -1,7 +1,6 @@
 <div class="admin-dashboard">
   <div class="dashboard-header">
     <div class="header-content">
-
       <div>
         <h1 class="header-title">ADMIN PANEL</h1>
 
@@ -21,7 +20,7 @@
   @if (stats()) {
   <div class="stats-grid">
     <div class="stat-card">
-      <div class="stat-icon">👥</div>
+      <div class="stat-icon"><mat-icon>people</mat-icon></div>
 
       <div class="stat-content">
         <div class="stat-value">{{ stats()!.totalUsers }}</div>
@@ -33,7 +32,7 @@
     </div>
 
     <div class="stat-card">
-      <div class="stat-icon">📝</div>
+      <div class="stat-icon"><mat-icon>article</mat-icon></div>
 
       <div class="stat-content">
         <div class="stat-value">{{ stats()!.totalPosts }}</div>
@@ -45,7 +44,7 @@
     </div>
 
     <div class="stat-card">
-      <div class="stat-icon">🚨</div>
+      <div class="stat-icon"><mat-icon>report</mat-icon></div>
 
       <div class="stat-content">
         <div class="stat-value">{{ stats()!.totalReports }}</div>
@@ -57,7 +56,7 @@
     </div>
 
     <div class="stat-card">
-      <div class="stat-icon">🔨</div>
+      <div class="stat-icon"><mat-icon>gavel</mat-icon></div>
 
       <div class="stat-content">
         <div class="stat-value">{{ stats()!.totalBannedUsers }}</div>
@@ -69,7 +68,7 @@
 
   @if (stats()!.mostReportedUsers && stats()!.mostReportedUsers.length > 0) {
   <div class="reported-users-section">
-    <h2 class="section-title">🎯 MOST REPORTED USERS</h2>
+    <h2 class="section-title">MOST REPORTED USERS</h2>
 
     <div class="reported-users-grid">
       @for (user of stats()!.mostReportedUsers; track user.userId) {
@@ -91,7 +90,7 @@
         </div>
 
         <div class="report-badge">
-          <span class="badge-icon">🚨</span>
+          <span class="badge-icon"><mat-icon>report</mat-icon></span>
           <span class="badge-count">{{ user.reportCount }}</span>
         </div>
       </div>
@@ -148,14 +147,17 @@
 
                   @if (user.isBanned) {
                   <div class="user-stats-row banned-info">
-                    <span>🚨 BAN: </span>
+                    <span><mat-icon>report</mat-icon> BAN: </span>
                     <span class="ban-status">{{ getBanStatus(user) }}</span>
                   </div>
                   } @else {
                   <div class="user-stats-row">
-                    <span>📝 {{ user.postsCount }} POSTS</span>
-                    <span>👥 {{ user.followersCount }} FOLLOWERS</span>
-                    <span>📅 {{ user.createdAt | timeAgo }}</span>
+                    <span><mat-icon>article</mat-icon> {{ user.postsCount }} POSTS</span>
+                    <span><mat-icon>group</mat-icon> {{ user.followersCount }} FOLLOWERS</span>
+                    <span
+                      ><mat-icon>calendar_today</mat-icon> {{ user.createdAt | timeAgo }} was
+                      created</span
+                    >
                   </div>
                   }
                 </div>
@@ -255,7 +257,9 @@
                   @if (post.isHidden) {
                   <span class="hidden-badge">HIDDEN</span> } @if (post.reportCount &&
                   post.reportCount > 0) {
-                  <span class="report-badge-post">🚨 {{ post.reportCount }}</span>
+                  <span class="report-badge-post"
+                    ><mat-icon>report</mat-icon> {{ post.reportCount }}</span
+                  >
                   }
                 </div>
 
@@ -268,8 +272,8 @@
                 </div>
 
                 <div class="post-stats">
-                  <span>❤️ {{ post.likesCount }}</span>
-                  <span>💬 {{ post.commentsCount }}</span>
+                  <span><mat-icon>favorite</mat-icon> {{ post.likesCount }}</span>
+                  <span><mat-icon>comment</mat-icon> {{ post.commentsCount }}</span>
                 </div>
 
                 <div class="post-actions">
@@ -328,201 +332,212 @@
         </ng-template>
 
         <div class="tab-content">
-                    <div class="report-filters">
-            <button 
+          <div class="report-filters">
+            <button
               class="filter-btn"
               [class.active]="selectedReportStatus() === 'PENDING'"
-              (click)="onReportStatusChange('PENDING')">
+              (click)="onReportStatusChange('PENDING')"
+            >
               PENDING
             </button>
-            <button 
+            <button
               class="filter-btn"
               [class.active]="selectedReportStatus() === 'RESOLVED'"
-              (click)="onReportStatusChange('RESOLVED')">
+              (click)="onReportStatusChange('RESOLVED')"
+            >
               RESOLVED
             </button>
-            <button 
+            <button
               class="filter-btn"
               [class.active]="selectedReportStatus() === 'DISMISSED'"
-              (click)="onReportStatusChange('DISMISSED')">
+              (click)="onReportStatusChange('DISMISSED')"
+            >
               DISMISSED
             </button>
-            <button 
+            <button
               class="filter-btn"
               [class.active]="selectedReportStatus() === ''"
-              (click)="onReportStatusChange('')">
+              (click)="onReportStatusChange('')"
+            >
               ALL
             </button>
           </div>
 
           @if (isLoadingReports() && reports().length === 0) {
-            <div class="loading-state">
-              <mat-spinner diameter="48"></mat-spinner>
-              <p>LOADING REPORTS...</p>
-            </div>
+          <div class="loading-state">
+            <mat-spinner diameter="48"></mat-spinner>
+            <p>LOADING REPORTS...</p>
+          </div>
           } @else if (reports().length === 0) {
-            <div class="empty-state">
-              <mat-icon>flag</mat-icon>
-              <p>NO REPORTS FOUND</p>
-            </div>
+          <div class="empty-state">
+            <mat-icon>flag</mat-icon>
+            <p>NO REPORTS FOUND</p>
+          </div>
           } @else {
-            <div class="reports-list">
-              @for (report of reports(); track report.id) {
-                <div class="report-card" [class.resolved]="report.status === 'RESOLVED'" [class.dismissed]="report.status === 'DISMISSED'">
-                  <div class="report-header">
-                    <span class="report-status-badge" [class]="report.status.toLowerCase()">
-                      {{ report.status }}
-                    </span>
-                    <span class="report-date">{{ report.createdAt | timeAgo }}</span>
+          <div class="reports-list">
+            @for (report of reports(); track report.id) {
+            <div
+              class="report-card"
+              [class.resolved]="report.status === 'RESOLVED'"
+              [class.dismissed]="report.status === 'DISMISSED'"
+            >
+              <div class="report-header">
+                <span class="report-status-badge" [class]="report.status.toLowerCase()">
+                  {{ report.status }}
+                </span>
+                <span class="report-date">{{ report.createdAt | timeAgo }}</span>
+              </div>
+
+              <div class="report-content">
+                <div class="report-section">
+                  <div class="section-label">REPORTER:</div>
+                  <div class="user-chip">
+                    <span class="chip-icon"><mat-icon>person</mat-icon></span>
+                    <span>{{ report.reporter.fullName }} (@{{ report.reporter.username }})</span>
                   </div>
+                </div>
 
-                  <div class="report-content">
-                    <div class="report-section">
-                      <div class="section-label">REPORTER:</div>
-                      <div class="user-chip">
-                        <span class="chip-icon">👤</span>
-                        <span>{{ report.reporter.fullName }} (@{{ report.reporter.username }})</span>
-                      </div>
-                    </div>
-
-                    <div class="report-section">
-                      <div class="section-label">REPORTED USER:</div>
-                      <div class="reported-user">
-                        @if (report.reported.avatar) {
-                          <img [src]="getMediaUrl(report.reported.avatar)" [alt]="report.reported.fullName" class="reported-avatar" />
-                        } @else {
-                          <div class="reported-avatar-placeholder">
-                            {{ report.reported.fullName[0] }}
-                          </div>
-                        }
-                        <div class="reported-info">
-                          <div class="reported-name">{{ report.reported.fullName }}</div>
-                          <div class="reported-username">@{{ report.reported.username }}</div>
-                        </div>
-                      </div>
-                    </div>
-
-                    @if (report.postId) {
-                      <div class="report-section">
-                        <div class="section-label">REPORTED POST:</div>
-                        <a 
-                          [routerLink]="['/posts', report.postId]" 
-                          class="post-link-chip pixel-btn-sm" 
-                          target="_blank">
-                          <mat-icon>article</mat-icon>
-                          VIEW POST #{{ report.postId }}
-                        </a>
-                      </div>
-                    }
-
-                    <div class="report-section">
-                      <div class="section-label">REASON:</div>
-                      <div class="report-reason">{{ report.reason }}</div>
-                    </div>
-
-                    @if (report.resolvedAt) {
-                      <div class="report-section">
-                        <div class="section-label">RESOLVED:</div>
-                        <div class="resolved-info">
-                          {{ report.resolvedAt | timeAgo }}
-                          @if (report.resolvedBy) {
-                            <span>BY {{ report.resolvedBy }}</span>
-                          }
-                      </div>
-                    </div>
-                    }
-                  </div>
-
-                  <div class="report-actions">
-                    @if (report.reported.isBanned) {
-                      <button 
-                        mat-button 
-                        class="pixel-btn-sm pixel-btn-success" 
-                        (click)="onBanUser(report.reported)">
-                        <mat-icon>check_circle</mat-icon>
-                        UNBAN USER
-                      </button>
+                <div class="report-section">
+                  <div class="section-label">REPORTED USER:</div>
+                  <div class="reported-user">
+                    @if (report.reported.avatar) {
+                    <img
+                      [src]="getMediaUrl(report.reported.avatar)"
+                      [alt]="report.reported.fullName"
+                      class="reported-avatar"
+                    />
                     } @else {
-                      <button 
-                        mat-button 
-                        class="pixel-btn-sm pixel-btn-danger" 
-                        (click)="onQuickBanUserFromReport(report)">
-                        <mat-icon>block</mat-icon>
-                        BAN USER
-                      </button>
+                    <div class="reported-avatar-placeholder">
+                      {{ report.reported.fullName[0] }}
+                    </div>
                     }
-                    
-                    @if (report.postId) {
-                      @if (report.postHidden) {
-                        <button 
-                          mat-button 
-                          class="pixel-btn-sm pixel-btn-success" 
-                          (click)="onQuickHidePostFromReport(report)">
-                          <mat-icon>visibility</mat-icon>
-                          UNHIDE POST
-                        </button>
-                      } @else {
-                        <button 
-                          mat-button 
-                          class="pixel-btn-sm pixel-btn-warning" 
-                          (click)="onQuickHidePostFromReport(report)">
-                          <mat-icon>visibility_off</mat-icon>
-                          HIDE POST
-                        </button>
-                      }
-                    }
-
-
-                    <a 
-                      mat-button 
-                      class="pixel-btn-sm" 
-                      [href]="'/users/profile/'+report.reported.username"
-                      target="_blank">
-                      <mat-icon>visibility</mat-icon>
-                      VIEW USER
-                  </a>
-                    
-                    @if (report.status === 'PENDING') {
-                      <button 
-                        mat-button 
-                        class="pixel-btn-sm pixel-btn-success" 
-                        (click)="onResolveReport(report)">
-                        <mat-icon>check</mat-icon>
-                        RESOLVE
-                      </button>
-                      <button 
-                        mat-button 
-                        class="pixel-btn-sm pixel-btn-warning" 
-                        (click)="onDismissReport(report)">
-                        <mat-icon>close</mat-icon>
-                        DISMISS
-                      </button>
-                    }
-                    
+                    <div class="reported-info">
+                      <div class="reported-name">{{ report.reported.fullName }}</div>
+                      <div class="reported-username">@{{ report.reported.username }}</div>
+                    </div>
                   </div>
                 </div>
-                                @if (report === reports()[reports().length -1]) { @if (hasMoreReports()) {
-                <div #loadTriggerReports class="load-trigger"></div>
-                @defer (on viewport(loadTriggerReports)) {
-                  {{ onReportsScrollBottom() }}
-                } @placeholder {
-                  <div class="loading-more-indicator">
-                    <mat-spinner diameter="32"></mat-spinner>
-                    <p>LOADING MORE REPORTS...</p>
+
+                @if (report.postId) {
+                <div class="report-section">
+                  <div class="section-label">REPORTED POST:</div>
+                  <a
+                    [routerLink]="['/posts', report.postId]"
+                    class="post-link-chip pixel-btn-sm"
+                    target="_blank"
+                  >
+                    <mat-icon>article</mat-icon>
+                    VIEW POST #{{ report.postId }}
+                  </a>
                 </div>
-                } } }
-              }
+                }
+
+                <div class="report-section">
+                  <div class="section-label">REASON:</div>
+                  <div class="report-reason">{{ report.reason }}</div>
+                </div>
+
+                @if (report.resolvedAt) {
+                <div class="report-section">
+                  <div class="section-label">RESOLVED:</div>
+                  <div class="resolved-info">
+                    {{ report.resolvedAt | timeAgo }}
+                    @if (report.resolvedBy) {
+                    <span>BY {{ report.resolvedBy }}</span>
+                    }
+                  </div>
+                </div>
+                }
+              </div>
+
+              <div class="report-actions">
+                @if (report.reported.isBanned) {
+                <button
+                  mat-button
+                  class="pixel-btn-sm pixel-btn-success"
+                  (click)="onBanUser(report.reported)"
+                >
+                  <mat-icon>check_circle</mat-icon>
+                  UNBAN USER
+                </button>
+                } @else {
+                <button
+                  mat-button
+                  class="pixel-btn-sm pixel-btn-danger"
+                  (click)="onQuickBanUserFromReport(report)"
+                >
+                  <mat-icon>block</mat-icon>
+                  BAN USER
+                </button>
+                } @if (report.postId) { @if (report.postHidden) {
+                <button
+                  mat-button
+                  class="pixel-btn-sm pixel-btn-success"
+                  (click)="onQuickHidePostFromReport(report)"
+                >
+                  <mat-icon>visibility</mat-icon>
+                  UNHIDE POST
+                </button>
+                } @else {
+                <button
+                  mat-button
+                  class="pixel-btn-sm pixel-btn-warning"
+                  (click)="onQuickHidePostFromReport(report)"
+                >
+                  <mat-icon>visibility_off</mat-icon>
+                  HIDE POST
+                </button>
+                } }
+
+                <a
+                  mat-button
+                  class="pixel-btn-sm"
+                  [href]="'/users/profile/' + report.reported.username"
+                  target="_blank"
+                >
+                  <mat-icon>visibility</mat-icon>
+                  VIEW USER
+                </a>
+
+                @if (report.status === 'PENDING') {
+                <button
+                  mat-button
+                  class="pixel-btn-sm pixel-btn-success"
+                  (click)="onResolveReport(report)"
+                >
+                  <mat-icon>check</mat-icon>
+                  RESOLVE
+                </button>
+                <button
+                  mat-button
+                  class="pixel-btn-sm pixel-btn-warning"
+                  (click)="onDismissReport(report)"
+                >
+                  <mat-icon>close</mat-icon>
+                  DISMISS
+                </button>
+                }
+              </div>
             </div>
-                        @if (!hasMoreReports() && !isLoadingReports()) {
-              <div class="end-of-feed">
-                <mat-icon>check_circle</mat-icon>
-                <p>END OF REPORT LIST</p>
+            @if (report === reports()[reports().length -1]) { @if (hasMoreReports()) {
+            <div #loadTriggerReports class="load-trigger"></div>
+            @defer (on viewport(loadTriggerReports)) {
+            {{ onReportsScrollBottom() }}
+            } @placeholder {
+            <div class="loading-more-indicator">
+              <mat-spinner diameter="32"></mat-spinner>
+              <p>LOADING MORE REPORTS...</p>
             </div>
-            }
-          }
+            } } } }
+          </div>
+          @if (!hasMoreReports() && !isLoadingReports()) {
+          <div class="end-of-feed">
+            <mat-icon>check_circle</mat-icon>
+            <p>END OF REPORT LIST</p>
+          </div>
+          } }
         </div>
       </mat-tab>
-
     </mat-tab-group>
   </div>
 </div>

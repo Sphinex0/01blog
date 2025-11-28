@@ -36,11 +36,7 @@ export class AdminService {
     });
   }
 
-  getUserById(userId: number): Observable<AdminUserDetails> {
-    return this.http.get<AdminUserDetails>(
-      `${this.baseUrl}${API_ENDPOINTS.ADMIN.GET_USER}/${userId}`
-    );
-  }
+
 
   /**
    * Bans a user until a specific date or lifts the ban.
@@ -58,7 +54,6 @@ export class AdminService {
     return this.http.patch<String>(endpoint, payload, {responseType: 'text' as 'json'});
   }
 
-  // We keep this as a convenience method for the component logic
   unbanUser(userId: number): Observable<String> {
     return this.banUser(userId, null);
   }
@@ -81,7 +76,6 @@ export class AdminService {
     return this.http.patch<String>(`${this.baseUrl}${API_ENDPOINTS.ADMIN.DEMOTE_USER}/${userId}`,{}, {responseType: 'text' as 'json'});
   }
 
-  // Posts Management
   getAllPosts(cursor: number = 0, search?: string): Observable<AdminPost[]> {
     let params = new HttpParams().set('cursor', cursor.toString());
 
@@ -92,9 +86,6 @@ export class AdminService {
     return this.http.get<AdminPost[]>(`${this.baseUrl}${API_ENDPOINTS.ADMIN.POSTS}`, { params });
   }
 
-  getPostById(postId: number): Observable<AdminPost> {
-    return this.http.get<AdminPost>(`${this.baseUrl}${API_ENDPOINTS.ADMIN.GET_POST}/${postId}`);
-  }
 
   hidePost(postId: number): Observable<String> {
     return this.http.patch<String>(`${this.baseUrl}${API_ENDPOINTS.ADMIN.HIDE_POST}/${postId}`, {}, {responseType: 'text' as 'json'});

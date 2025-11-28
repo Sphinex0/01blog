@@ -4,6 +4,7 @@ import {
   inject,
   signal,
   Input,
+  input,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
@@ -74,26 +75,26 @@ export class FeedComponent implements OnInit {
     this.isRefreshing.set(false);
   }
 
-  // readonly user = input.required<UserProfile>();
-  @Input() user: UserProfile | null = null;
+  readonly user = input<UserProfile | null>();
+   
+  //@Input() user: UserProfile | null = null;
 
   loadMore(): void {
     if (this.isLoadingMore()) return;
     console.log('Loading more posts...');
     this.isLoadingMore.set(true);
-    if (this.user != null) {
-      console.log('Loading posts for user:', this.user);
+    if (this.user() != null) {
+      console.log('Loading posts for user:', this.user());
       this.feedService.getFeed(
-        `${API_ENDPOINTS.USERS.BY_USERNAME}/${this.user.username}${API_ENDPOINTS.POSTS.GET_ALL}`
+        `${API_ENDPOINTS.USERS.BY_USERNAME}/${this.user()!.username}${API_ENDPOINTS.POSTS.GET_ALL}`
       );
     } else {
       this.feedService.getFeed();
     }
 
-    // Reset loading state after a delay
-    // setTimeout(() => {
+
       this.isLoadingMore.set(false);
-    // }, 500);
+   
   }
 
   onLikePost(post: Post, event: Event): void {

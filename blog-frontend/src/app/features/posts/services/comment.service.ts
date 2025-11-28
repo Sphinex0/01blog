@@ -2,7 +2,6 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, take, tap } from 'rxjs';
 import { Comment, CreateCommentRequest } from '../../../core/models/comment.interface';
-import { ApiResponse } from '../../../core/models/api-response.interface';
 import { API_BASE_URL, API_ENDPOINTS } from '../../../core/constants/api.constants';
 
 @Injectable({
@@ -12,14 +11,7 @@ export class CommentService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = API_BASE_URL;
 
-  /**
-   * Get comments by post ID
-   */
-  // getCommentsByPost(postId: number): Observable<Comment[]> {
-  //   return this.http.get<Comment[]>(
-  //     `${this.baseUrl}${API_ENDPOINTS.COMMENTS.GET_BY_POST}/${postId}`
-  //   );
-  // }
+
 
   /**
    * Get top-level comments for a post with cursor pagination

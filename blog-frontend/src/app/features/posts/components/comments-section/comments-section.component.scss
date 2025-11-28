@@ -7,7 +7,7 @@
   font-family: 'Press Start 2P', cursive;
   font-size: 14px;
   color: var(--pixel-text-primary);
-  text-transform: uppercase;
+  // text-transform: uppercase;
   letter-spacing: 2px;
 }
 
@@ -82,13 +82,13 @@
       .mat-mdc-form-field-label {
         font-family: 'Press Start 2P', cursive;
         font-size: 9px;
-        text-transform: uppercase;
+        // text-transform: uppercase;
       }
 
       mat-hint {
         font-family: 'Press Start 2P', cursive;
         font-size: 7px;
-        text-transform: uppercase;
+        // text-transform: uppercase;
       }
     }
   }
@@ -100,7 +100,7 @@
     button {
       font-family: 'Press Start 2P', cursive;
       font-size: 9px;
-      text-transform: uppercase;
+      // text-transform: uppercase;
       padding: 12px 20px;
       background: var(--pixel-primary);
       color: white;
@@ -169,7 +169,7 @@
     font-family: 'Press Start 2P', cursive;
     font-size: 10px;
     color: var(--pixel-text-secondary);
-    text-transform: uppercase;
+    // text-transform: uppercase;
     animation: pixelPulse 2s steps(4) infinite;
   }
 }
@@ -195,7 +195,7 @@
     margin: 0;
     font-family: 'Press Start 2P', cursive;
     font-size: 10px;
-    text-transform: uppercase;
+    // text-transform: uppercase;
   }
 }
 
@@ -245,7 +245,7 @@
     font-family: 'Press Start 2P', cursive;
     font-size: 14px;
     color: var(--pixel-text-primary);
-    text-transform: uppercase;
+    // text-transform: uppercase;
     letter-spacing: 2px;
   }
 
@@ -377,7 +377,7 @@
   .mat-mdc-menu-item {
     font-family: 'Press Start 2P', cursive;
     font-size: 9px;
-    text-transform: uppercase;
+    // text-transform: uppercase;
     padding: 12px 16px;
     color: var(--pixel-text-primary);
 

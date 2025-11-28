@@ -28,11 +28,6 @@ export class NotificationBadgeComponent implements OnInit {
   ngOnInit(): void {
     // Load initial unread count
     this.notificationService.getUnreadCount().subscribe();
-    console.log('NotificationBadgeComponent initialized', this.unreadCount());
-    // Poll for updates every 30 seconds (optional)
-    // You can implement WebSocket for real-time updates instead
-    // setInterval(() => {
-    //   this.notificationService.getUnreadCount().subscribe();
-    // }, 30000);
+    
   }
 }

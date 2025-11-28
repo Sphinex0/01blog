@@ -43,7 +43,7 @@
     color: var(--pixel-text-primary);
     font-family: 'Press Start 2P', cursive;
     font-size: 12px;
-    text-transform: uppercase;
+    // text-transform: uppercase;
     letter-spacing: 1px;
   }
 }
@@ -64,7 +64,7 @@
     background: var(--pixel-bg-tertiary);
     border: 2px solid var(--pixel-border-light);
     text-decoration: none;
-    text-transform: uppercase;
+    // text-transform: uppercase;
     transition: all 0.1s ease;
     box-shadow: 2px 2px 0 var(--pixel-shadow);
 

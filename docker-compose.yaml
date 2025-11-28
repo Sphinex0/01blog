@@ -19,7 +19,6 @@ services:
   backend:
     build:
       context: ./backend
-      # --- ADD THIS LINE ---
       # This forces the build process to use your host's network
       network: host 
     container_name: blog-backend

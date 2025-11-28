@@ -9,7 +9,7 @@ export interface AdminStats {
   pendingReports: number;
   resolvedReports: number;
   dismissedReports: number;
-  // NEW FIELD
+  
   mostReportedUsers: UserReportSummary[];
   totalBannedUsers: number;
 }

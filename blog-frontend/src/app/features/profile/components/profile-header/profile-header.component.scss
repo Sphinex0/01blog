@@ -131,7 +131,7 @@
   font-family: 'Press Start 2P', cursive;
   font-size: 18px;
   color: var(--pixel-text-primary);
-  text-transform: uppercase;
+  // text-transform: uppercase;
   letter-spacing: 2px;
   word-break: break-word;
 
@@ -149,7 +149,7 @@
   font-family: 'Press Start 2P', cursive;
   font-size: 11px;
   color: var(--pixel-text-secondary);
-  text-transform: uppercase;
+  // text-transform: uppercase;
 
   @media (max-width: 768px) {
     font-size: 10px;
@@ -234,7 +234,7 @@
   font-family: 'Press Start 2P', cursive;
   font-size: 8px;
   color: var(--pixel-text-muted);
-  text-transform: uppercase;
+  // text-transform: uppercase;
 
   @media (max-width: 768px) {
     font-size: 7px;
@@ -252,7 +252,7 @@
 .admin-badge {
   font-family: 'Press Start 2P', cursive;
   font-size: 8px;
-  text-transform: uppercase;
+  // text-transform: uppercase;
   background: var(--pixel-warning);
   color: var(--pixel-text-primary);
   border: 2px solid var(--pixel-border);
@@ -296,7 +296,7 @@
 .action-btn {
   font-family: 'Press Start 2P', cursive;
   font-size: 10px;
-  text-transform: uppercase;
+  // text-transform: uppercase;
   padding: 12px 20px;
   background: var(--pixel-primary);
   color: white;
@@ -411,7 +411,7 @@
   .mat-mdc-menu-item {
     font-family: 'Press Start 2P', cursive;
     font-size: 9px;
-    text-transform: uppercase;
+    // text-transform: uppercase;
     padding: 12px 16px;
     color: var(--pixel-text-primary);
     min-height: auto;
@@ -459,7 +459,7 @@
   .mat-mdc-tooltip {
     font-family: 'Press Start 2P', cursive;
     font-size: 8px;
-    text-transform: uppercase;
+    // text-transform: uppercase;
     background: var(--pixel-bg-secondary);
     color: var(--pixel-text-primary);
     border: 2px solid var(--pixel-border);

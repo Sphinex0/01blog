@@ -14,7 +14,7 @@
   font-family: 'Press Start 2P', cursive;
   font-size: 16px;
   color: var(--pixel-text-primary);
-  text-transform: uppercase;
+  // // text-transform: uppercase;
   letter-spacing: 2px;
 }
 
@@ -23,7 +23,7 @@
   font-family: 'Press Start 2P', cursive;
   font-size: 8px;
   color: var(--pixel-text-secondary);
-  text-transform: uppercase;
+  // // text-transform: uppercase;
 }
 
 .refresh-btn {
@@ -205,7 +205,7 @@
   font-size: 10px;
   color: var(--pixel-text-primary);
   text-decoration: none;
-  text-transform: uppercase;
+  // // text-transform: uppercase;
   
   &:hover {
     color: var(--pixel-primary);
@@ -216,7 +216,7 @@
   font-family: 'Press Start 2P', cursive;
   font-size: 8px;
   color: var(--pixel-text-muted);
-  text-transform: uppercase;
+  // // text-transform: uppercase;
 }
 
 // Post Content
@@ -226,7 +226,7 @@
   font-size: 12px;
   color: var(--pixel-text-primary);
   line-height: 1.6;
-  text-transform: uppercase;
+  // // text-transform: uppercase;
   letter-spacing: 1px;
 }
 
@@ -265,7 +265,7 @@
   cursor: pointer;
   transition: all 0.1s ease;
   box-shadow: 2px 2px 0 var(--pixel-shadow);
-  text-transform: uppercase;
+  // // text-transform: uppercase;
 
   mat-icon {
     font-size: 16px;
@@ -318,7 +318,7 @@
   color: var(--pixel-text-secondary);
   font-family: 'Press Start 2P', cursive;
   font-size: 10px;
-  text-transform: uppercase;
+  // // text-transform: uppercase;
 }
 
 // Error State
@@ -353,7 +353,7 @@
   font-family: 'Press Start 2P', cursive;
   font-size: 14px;
   color: var(--pixel-text-primary);
-  text-transform: uppercase;
+  // // text-transform: uppercase;
 }
 
 .error-state p {
@@ -377,7 +377,7 @@
   cursor: pointer;
   transition: all 0.1s ease;
   box-shadow: 4px 4px 0 var(--pixel-shadow);
-  text-transform: uppercase;
+  // // text-transform: uppercase;
 
   &:hover {
     transform: translate(2px, 2px);
@@ -422,7 +422,7 @@
   font-family: 'Press Start 2P', cursive;
   font-size: 16px;
   color: var(--pixel-text-primary);
-  text-transform: uppercase;
+  // // text-transform: uppercase;
 }
 
 .empty-state p {
@@ -453,7 +453,7 @@
   text-decoration: none;
   transition: all 0.1s ease;
   box-shadow: 4px 4px 0 var(--pixel-shadow);
-  text-transform: uppercase;
+  // // text-transform: uppercase;
 
   &:hover {
     transform: translate(2px, 2px);
@@ -479,7 +479,7 @@
   text-decoration: none;
   transition: all 0.1s ease;
   box-shadow: 4px 4px 0 var(--pixel-shadow);
-  text-transform: uppercase;
+  // // text-transform: uppercase;
 
   &:hover {
     background: var(--pixel-primary);
@@ -508,7 +508,7 @@
     color: var(--pixel-text-secondary);
     font-family: 'Press Start 2P', cursive;
     font-size: 9px;
-    text-transform: uppercase;
+    // // text-transform: uppercase;
   }
 }
 
@@ -530,7 +530,7 @@
     margin: 0;
     font-family: 'Press Start 2P', cursive;
     font-size: 10px;
-    text-transform: uppercase;
+    // // text-transform: uppercase;
   }
 }
 

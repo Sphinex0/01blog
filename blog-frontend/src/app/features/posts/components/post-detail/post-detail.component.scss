@@ -55,7 +55,7 @@
   font-family: 'Press Start 2P', cursive;
   font-size: 10px;
   color: var(--pixel-text-primary);
-  text-transform: uppercase;
+  // text-transform: uppercase;
 }
 
 // Loading State
@@ -82,7 +82,7 @@
     font-family: 'Press Start 2P', cursive;
     font-size: 10px;
     color: var(--pixel-text-secondary);
-    text-transform: uppercase;
+    // text-transform: uppercase;
     animation: pixelPulse 2s steps(4) infinite;
   }
 }
@@ -111,7 +111,7 @@
     font-family: 'Press Start 2P', cursive;
     font-size: 16px;
     color: var(--pixel-text-primary);
-    text-transform: uppercase;
+    // text-transform: uppercase;
   }
 
   p {
@@ -129,7 +129,7 @@
     padding: 12px 24px;
     font-family: 'Press Start 2P', cursive;
     font-size: 10px;
-    text-transform: uppercase;
+    // text-transform: uppercase;
     background: var(--pixel-primary);
     color: white;
     border: 3px solid var(--pixel-primary-dark);
@@ -221,7 +221,7 @@
   font-size: 11px;
   color: var(--pixel-text-primary);
   text-decoration: none;
-  text-transform: uppercase;
+  // text-transform: uppercase;
   transition: color 0.1s ease;
 
   &:hover {
@@ -233,7 +233,7 @@
   font-family: 'Press Start 2P', cursive;
   font-size: 8px;
   color: var(--pixel-text-muted);
-  text-transform: uppercase;
+  // text-transform: uppercase;
 }
 
 .post-menu-btn {
@@ -271,7 +271,7 @@
   font-size: 18px;
   line-height: 1.6;
   color: var(--pixel-text-primary);
-  text-transform: uppercase;
+  // text-transform: uppercase;
   word-break: break-word;
 }
 
@@ -290,7 +290,7 @@
     h1, h2, h3, h4, h5, h6 {
       font-family: 'Press Start 2P', cursive;
       color: var(--pixel-text-primary);
-      text-transform: uppercase;
+      // text-transform: uppercase;
       margin: 1.5rem 0 1rem;
     }
 
@@ -364,7 +364,7 @@
   font-family: 'Press Start 2P', cursive;
   font-size: 9px;
   color: var(--pixel-text-secondary);
-  text-transform: uppercase;
+  // text-transform: uppercase;
 
   mat-icon {
     font-size: 18px;
@@ -385,7 +385,7 @@
   flex: 1;
   font-family: 'Press Start 2P', cursive;
   font-size: 9px;
-  text-transform: uppercase;
+  // text-transform: uppercase;
   padding: 10px;
   background: var(--pixel-bg-tertiary);
   border: 2px solid var(--pixel-border);
@@ -441,7 +441,7 @@
   font-family: 'Press Start 2P', cursive;
   font-size: 14px;
   color: var(--pixel-text-primary);
-  text-transform: uppercase;
+  // text-transform: uppercase;
   letter-spacing: 2px;
 }
 
@@ -513,13 +513,13 @@
     .mat-mdc-form-field-label {
       font-family: 'Press Start 2P', cursive;
       font-size: 9px;
-      text-transform: uppercase;
+      // text-transform: uppercase;
     }
 
     mat-error, mat-hint {
       font-family: 'Press Start 2P', cursive;
       font-size: 7px;
-      text-transform: uppercase;
+      // text-transform: uppercase;
     }
   }
 }
@@ -531,7 +531,7 @@
   button {
     font-family: 'Press Start 2P', cursive;
     font-size: 9px;
-    text-transform: uppercase;
+    // text-transform: uppercase;
     padding: 10px 20px;
     background: var(--pixel-primary);
     color: white;
@@ -589,7 +589,7 @@
     font-family: 'Press Start 2P', cursive;
     font-size: 9px;
     color: var(--pixel-text-secondary);
-    text-transform: uppercase;
+    // text-transform: uppercase;
   }
 }
 
@@ -611,7 +611,7 @@
     margin: 0;
     font-family: 'Press Start 2P', cursive;
     font-size: 10px;
-    text-transform: uppercase;
+    // text-transform: uppercase;
   }
 }
 
@@ -688,7 +688,7 @@
   font-size: 10px;
   color: var(--pixel-text-primary);
   text-decoration: none;
-  text-transform: uppercase;
+  // text-transform: uppercase;
   transition: color 0.1s ease;
 
   &:hover {
@@ -700,7 +700,7 @@
   font-family: 'Press Start 2P', cursive;
   font-size: 7px;
   color: var(--pixel-text-muted);
-  text-transform: uppercase;
+  // text-transform: uppercase;
 }
 
 .comment-menu-btn {
@@ -756,7 +756,7 @@
   padding: 6px 10px;
   font-family: 'Press Start 2P', cursive;
   font-size: 7px;
-  text-transform: uppercase;
+  // text-transform: uppercase;
   background: var(--pixel-bg-primary);
   border: 2px solid var(--pixel-border);
   color: var(--pixel-text-secondary);
@@ -843,7 +843,7 @@
   padding: 10px 16px;
   font-family: 'Press Start 2P', cursive;
   font-size: 8px;
-  text-transform: uppercase;
+  // text-transform: uppercase;
   background: var(--pixel-secondary);
   color: var(--pixel-text-primary);
   border: 3px solid var(--pixel-border);
@@ -957,7 +957,7 @@
     button {
       font-family: 'Press Start 2P', cursive;
       font-size: 8px;
-      text-transform: uppercase;
+      // text-transform: uppercase;
       padding: 8px 16px;
       border: 2px solid var(--pixel-border);
       box-shadow: 2px 2px 0 var(--pixel-shadow);
@@ -1032,7 +1032,7 @@
   font-family: 'Press Start 2P', cursive;
   font-size: 12px;
   color: var(--pixel-text-primary);
-  text-transform: uppercase;
+  // text-transform: uppercase;
 }
 
 .close-sidebar-btn {
@@ -1120,7 +1120,7 @@
     font-family: 'Press Start 2P', cursive;
     font-size: 9px;
     color: var(--pixel-text-primary);
-    text-transform: uppercase;
+    // text-transform: uppercase;
     margin-bottom: 0.5rem;
   }
 
@@ -1177,7 +1177,7 @@
   .mat-mdc-menu-item {
     font-family: 'Press Start 2P', cursive;
     font-size: 9px;
-    text-transform: uppercase;
+    // text-transform: uppercase;
     padding: 12px 16px;
     color: var(--pixel-text-primary);
 
