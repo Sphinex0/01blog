@@ -44,7 +44,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler( AuthorizationDeniedException.class)
     public ResponseEntity<String> handleDisabledException(Exception ex) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
     }
 
     @ExceptionHandler(DisabledException.class)
@@ -62,7 +62,7 @@ public class GlobalExceptionHandler {
             return ResponseEntity.status(HttpStatus.LOCKED).body("Login failed: " +  cause.getMessage());
         } 
        
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login failed: " +  ex.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Login failed: " +  ex.getMessage());
     }
 
     @ExceptionHandler({ IllegalStateException.class, IllegalArgumentException.class, NoSuchElementException.class })
