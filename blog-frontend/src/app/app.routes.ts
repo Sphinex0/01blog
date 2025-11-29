@@ -33,28 +33,11 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./features/notifications/notifications.routes').then((r) => r.notificationRoutes),
       },
-      // {
-      //   path: 'notifications',
-      //   loadChildren: () => import('./features/notifications/notifications.routes').then(r => r.notificationRoutes),
-      // },
-      // {
-      //   path: 'settings',
-      //   loadChildren: () => import('./features/settings/settings.routes').then(r => r.settingsRoutes),
-      // }
-      // {
-      //   path: '**',
-      //   loadComponent: () =>
-      //     import('./shared/components/not-found/not-found.component').then(
-      //       (c) => c.NotFoundComponent
-      //     ),
-      //   title: '404 - Page Not Found',
-      // },
     ],
   },
   {
     path: 'admin',
-    // loadComponent: () =>
-    //   import('./layout/admin-layout/admin-layout.component').then((c) => c.AdminLayoutComponent),
+   
     loadComponent: () =>
       import('./layout/main-layout/main-layout.component').then((c) => c.MainLayoutComponent),
     canActivate: [authGuard],
@@ -65,22 +48,6 @@ export const routes: Routes = [
       },
     ],
   },
-  // {
-  //   path: 'admin',
-  //   loadComponent: () => import('./layout/admin-layout/admin-layout.component').then(c => c.AdminLayoutComponent),
-  //   canActivate: [authGuard, adminGuard],
-  //   children: [
-  //     {
-  //       path: '',
-  //       loadChildren: () => import('./features/admin/admin.routes').then(r => r.adminRoutes),
-  //     }
-  //   ]
-  // },
-
-  // {
-  //   path: '**',
-  //   redirectTo: '/auth/login'
-  // }
   {
     path: '**',
 

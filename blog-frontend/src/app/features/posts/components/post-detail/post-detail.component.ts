@@ -201,11 +201,6 @@ export class PostDetailComponent implements OnInit {
     this.commentService.getReplies(comment.id, comment.replies[comment.replies.length - 1]?.id).subscribe({
       next: (replies) => {
           let newReplies = [...(comment.replies || []), ...replies];
-          // comment.replies = newReplies;
-          // // console.log("new replies", newReplies);
-          // this.comments.update((current) =>
-          //   current.map(c => c.id === comment.id ? { ...c, replies: newReplies } : c)
-          // );
           this.updateCommentInTree(comment.id, (c) => ({
           ...c,
           replies: newReplies,
@@ -243,54 +238,6 @@ export class PostDetailComponent implements OnInit {
       },
     });
   }
-
-  // onSubmitComment(): void {
-  //   if (this.commentForm.invalid) {
-  //     this.commentForm.markAllAsTouched();
-  //     return;
-  //   }
-
-  //   const post = this.post();
-  //   if (!post) return;
-
-  //   this.isSubmittingComment.set(true);
-
-  //   const request: CreateCommentRequest = {
-  //     content: this.commentForm.value.content,
-  //     postId: post.id
-  //   };
-
-  //   this.commentService.createComment(post.id,request).subscribe({
-  //     next: (response) => {
-  //       if (response) {
-  //         // Add new comment to list
-  //         this.comments.update(current => [response!, ...current]);
-
-  //         // Update post comment count
-  //         this.post.update(current => {
-  //           if (!current) return current;
-  //           return { ...current, commentsCount: current.commentsCount + 1 };
-  //         });
-
-  //         // Reset form
-  //         this.commentForm.reset();
-
-  //         this.snackBar.open('Comment added successfully!', 'Close', {
-  //           duration: 2000,
-  //           panelClass: ['success-snackbar']
-  //         });
-  //       }
-  //       this.isSubmittingComment.set(false);
-  //     },
-  //     error: () => {
-  //       this.snackBar.open('Failed to add comment', 'Close', {
-  //         duration: 3000,
-  //         panelClass: ['error-snackbar']
-  //       });
-  //       this.isSubmittingComment.set(false);
-  //     }
-  //   });
-  // }
 
   onEditPost(): void {
     const post = this.post();
@@ -387,12 +334,6 @@ export class PostDetailComponent implements OnInit {
     
     this.commentService.likeComment(comment.id).subscribe({
       next: () => {
-        // comment.isLiked = !comment.isLiked;
-        // // Update likes count
-        // comment.likesCount = comment.isLiked
-        //   ? (comment.likesCount || 0) + 1
-        //   : Math.max(0, (comment.likesCount || 1) - 1);
-        // Update comment in the tree
         this.updateCommentInTree(comment.id, (c) => ({
           ...c,
           isLiked: !c.isLiked,

@@ -19,7 +19,8 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
 
       switch (error.status) {
         case HTTP_STATUS_CODES.FORBIDDEN:
-          router.navigate([""]);
+          errorMessage = error.error?.message;
+          authService.logout();
           break;
         case HTTP_STATUS_CODES.LOCKED:
           errorMessage = error.error;

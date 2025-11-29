@@ -195,10 +195,8 @@ export class PostCreateComponent implements OnInit, OnDestroy {
         : this.postService.savePost(postData);
 
       const savedpost = await firstValueFrom(saveOrUpdate$);
-      this.snackBar.open('Post saved successfully!', 'View', { duration: 100000, panelClass: ['success-snackbar'] }).onAction().subscribe(()=>{
-        this.router.navigate(["posts", savedpost?.id])
-      });
-      // this.router.navigate(["posts", savedpost?.id])
+      this.snackBar.open('Post saved successfully!', 'Close', { duration: 3000, panelClass: ['success-snackbar'] })
+      this.router.navigate(["posts", savedpost?.id])
 
     } catch (error) {
       console.error('Failed to save post:', error);

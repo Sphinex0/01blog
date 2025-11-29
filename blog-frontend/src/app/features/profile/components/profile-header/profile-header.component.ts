@@ -50,10 +50,6 @@ export class ProfileHeaderComponent {
     this.followToggle.emit();
   }
 
-  // onEditProfile(): void {
-  //   this.editAvatar.emit();
-  // }
-
   onShareProfile(): void {
     this.shareProfile.emit();
   }

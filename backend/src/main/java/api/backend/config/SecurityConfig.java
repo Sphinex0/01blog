@@ -2,6 +2,7 @@ package api.backend.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -10,18 +11,20 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
 @Configuration
-@EnableMethodSecurity 
+@EnableMethodSecurity
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final FilterChainExceptionHandler filterChainExceptionHandler;
 
-    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter, FilterChainExceptionHandler filterChainExceptionHandler) {
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter,
+            FilterChainExceptionHandler filterChainExceptionHandler) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.filterChainExceptionHandler = filterChainExceptionHandler;
     }
@@ -41,15 +44,16 @@ public class SecurityConfig {
                     CorsConfiguration config = new CorsConfiguration();
                     config.addAllowedOrigin("http://localhost:4200");
                     config.addAllowedOrigin("http://localhost:8000");
-                    config.addAllowedOrigin("http://10.1.8.8:8000");
-                    // config.addAllowedOrigin("http://localhost"); // Also allow base localhost
                     config.addAllowedMethod("*");
                     config.addAllowedHeader("*");
                     config.setAllowCredentials(true);
                     return config;
                 }))
                 .addFilterBefore(filterChainExceptionHandler, LogoutFilter.class)
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)));
+        ;
 
         return http.build();
     }
