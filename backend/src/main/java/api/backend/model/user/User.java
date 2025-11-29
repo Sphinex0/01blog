@@ -18,8 +18,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import api.backend.model.comment.Comment;
 import api.backend.model.like.CommentLike;
 import api.backend.model.notification.Notification;
@@ -79,31 +77,25 @@ public class User implements UserDetails {
 
     private LocalDateTime deletedAt;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> posts = new ArrayList<>();
 
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL, orphanRemoval = true)
-    // @JsonIgnore
     private List<Notification> notifications = new ArrayList<>();
 
     @ManyToMany
-    @JsonIgnore
     private Set<User> subscribers = new HashSet<>();
 
     @OnDelete(action = OnDeleteAction.CASCADE)
     @ManyToMany(mappedBy = "subscribers")
-    @JsonIgnore
     private Set<User> subscribedTo = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
     private Set<CommentLike> commentLikes = new HashSet<>();
 
-    @ManyToMany(mappedBy = "likes")
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JsonIgnore
+    @ManyToMany(mappedBy = "likes")
     private Set<Post> likedPosts = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)

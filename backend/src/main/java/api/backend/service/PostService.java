@@ -140,13 +140,8 @@ public class PostService {
     }
 
     private User getCurrentUser() {
-        try {
             long userId = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
             return userRepository.findById(userId)
                     .orElseThrow(() -> new IllegalArgumentException("No authenticated user found"));
-        } catch (ClassCastException e) {
-            // Handle cases where the principal is not a User object (e.g., anonymous user)
-            return null;
-        }
     }
 }

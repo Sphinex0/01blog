@@ -21,7 +21,7 @@ public class RateLimiterService {
 
     private final RateLimiterRegistry registry = RateLimiterRegistry.of(config);
 
-    public RateLimiter allowRequest(String ipAddress) {
-        return registry.rateLimiter(ipAddress);
+    public RateLimiter allowRequest(String userId) {
+        return registry.rateLimiter(userId);
     }
 }

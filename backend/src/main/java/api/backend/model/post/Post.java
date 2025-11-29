@@ -7,8 +7,6 @@ import java.util.Set;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import api.backend.model.user.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,7 +15,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -72,11 +69,6 @@ public class Post {
     private Integer commentsCount = 0;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "post_likes",
-            joinColumns = @JoinColumn(name = "post_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id"))
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JsonIgnore
     private Set<User> likes = new HashSet<>();
 
 

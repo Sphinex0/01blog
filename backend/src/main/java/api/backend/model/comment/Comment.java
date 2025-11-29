@@ -17,7 +17,6 @@ import java.util.Set;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Setter
@@ -60,7 +59,6 @@ public class Comment {
     private Set<Comment> replies = new HashSet<>();
 
     @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
     private Set<CommentLike> likes = new HashSet<>();
 
     @Column(nullable = false, columnDefinition = "integer default 0")
