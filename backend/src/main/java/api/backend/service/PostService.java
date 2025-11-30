@@ -10,7 +10,6 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import api.backend.model.comment.Comment;
 import api.backend.model.post.Post;
 import api.backend.model.post.PostRequest;
 import api.backend.model.post.PostResponse;

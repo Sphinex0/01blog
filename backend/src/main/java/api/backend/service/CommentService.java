@@ -36,7 +36,7 @@ public class CommentService {
         this.commentLikeRepository = commentLikeRepository;
     }
 
-    public CommentResponse addComment(Long postId, long userId, CommentRequest request) {
+    public CommentResponse addComment(long postId, long userId, CommentRequest request) {
         User user = userRepository.findById(userId).get();
         Post post = postRepository.findById(postId).get();
         Comment parent = null;
@@ -73,7 +73,7 @@ public class CommentService {
     }
 
     // updateComment
-    public boolean updateComment(Long commentId, Long userId, CommentRequest request) {
+    public boolean updateComment(long commentId, Long userId, CommentRequest request) {
         return commentRepository.findById(commentId)
                 .map(comment -> {
                     comment.setContent(request.content());
@@ -83,7 +83,7 @@ public class CommentService {
     }
 
     // likeComment
-    public int likeComment(Long commentId, long userId) {
+    public int likeComment(long commentId, long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("No authenticated user found"));
         Comment comment = commentRepository.findById(commentId)
@@ -105,16 +105,14 @@ public class CommentService {
         }
     }
 
-    public boolean deleteComment(Long commentId, User currentUser) {
+    public boolean deleteComment(long commentId, User currentUser) {
         return commentRepository.findById(commentId)
                 .map(comment -> {
                     commentRepository.delete(comment);
-                    // Update commentsCount in Post
                     postRepository.findById(comment.getPost().getId()).ifPresent(post -> {
                         post.setCommentsCount(Math.max(0, post.getCommentsCount() - 1 - comment.getRepliesCount()));
                         postRepository.save(post);
                     });
-                    // Update replyCount for the parent if it exists
                     if (comment.getParent() != null) {
                         comment.getParent().setRepliesCount(comment.getParent().getRepliesCount() - 1);
                         commentRepository.save(comment.getParent());
@@ -123,7 +121,7 @@ public class CommentService {
                 }).get();
     }
 
-    public Comment getCommentById(Long commentId) {
+    public Comment getCommentById(long commentId) {
         return commentRepository.findById(commentId).get();
     }
     
