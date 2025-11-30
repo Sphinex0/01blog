@@ -12,16 +12,16 @@ import api.backend.model.user.User;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.Map;
 
 @Component
 public class JwtUtil {
     private final Long expiration;
-    private final SecretKey signingKey; 
+    private final SecretKey signingKey;
 
     public JwtUtil(
             @Value("${jwt.secret}") String secret,
-            @Value("${jwt.expiration}") Long expiration
-    ) {
+            @Value("${jwt.expiration}") Long expiration) {
         this.expiration = expiration;
 
         byte[] keyBytes = secret.getBytes(StandardCharsets.UTF_8);
@@ -30,16 +30,20 @@ public class JwtUtil {
 
     public String generateToken(UserDetails userDetails) {
         User user = (User) userDetails;
+
         return Jwts.builder()
                 .subject(user.getUsername())
-                .claim("role", user.getRole())
                 .claim("id", user.getId())
+                .claim("fullname", user.getFullName())
+                .claim("username", user.getUsername())
+                .claim("email", user.getEmail())
+                .claim("role", user.getRole())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(signingKey, Jwts.SIG.HS512)
                 .compact();
     }
- 
+
     public Claims validateAndExtractAllClaims(String token) {
 
         return Jwts.parser()

@@ -11,7 +11,6 @@ export interface User {
   bannedUntil?: Date | string | null; 
   createdAt: Date;
   updatedAt: Date;
-  lastLoginAt?: Date; 
 }
 
 export interface UserProfile extends User {

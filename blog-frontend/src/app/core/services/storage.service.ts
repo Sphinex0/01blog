@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { User } from '../models/user.interface';
 import { APP_CONSTANTS } from '../constants/app.constants';
+import { jwtDecode } from 'jwt-decode';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class StorageService {
-
   setToken(token: string): void {
     localStorage.setItem(APP_CONSTANTS.STORAGE_KEYS.ACCESS_TOKEN, token);
   }
@@ -15,13 +15,18 @@ export class StorageService {
     return localStorage.getItem(APP_CONSTANTS.STORAGE_KEYS.ACCESS_TOKEN);
   }
 
-  setUserData(user: User): void {
-    localStorage.setItem(APP_CONSTANTS.STORAGE_KEYS.USER_DATA, JSON.stringify(user));
-  }
-
   getUserData(): User | null {
-    const userData = localStorage.getItem(APP_CONSTANTS.STORAGE_KEYS.USER_DATA);
-    return userData ? JSON.parse(userData) : null;
+    const decoded: any = jwtDecode(this.getToken() || '');
+
+    const user = {
+      username: decoded.username || decoded.sub,
+      id: decoded.id,
+      email: decoded.email,
+      fullName: decoded.fullname,
+      avatar: decoded.avatar,
+      role: decoded.role || 'USER',
+    };
+    return user as User;
   }
 
   setTheme(theme: string): void {
@@ -34,7 +39,6 @@ export class StorageService {
 
   clearAuth(): void {
     localStorage.removeItem(APP_CONSTANTS.STORAGE_KEYS.ACCESS_TOKEN);
-    localStorage.removeItem(APP_CONSTANTS.STORAGE_KEYS.USER_DATA);
   }
 
   clear(): void {

@@ -126,6 +126,7 @@ public class CommentService {
     public Comment getCommentById(Long commentId) {
         return commentRepository.findById(commentId).get();
     }
+    
 
     public List<CommentResponse> getReplies(Long commentId, long cursor) {
         Pageable pageable = PageRequest.of(0, 10, Direction.DESC,"id");

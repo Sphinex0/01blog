@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import api.backend.model.comment.Comment;
 import api.backend.model.post.Post;
 import api.backend.model.post.PostRequest;
 import api.backend.model.post.PostResponse;
@@ -43,7 +44,7 @@ public class PostService {
 
         User user = userRepository.findByUsername(username).get();
 
-        return postRepository.findByUserAndIdLessThan(user, cursor, pageable).stream().map(this::toPostResponse)
+        return postRepository.findByUserAndIdLessThanAndIsHiddenFalse(user, cursor, pageable).stream().map(this::toPostResponse)
                 .toList();
     }
 
@@ -64,7 +65,6 @@ public class PostService {
         return postRepository.findById(id).get();
     }
 
-
     @Transactional
     public PostResponse createPost(PostRequest postRequest, User currentUser) {
 
@@ -73,13 +73,14 @@ public class PostService {
         Post savedPost = postRepository.save(post);
 
         notificationService.createAndSendNewPostNotifications(savedPost);
-        
+
         return toPostResponse(post);
     }
 
+    @Transactional
     public String deletePost(long id) {
-        postRepository.findById(id).get();
-        postRepository.deleteById(id);
+        var blog = postRepository.findById(id).get();
+        this.postRepository.delete(blog);
         return "Post deleted successfully";
     }
 
@@ -140,8 +141,8 @@ public class PostService {
     }
 
     private User getCurrentUser() {
-            long userId = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
-            return userRepository.findById(userId)
-                    .orElseThrow(() -> new IllegalArgumentException("No authenticated user found"));
+        long userId = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("No authenticated user found"));
     }
 }

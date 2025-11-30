@@ -28,12 +28,6 @@ public class PostController {
     public ResponseEntity<PostResponse> createPost(@Valid @RequestBody PostRequest post,
             @AuthenticationPrincipal User currentUser) {
 
-                System.out.println("#############################################");
-                System.out.println("#############################################");
-                System.out.println("#############################################");
-                System.out.println("#############################################");
-                System.out.println("#############################################");
-
         PostResponse savedPost = postService.createPost(post, currentUser);
         return ResponseEntity.ok(savedPost);
     }
@@ -64,14 +58,14 @@ public class PostController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or  @postService.getPostById(#id).user.id == authentication.principal.id")
+    @PreAuthorize("hasRole('ADMIN') or  @postService.getPostEntityById(#id).user.id == authentication.principal.id")
     public ResponseEntity<PostResponse> updatePost(@PathVariable Long id, @Valid @RequestBody PostRequest post) {
         PostResponse updatedPost = postService.updatePost(id, post);
         return ResponseEntity.ok(updatedPost);
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or @postService.getPostById(#id).user.id == authentication.principal.id")
+    @PreAuthorize("hasRole('ADMIN') or @postService.getPostEntityById(#id).user.id == authentication.principal.id")
     public ResponseEntity<String> deletePost(@PathVariable Long id) {
         return ResponseEntity.ok(postService.deletePost(id));
     }

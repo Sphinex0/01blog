@@ -23,8 +23,9 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Optional<Post> findByIdAndIsHiddenFalse(Long id);
     
 
-    Page<Post> findByUserAndIdLessThan(User user, Long cursor, Pageable pageable);
+    Page<Post> findByUserAndIdLessThanAndIsHiddenFalse(User user, Long cursor, Pageable pageable);
     Page<Post> findAllByIdLessThan(Long cursor, Pageable pageable);
+    
 
     Optional<Post> findByIdAndUserId(Long id, Long userId);
 

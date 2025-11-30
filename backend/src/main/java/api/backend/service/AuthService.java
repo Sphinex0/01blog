@@ -52,7 +52,7 @@ public class AuthService {
             var auth = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.username().toLowerCase(), request.password()));
 
-            return new AuthResponse(jwtUtil.generateToken((User) auth.getPrincipal()), UserService.toUserResponse((User) auth.getPrincipal()));
+            return new AuthResponse(jwtUtil.generateToken((User) auth.getPrincipal()));
         
         }catch (BadCredentialsException e) {
             

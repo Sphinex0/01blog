@@ -33,9 +33,9 @@ export class AuthService {
 
   private initializeAuth(): void {
     const token = this.storage.getToken();
-    const userData = this.storage.getUserData();
-
-    if (token && userData) {
+    
+    if (token) {
+      const userData = this.storage.getUserData();
       this._currentUser.set(userData);
       this._isAuthenticated.set(true);
     }
@@ -94,10 +94,9 @@ export class AuthService {
   private handleAuthSuccess(authData: AuthResponse): void {
     // Store tokens and user data
     this.storage.setToken(authData.token);
-    this.storage.setUserData(authData.user);
 
     // Update signals
-    this._currentUser.set(authData.user);
+    this._currentUser.set(this.storage.getUserData());
     this._isAuthenticated.set(true);
     this._isLoading.set(false);
 
@@ -126,7 +125,6 @@ export class AuthService {
   }
 
   refreshCurrentUser(user: User): void {
-    this.storage.setUserData(user);
     this._currentUser.set(user);
   }
 }

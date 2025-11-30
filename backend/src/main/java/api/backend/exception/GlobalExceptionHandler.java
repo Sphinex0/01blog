@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import io.github.resilience4j.ratelimiter.RequestNotPermitted;
 import io.jsonwebtoken.security.SignatureException;
-import jakarta.validation.ConstraintViolationException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
