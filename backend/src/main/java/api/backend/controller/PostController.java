@@ -28,6 +28,12 @@ public class PostController {
     public ResponseEntity<PostResponse> createPost(@Valid @RequestBody PostRequest post,
             @AuthenticationPrincipal User currentUser) {
 
+                System.out.println("#############################################");
+                System.out.println("#############################################");
+                System.out.println("#############################################");
+                System.out.println("#############################################");
+                System.out.println("#############################################");
+
         PostResponse savedPost = postService.createPost(post, currentUser);
         return ResponseEntity.ok(savedPost);
     }

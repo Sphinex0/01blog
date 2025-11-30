@@ -34,7 +34,7 @@
     <!-- Post Header -->
     <div class="post-header">
       <div class="author-info">
-        <a [routerLink]="['/profile', postData.user.username]" class="author-avatar">
+        <a [routerLink]="['/users/profile', postData.user.username]" class="author-avatar">
           @if (postData.user.avatar) {
           <img [src]="getMediaUrl(postData.user.avatar)" [alt]="postData.user.fullName" />
           } @else {
@@ -45,7 +45,7 @@
         </a>
 
         <div class="author-details">
-          <a [routerLink]="['/profile', postData.user.username]" class="author-name">
+          <a [routerLink]="['/users/profile', postData.user.username]" class="author-name">
             {{ postData.user.fullName }}
           </a>
           <span class="post-meta">

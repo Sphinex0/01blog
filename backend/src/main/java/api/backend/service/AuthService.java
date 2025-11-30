@@ -36,21 +36,21 @@ public class AuthService {
             throw new IllegalStateException("Email already exists");
         }
         User user = new User(
-                request.fullName(),
-                request.username(),
-                request.email(),
+                request.fullName().toLowerCase(),
+                request.username().toLowerCase(),
+                request.email().toLowerCase(),
                 passwordEncoder.encode(request.password()),
                 "USER",
                 LocalDateTime.now());
         userRepository.save(user);
-        return login(new LoginRequest(request.username(), request.password()));
+        return login(new LoginRequest(request.username().toLowerCase(), request.password()));
     }
 
     public AuthResponse login(LoginRequest request) {
         try {
             
             var auth = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(request.username(), request.password()));
+                    new UsernamePasswordAuthenticationToken(request.username().toLowerCase(), request.password()));
 
             return new AuthResponse(jwtUtil.generateToken((User) auth.getPrincipal()), UserService.toUserResponse((User) auth.getPrincipal()));
         

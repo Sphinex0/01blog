@@ -15,6 +15,7 @@ import { UserProfile } from '../../../../core/models/user.interface';
 import { UserCardComponent } from '../user-card/user-card.component';
 import { SubscriptionService } from '../../services/subscription.service';
 import { InfiniteScrollDirective } from '../../../../shared/directives/infinite-scroll.directive';
+import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-discover-users',
@@ -38,6 +39,8 @@ export class DiscoverUsersComponent implements OnInit {
   private readonly profileService = inject(ProfileService);
   private readonly subscriptionService = inject(SubscriptionService);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly authService = inject(AuthService);
+  readonly currentUser = this.authService.currentUser;
 
   // State Signals
   readonly users = signal<UserProfile[]>([]);
@@ -51,7 +54,7 @@ export class DiscoverUsersComponent implements OnInit {
   private readonly pageSize = 10;
 
   ngOnInit(): void {
-    this.loadUsers(true); // Initial load for all users
+    this.loadUsers(true);
     this.setupSearch();
   }
 
@@ -59,7 +62,6 @@ export class DiscoverUsersComponent implements OnInit {
     this.searchControl.valueChanges
       .pipe(debounceTime(400), distinctUntilChanged())
       .subscribe(() => {
-        // When search term changes, reset everything and start a new search
         this.users.set([]);
         this.cursor.set(0);
         this.hasMore.set(true);
@@ -144,6 +146,5 @@ export class DiscoverUsersComponent implements OnInit {
 
   clearSearch(): void {
     this.searchControl.setValue('');
-    // The valueChanges subscription will automatically handle the reset and reload.
   }
 }

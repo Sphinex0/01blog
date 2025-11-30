@@ -85,49 +85,34 @@ public class UserService implements UserDetailsService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("No authenticated user found"));
 
-        // Define the absolute file system path (from our MvcConfig)
-        // String uploadDir = "/app/uploads";
+        String oldAvatarUrl = user.getAvatar(); 
 
-        // --- 1. Delete Old Image Logic ---
-        String oldAvatarUrl = user.getAvatar(); // Get URL from DB (e.g., "/images/1.png")
-
-        // Check if an old avatar URL exists
         if (oldAvatarUrl != null && !oldAvatarUrl.isEmpty()) {
             try {
-                // Get just the file name (e.g., "1.png")
                 String oldFileName = Paths.get(oldAvatarUrl).getFileName().toString();
 
-                // Build the full absolute path to the old file
                 Path oldFilePath = Paths.get(uploadDir, oldFileName);
 
-                // Delete the file if it exists
                 Files.deleteIfExists(oldFilePath);
                 logger.info("Successfully deleted old avatar: {}", oldFilePath);
 
             } catch (IOException e) {
-                // Log the error, but don't stop the upload.
-                // The new file is more important.
                 logger.error("Error deleting old avatar: {}", e.getMessage(), e);
             }
         }
-        // --- End Deletion Logic ---
 
-        // --- 2. Save New Image Logic (Same as before) ---
         String newFileName = userId + "." + ext;
         Path newFilePath = Paths.get(uploadDir, newFileName);
 
         try {
-            // Ensure the directory exists
             Files.createDirectories(Paths.get(uploadDir));
 
-            // Write the new file
             try (FileOutputStream fos = new FileOutputStream(newFilePath.toString())) {
                 byte[] bytes = file.getBytes();
                 fos.write(bytes);
             }
 
-            // Update the user's avatar URL in the database to the new path
-            String newAvatarUrl = "images/" + newFileName; // "/images/"
+            String newAvatarUrl = "images/" + newFileName; 
             user.setAvatar(newAvatarUrl);
             this.userRepository.save(user);
 
@@ -135,7 +120,6 @@ public class UserService implements UserDetailsService {
             return user.getAvatar();
 
         } catch (Exception e) {
-            // This is a critical error, so we throw an exception
             logger.error("Error uploading new file: {}", e.getMessage(), e);
             throw new RuntimeException("Error uploading new file: " + e.getMessage(), e);
         }

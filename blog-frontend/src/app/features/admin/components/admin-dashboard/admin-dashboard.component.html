@@ -118,7 +118,8 @@
           </div>
           } @else {
           <div class="users-table">
-            @for (user of users(); track user.id) {
+            @for (user of users(); track user.id) { @if (user.id !== currentUser()?.id) {
+
             <div class="user-row">
               <div class="user-main">
                 <div class="user-avatar-col">
@@ -204,17 +205,11 @@
                 </mat-menu>
               </div>
             </div>
-            @if (user === users()[users().length -1]) { @if (hasMoreUsers()) {
-            <div #loadTriggerUsers class="load-trigger"></div>
-            @defer (on viewport(loadTriggerUsers)) {
-            {{ onUsersScrollBottom() }} } @placeholder {
-            <div class="loading-more-indicator">
-              <mat-spinner diameter="32"></mat-spinner>
-              <p>LOADING MORE USERS...</p>
-            </div>
-            } } } }
+            } }
           </div>
-          @if (!hasMoreUsers() && !isLoadingUsers()) {
+          @if (hasMoreUsers() && !isLoadingUsers()) {
+          <div class="load-trigger" appInfiniteScroll (scrolled)="loadUsers()"></div>
+          } @if (!hasMoreUsers() && !isLoadingUsers()) {
           <div class="end-of-feed">
             <mat-icon>check_circle</mat-icon>
             <p>END OF USER LIST</p>
@@ -307,16 +302,11 @@
                 </div>
               </div>
             </div>
-            @if (post === posts()[posts().length -1]) { @if (hasMorePosts()) {
-            <div #loadTriggerPosts class="load-trigger"></div>
-            @defer (on viewport(loadTriggerPosts)) {
-            {{ onPostsScrollBottom() }} } @placeholder {
-            <div class="loading-more-indicator">
-              <mat-spinner diameter="32"></mat-spinner>
-              <p>LOADING MORE POSTS...</p>
-            </div>
-            } } } }
+              }
           </div>
+          @if (hasMorePosts() && !isLoadingPosts()) {
+          <div class="load-trigger" appInfiniteScroll (scrolled)="loadPosts()"></div>
+          } 
           @if (!hasMorePosts() && !isLoadingPosts()) {
           <div class="end-of-feed">
             <mat-icon>check_circle</mat-icon>
@@ -519,17 +509,12 @@
                 }
               </div>
             </div>
-            @if (report === reports()[reports().length -1]) { @if (hasMoreReports()) {
-            <div #loadTriggerReports class="load-trigger"></div>
-            @defer (on viewport(loadTriggerReports)) {
-            {{ onReportsScrollBottom() }}
-            } @placeholder {
-            <div class="loading-more-indicator">
-              <mat-spinner diameter="32"></mat-spinner>
-              <p>LOADING MORE REPORTS...</p>
-            </div>
-            } } } }
+             }
           </div>
+          @if (hasMoreReports() && !isLoadingReports()) {
+          <div class="load-trigger" appInfiniteScroll (scrolled)="loadReports()"></div>
+          }
+          
           @if (!hasMoreReports() && !isLoadingReports()) {
           <div class="end-of-feed">
             <mat-icon>check_circle</mat-icon>

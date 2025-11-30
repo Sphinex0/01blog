@@ -78,7 +78,7 @@
         <!-- Author Info -->
         <div class="post-author">
           <a
-            [routerLink]="['/profile', post.user.username]"
+            [routerLink]="['/users/profile', post.user.username]"
             class="author-avatar"
             (click)="$event.stopPropagation()"
           >
@@ -95,7 +95,7 @@
 
           <div class="author-details">
             <a
-              [routerLink]="['/profile', post.user.username]"
+              [routerLink]="['/users/profile', post.user.username]"
               class="author-name"
               (click)="$event.stopPropagation()"
             >

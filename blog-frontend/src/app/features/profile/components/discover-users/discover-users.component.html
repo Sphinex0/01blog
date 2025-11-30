@@ -60,14 +60,14 @@
   <!-- Users Grid -->
   @if (users().length > 0) {
   <div class="users-grid">
-    @for (user of users(); track user.id) {
+    @for (user of users(); track user.id) { @if (user.id !== currentUser()?.id) {
     <app-user-card [user]="user" (followToggle)="onFollowToggle($event)"> </app-user-card>
-    }
+    } }
   </div>
 
   <!-- Infinite Scroll Trigger -->
   @if (hasMore() && !isLoading()) {
-    <div class="load-trigger" appInfiniteScroll (scrolled)="loadUsers()"></div>
+  <div class="load-trigger" appInfiniteScroll (scrolled)="loadUsers()"></div>
   }
 
   <!-- Loading More Indicator -->

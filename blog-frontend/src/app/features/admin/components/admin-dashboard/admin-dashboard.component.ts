@@ -24,19 +24,20 @@ import { ConfirmationDialogComponent } from '../../../../shared/components/confi
 import { AdminService } from '../../services/admin.service';
 import { AnalyticsService } from '../../services/analytics.service';
 import { MatDividerModule } from '@angular/material/divider';
+import { AuthService } from '../../../../core/services/auth.service';
+import { InfiniteScrollDirective } from '../../../../shared/directives/infinite-scroll.directive';
 
 @Component({
   selector: 'app-ban-duration-dialog',
   standalone: true,
-  // 💡 Modern Imports (FormsModule removed)
+  
   imports: [
     MatDialogModule,
     MatButtonModule,
     MatInputModule,
     MatFormFieldModule,
-    ReactiveFormsModule, // 💡 Mandatory for formControl
+    ReactiveFormsModule, 
   ],
-  // The styles are unchanged from your original component
   styles: [
     `
       .pixel-dialog-title {
@@ -54,7 +55,6 @@ import { MatDividerModule } from '@angular/material/divider';
       }
     `,
   ],
-  // 💡 Using formControl and modern bindings
   template: `
     <h2 mat-dialog-title class="pixel-dialog-title">BAN USER</h2>
     <mat-dialog-content>
@@ -94,13 +94,11 @@ import { MatDividerModule } from '@angular/material/divider';
 export class BanDurationDialog {
   readonly dialogRef = inject(MatDialogRef<BanDurationDialog>);
 
-  // It holds number or null (if the field is empty)
   public durationControl = new FormControl<number | null>(7, {
     nonNullable: false,
-    validators: [Validators.min(0)], // Enforce non-negative input
+    validators: [Validators.min(0)], 
   });
 
-  // 💡 Computed property for derived state
   isPermanent = () => {
     const value = this.durationControl.value;
     return value === null || value <= 0;
@@ -148,6 +146,7 @@ export class BanDurationDialog {
     MatProgressSpinnerModule,
     TimeAgoPipe,
     MatDividerModule,
+    InfiniteScrollDirective
   ],
   templateUrl: './admin-dashboard.component.html',
   styleUrl: './admin-dashboard.component.scss',
@@ -157,6 +156,8 @@ export class AdminDashboardComponent implements OnInit {
   private readonly analyticsService = inject(AnalyticsService);
   private readonly dialog = inject(MatDialog);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly authService = inject(AuthService);
+  readonly currentUser = this.authService.currentUser;
 
   readonly stats = signal<AdminStats | null>(null);
   readonly isLoadingStats = signal(false);
@@ -258,14 +259,6 @@ export class AdminDashboardComponent implements OnInit {
           this.isLoadingUsers.set(false);
         },
       });
-  }
-
-  onUsersScrollBottom(): void {
-    if (this.hasMoreUsers() && !this.isLoadingUsers()) {
-      setTimeout(() => {
-        this.loadUsers();
-      });
-    }
   }
 
   onBanUser(user: AdminUserDetails | Report['reported']): void {
@@ -515,14 +508,6 @@ export class AdminDashboardComponent implements OnInit {
       });
   }
 
-  onPostsScrollBottom(): void {
-    if (this.hasMorePosts() && !this.isLoadingPosts()) {
-      setTimeout(() => {
-        this.loadPosts();
-      });
-    }
-  }
-
   onTogglePostVisibility(post: AdminPost): void {
     const isCurrentlyHidden = post.isHidden;
     const action = isCurrentlyHidden ? 'unhide' : 'hide';
@@ -630,13 +615,7 @@ export class AdminDashboardComponent implements OnInit {
       });
   }
 
-  onReportsScrollBottom(): void {
-    if (this.hasMoreReports() && !this.isLoadingReports()) {
-      setTimeout(() => {
-        this.loadReports();
-      });
-    }
-  }
+
 
   onReportStatusChange(status: string): void {
     this.selectedReportStatus.set(status);

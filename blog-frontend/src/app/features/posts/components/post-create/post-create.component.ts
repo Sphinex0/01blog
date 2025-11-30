@@ -201,7 +201,7 @@ export class PostCreateComponent implements OnInit, OnDestroy {
     } catch (error) {
       console.error('Failed to save post:', error);
       const message = error as HttpErrorResponse;
-      this.snackBar.open((message.error.content+"" ||'An error occurred while saving.'), 'Close', {
+      this.snackBar.open(( message.error?.title || message.error?.content ||'An error occurred while saving.'), 'Close', {
         duration: 3000,
         panelClass: ['error-snackbar'],
       });
