@@ -16,17 +16,20 @@ export class StorageService {
   }
 
   getUserData(): User | null {
-    const decoded: any = jwtDecode(this.getToken() || '');
-
-    const user = {
-      username: decoded.username || decoded.sub,
-      id: decoded.id,
-      email: decoded.email,
-      fullName: decoded.fullname,
-      avatar: decoded.avatar,
-      role: decoded.role || 'USER',
-    };
-    return user as User;
+    try {
+      const decoded: any = jwtDecode(this.getToken() || '');
+      const user = {
+        username: decoded.username || decoded.sub,
+        id: decoded.id,
+        email: decoded.email,
+        fullName: decoded.fullname,
+        avatar: decoded.avatar,
+        role: decoded.role || 'USER',
+      };
+      return user as User;
+    } catch (e) {
+      return null;
+    }
   }
 
   setTheme(theme: string): void {
